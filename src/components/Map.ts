@@ -230,6 +230,12 @@ export class MapComponent {
   // written — lets applyTransform() skip same-value setProperty calls that
   // would restyle every marker on every render pass.
   private lastOverlayVarZoom = '';
+  // SVG projection inversion is only meaningful against the dimensions that
+  // produced the current transform. A deep-linked center is authoritative
+  // while the renderer completes its first layout (especially on mobile), so
+  // preserve it rather than deriving a transient, out-of-range value from a
+  // zero/stale viewport and writing that value back into a share URL.
+  private explicitCenter: { lat: number; lon: number } | null = null;
   // Desktop measures label overlap from the start; mobile defers until the first
   // interaction. The effective value is set in the constructor (= !this.isMobile);
   // false here documents the mobile-off default.
@@ -922,6 +928,7 @@ export class MapComponent {
             this.state.zoom = Math.max(1, Math.min(10, this.state.zoom + zoomDelta));
           }
         }
+        this.explicitCenter = null;
         this.applyTransform();
       },
       { passive: false, signal }
@@ -948,6 +955,7 @@ export class MapComponent {
       const panSpeed = 1 / this.state.zoom;
       this.state.pan.x += dx * panSpeed;
       this.state.pan.y += dy * panSpeed;
+      this.explicitCenter = null;
 
       lastPos = { x: e.clientX, y: e.clientY };
       this.applyTransform();
@@ -1019,6 +1027,7 @@ export class MapComponent {
         const panSpeed = 1 / this.state.zoom;
         this.state.pan.x += (center.x - lastTouchCenter.x) * panSpeed;
         this.state.pan.y += (center.y - lastTouchCenter.y) * panSpeed;
+        this.explicitCenter = null;
         lastTouchCenter = center;
 
         this.resumeMobileLabelVisibility();
@@ -1040,6 +1049,7 @@ export class MapComponent {
         const panSpeed = 1 / this.state.zoom;
         this.state.pan.x += dx * panSpeed;
         this.state.pan.y += dy * panSpeed;
+        this.explicitCenter = null;
 
         lastPos = { x: touch1.clientX, y: touch1.clientY };
         const now = performance.now();
@@ -1066,6 +1076,7 @@ export class MapComponent {
             if (Math.abs(vx) < 10 && Math.abs(vy) < 10) return;
             this.state.pan.x += (vx / 60) * panSpeed;
             this.state.pan.y += (vy / 60) * panSpeed;
+            this.explicitCenter = null;
             this.applyTransform();
             inertiaRaf = requestAnimationFrame(animate);
           };
@@ -3230,7 +3241,7 @@ export class MapComponent {
       'border:1px solid rgba(60,120,60,0.6)',
       'padding:8px 12px',
       'border-radius:3px',
-      'font-size:11px',
+      'font-size:calc(11px * var(--wm-panel-effective-scale, 1))',
       'font-family:var(--font-mono)',
       'color:#d4d4d4',
       'max-width:240px',
@@ -3239,7 +3250,7 @@ export class MapComponent {
       'line-height:1.5',
     ].join(';');
     const closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:none;border:none;color:#888;cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;';
+    closeBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:none;border:none;color:#888;cursor:pointer;font-size:calc(14px * var(--wm-panel-effective-scale, 1));line-height:1;padding:2px 4px;';
     closeBtn.setAttribute('aria-label', 'Close');
     closeBtn.textContent = '×';
     closeBtn.addEventListener('click', () => tooltip.remove());
@@ -3268,14 +3279,14 @@ export class MapComponent {
     tooltip.appendChild(title);
 
     const meta = document.createElement('div');
-    meta.style.cssText = 'opacity:0.7;font-size:10px;margin-top:2px;';
+    meta.style.cssText = 'opacity:0.7;font-size:calc(10px * var(--wm-panel-effective-scale, 1));margin-top:2px;';
     meta.textContent = [cam.country, cam.category].filter(Boolean).join(' \u00B7 ');
     if (meta.textContent) tooltip.appendChild(meta);
 
     const previewDiv = document.createElement('div');
     previewDiv.style.marginTop = '6px';
     const loadingSpan = document.createElement('span');
-    loadingSpan.style.cssText = 'opacity:0.5;font-size:10px;';
+    loadingSpan.style.cssText = 'opacity:0.5;font-size:calc(10px * var(--wm-panel-effective-scale, 1));';
     loadingSpan.textContent = 'Loading preview...';
     previewDiv.appendChild(loadingSpan);
     tooltip.appendChild(previewDiv);
@@ -3285,7 +3296,7 @@ export class MapComponent {
       link.href = `https://www.windy.com/webcams/${cam.webcamId}`;
       link.target = '_blank';
       link.rel = 'noopener';
-      link.style.cssText = 'display:block;margin-top:4px;color:#00d4ff;font-size:11px;text-decoration:none;';
+      link.style.cssText = 'display:block;margin-top:4px;color:#00d4ff;font-size:calc(11px * var(--wm-panel-effective-scale, 1));text-decoration:none;';
       link.textContent = 'Open on Windy \u2197';
       tooltip.appendChild(link);
     }
@@ -3305,7 +3316,7 @@ export class MapComponent {
             previewDiv.appendChild(imgEl);
           } else {
             const span = document.createElement('span');
-            span.style.cssText = 'opacity:0.5;font-size:10px;';
+            span.style.cssText = 'opacity:0.5;font-size:calc(10px * var(--wm-panel-effective-scale, 1));';
             span.textContent = 'Preview unavailable';
             previewDiv.appendChild(span);
           }
@@ -3374,7 +3385,7 @@ export class MapComponent {
           item.appendChild(nameSpan);
           if (webcam.country) {
             const cc = document.createElement('span');
-            cc.style.cssText = 'float:right;opacity:0.4;font-size:10px;margin-left:6px;';
+            cc.style.cssText = 'float:right;opacity:0.4;font-size:calc(10px * var(--wm-panel-effective-scale, 1));margin-left:6px;';
             cc.textContent = webcam.country;
             item.appendChild(cc);
           }
@@ -3693,6 +3704,7 @@ export class MapComponent {
 
   public setView(view: MapView, zoom?: number): void {
     this.state.view = view;
+    this.explicitCenter = null;
 
     // Region-specific zoom and pan settings
     // Pan: +x = west, -x = east, +y = north, -y = south
@@ -4234,6 +4246,7 @@ export class MapComponent {
   }
 
   public getCenter(): { lat: number; lon: number } | null {
+    if (this.explicitCenter) return { ...this.explicitCenter };
     const { width, height } = this.readContainerSize();
     const projection = this.getProjection(width, height);
     if (!projection.invert) return null;
@@ -4241,8 +4254,12 @@ export class MapComponent {
     const centerX = width / (2 * zoom) - this.state.pan.x;
     const centerY = height / (2 * zoom) - this.state.pan.y;
     const coords = projection.invert([centerX, centerY]);
-    if (!coords) return null;
-    return { lon: coords[0], lat: coords[1] };
+    if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) return null;
+    const [lon, lat] = coords;
+    // A cropped equirectangular projection can invert a panned edge outside
+    // the physical globe. Do not expose it through the public map contract.
+    if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
+    return { lon, lat };
   }
 
   public getTimeRange(): TimeRange {
@@ -4295,6 +4312,7 @@ export class MapComponent {
       x: width / 2 - pos[0],
       y: height / 2 - pos[1],
     };
+    this.explicitCenter = { lat, lon };
     this.applyTransform();
     // Ensure base layer is intact after pan
     this.ensureBaseLayerIntact();

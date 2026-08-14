@@ -10,6 +10,7 @@ import maplibregl from 'maplibre-gl';
 import type { StyleSpecification } from 'maplibre-gl';
 import { FALLBACK_DARK_STYLE, FALLBACK_LIGHT_STYLE, getMapProvider, getMapTheme, isLightMapTheme } from '@/config/basemap';
 import { getStyleForProvider } from '@/config/basemap-styles';
+import { PRIMARY_BRAND } from '@/config/brand';
 import Supercluster from 'supercluster';
 import type {
   MapLayers,
@@ -248,6 +249,19 @@ const MAP_INTERACTION_MODE: MapInteractionMode =
 const HAPPY_DARK_STYLE = '/map-styles/happy-dark.json';
 const HAPPY_LIGHT_STYLE = '/map-styles/happy-light.json';
 const isHappyVariant = SITE_VARIANT === 'happy';
+
+// This marker is defined only by tests/map-harness.html. The fixture still
+// drives the real MapLibre + DeckGL integration, but it must not depend on
+// remote basemap tiles: a stalled tile host or a fallback-style swap can turn
+// a deterministic overlay assertion into an empty or changing screenshot.
+// No production route sets this flag.
+const isMapHarnessRuntime = typeof window !== 'undefined'
+  && (window as Window & { __WM_E2E_MAP_HARNESS__?: boolean }).__WM_E2E_MAP_HARNESS__ === true;
+const MAP_HARNESS_STYLE: StyleSpecification = {
+  version: 8,
+  sources: {},
+  layers: [],
+};
 
 // Zoom thresholds for layer visibility and labels (matches old Map.ts)
 // Zoom-dependent layer visibility and labels
@@ -1279,6 +1293,10 @@ export class DeckGLMap {
   }
 
   private async resolveInitialBasemapStyle(): Promise<{ mapTheme: string; style: StyleSpecification | string }> {
+    if (isMapHarnessRuntime) {
+      return { mapTheme: 'dark', style: MAP_HARNESS_STYLE };
+    }
+
     if (isHappyVariant) {
       const mapTheme = getCurrentTheme();
       return {
@@ -1959,8 +1977,9 @@ export class DeckGLMap {
     // Disease outbreaks layer
     if (mapLayers.diseaseOutbreaks && filteredDiseaseOutbreaks.length > 0) {
       layers.push(this.createDiseaseOutbreaksLayer(filteredDiseaseOutbreaks));
+    } else {
+      layers.push(this.createEmptyGhost('disease-outbreaks-layer'));
     }
-    layers.push(this.createEmptyGhost('disease-outbreaks-layer'));
 
     // Satellite fires layer (NASA FIRMS)
     if (mapLayers.fires && filteredFirmsFireData.length > 0) {
@@ -4811,7 +4830,7 @@ export class DeckGLMap {
         const lvlColor = item.alertLevel === 'alert' ? '#e74c3c' : item.alertLevel === 'warning' ? '#e67e22' : '#f1c40f';
         const casesHtml = item.cases ? ` | ${item.cases} case${item.cases !== 1 ? 's' : ''}` : '';
         const dateStr = new Date(item.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const metaHtml = `<br/><span style="opacity:.6;font-size:11px">${text(item.sourceName || '')} | ${dateStr}${casesHtml}</span>`;
+        const metaHtml = `<br/><span style="opacity:.6;font-size:calc(11px * var(--wm-panel-effective-scale, 1))">${text(item.sourceName || '')} | ${dateStr}${casesHtml}</span>`;
         const summaryHtml = item.summary ? `<br/><span style="opacity:.75">${text(item.summary.slice(0, 100))}${item.summary.length > 100 ? '…' : ''}</span>` : '';
         return { html: `<div class="deckgl-tooltip"><strong style="color:${lvlColor}">${text(item.alertLevel.toUpperCase())}</strong> ${text(item.disease)}<br/>${text(item.location)}${summaryHtml}${metaHtml}</div>` };
       }
@@ -5476,7 +5495,7 @@ export class DeckGLMap {
 
     const authorBadge = document.createElement('div');
     authorBadge.className = 'map-author-badge';
-    authorBadge.textContent = '© Elie Habib · Someone™';
+    authorBadge.textContent = `© ${PRIMARY_BRAND}`;
     toggles.appendChild(authorBadge);
 
     this.container.appendChild(toggles);
@@ -5905,11 +5924,11 @@ export class DeckGLMap {
     ciiLegend.id = 'ciiChoroplethLegend';
     ciiLegend.style.display = this.state.layers.ciiChoropleth ? 'block' : 'none';
     setTrustedHtml(ciiLegend, trustedHtml(`
-      <span class="legend-label-title" style="font-size:9px;letter-spacing:0.5px;">CII SCALE</span>
+      <span class="legend-label-title" style="font-size:calc(9px * var(--wm-panel-effective-scale, 1));letter-spacing:0.5px;">CII SCALE</span>
       <div style="display:flex;align-items:center;gap:2px;margin-top:2px;">
         <div style="width:100%;height:8px;border-radius:3px;background:linear-gradient(to right,#28b33e,#dcc030,#e87425,#dc2626,#7f1d1d);"></div>
       </div>
-      <div style="display:flex;justify-content:space-between;font-size:8px;opacity:0.7;margin-top:1px;">
+      <div style="display:flex;justify-content:space-between;font-size:calc(8px * var(--wm-panel-effective-scale, 1));opacity:0.7;margin-top:1px;">
         <span>0</span><span>31</span><span>51</span><span>66</span><span>81</span><span>100</span>
       </div>
     `, "legacy direct innerHTML migration"));

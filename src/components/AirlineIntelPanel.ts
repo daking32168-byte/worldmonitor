@@ -21,6 +21,8 @@ import { escapeHtml, sanitizeUrl } from '@/utils/sanitize';
 import { t } from '@/services/i18n';
 import { Panel } from './Panel';
 import { setTrustedHtml, trustedHtml } from '@/utils/dom-utils';
+import { buildProviderReadinessNotice } from './provider-readiness-notice';
+import { latestFreshProviderObservation } from '@/services/realtime-observation';
 
 
 // ---- Helpers ----
@@ -93,9 +95,10 @@ export class AirlineIntelPanel extends Panel {
     private refreshTimer: ReturnType<typeof setInterval> | null = null;
     private liveIndicator!: HTMLElement;
     private tabBar!: HTMLElement;
+    private trackingLayerEnabled = false;
 
     constructor() {
-        super({ id: 'airline-intel', title: t('panels.airlineIntel'), trackActivity: true, infoTooltip: t('components.airlineIntel.infoTooltip') });
+        super({ id: 'airline-intel', title: t('panels.airlineIntel'), trackActivity: true, infoTooltip: t('components.airlineIntel.infoTooltip'), collapsible: true });
 
         const wl = aviationWatchlist.get();
         this.airports = wl.airports.slice(0, 8);
@@ -121,8 +124,8 @@ export class AirlineIntelPanel extends Panel {
         // Add LIVE indicator badge to the title
         this.liveIndicator = document.createElement('span');
         this.liveIndicator.className = 'live-badge';
-        this.liveIndicator.textContent = '\u25CF LIVE';
-        this.liveIndicator.style.cssText = 'display:none;color:#22c55e;font-size:10px;font-weight:700;margin-left:8px;letter-spacing:0.5px;';
+        this.liveIndicator.textContent = '';
+        this.liveIndicator.style.cssText = 'display:none;color:#22c55e;font-size:calc(10px * var(--wm-panel-effective-scale, 1));font-weight:700;margin-left:8px;letter-spacing:0.5px;';
         this.header.querySelector('.panel-title')?.appendChild(this.liveIndicator);
 
         // Insert tab bar between header and content
@@ -195,12 +198,32 @@ export class AirlineIntelPanel extends Panel {
     updateLivePositions(positions: PositionSample[]): void {
         if (this.trackingQuery) return; // preserve filtered search results
         this.trackingData = positions;
+        this.refreshObservedIndicator();
         if (this.activeTab === 'tracking') this.renderTab();
     }
 
-    /** Toggle the LIVE indicator badge. */
+    /**
+     * A map-layer toggle is not a live-data fact. The header becomes observed
+     * only after `updateLivePositions` receives a fresh, sourced timestamp.
+     */
     setLiveMode(active: boolean): void {
-        this.liveIndicator.style.display = active ? '' : 'none';
+        this.trackingLayerEnabled = active;
+        this.refreshObservedIndicator();
+    }
+
+    private refreshObservedIndicator(): void {
+        const observation = this.trackingLayerEnabled
+            ? latestFreshProviderObservation(this.trackingData)
+            : null;
+        if (!observation) {
+            this.liveIndicator.style.display = 'none';
+            this.liveIndicator.textContent = '';
+            return;
+        }
+        const ageSeconds = Math.max(0, Math.floor(observation.ageMs / 1000));
+        this.liveIndicator.textContent = `● OBSERVED ${ageSeconds}s`;
+        this.liveIndicator.title = `${observation.source}; observed ${observation.observedAt.toISOString()}`;
+        this.liveIndicator.style.display = '';
     }
 
     private handleFlightSearch(): void {
@@ -374,7 +397,11 @@ export class AirlineIntelPanel extends Panel {
     }
 
     private renderTab(): void {
-        if (this.loading) { this.renderLoading(); return; }
+        if (this.loading) {
+            this.renderLoading();
+            this.prependProviderReadiness();
+            return;
+        }
         switch (this.activeTab) {
             case 'ops': this.renderOps(); break;
             case 'flights': this.renderFlights(); break;
@@ -383,6 +410,22 @@ export class AirlineIntelPanel extends Panel {
             case 'news': this.renderNews(); break;
             case 'prices': this.renderPrices(); break;
         }
+        this.prependProviderReadiness();
+    }
+
+    private prependProviderReadiness(): void {
+        this.content.prepend(buildProviderReadinessNotice('航空态势 Provider / 新鲜度', [
+            {
+                provider: 'OpenSky 中继',
+                requiredSecrets: ['VITE_OPENSKY_RELAY_URL', 'OPENSKY_CLIENT_ID', 'OPENSKY_CLIENT_SECRET'],
+                manualAction: '在 Desktop Configuration 中配置中继与 OAuth 凭据；未收到带时间戳的位置时不显示 OBSERVED。',
+            },
+            {
+                provider: 'Aviationstack（机场/航班状态）',
+                requiredSecrets: ['AVIATIONSTACK_API'],
+                manualAction: '仅在已获授权后配置服务器/桌面密钥，并保留 Provider、返回时间和延迟状态。',
+            },
+        ]));
     }
 
     // ---- Ops tab ----
@@ -470,13 +513,13 @@ export class AirlineIntelPanel extends Panel {
           <div class="track-flight-card" style="padding:8px 0;border-bottom:1px solid var(--border)">
             <div style="display:flex;gap:8px;align-items:baseline">
               <strong>${escapeHtml(f.flightNumber)}</strong>
-              <span style="color:#9ca3af;font-size:11px">${escapeHtml(f.carrier.name || f.carrier.iata)}</span>
-              <span style="color:${color};font-size:11px;margin-left:auto">${f.status}</span>
+              <span style="color:#9ca3af;font-size:calc(11px * var(--wm-panel-effective-scale, 1))">${escapeHtml(f.carrier.name || f.carrier.iata)}</span>
+              <span style="color:${color};font-size:calc(11px * var(--wm-panel-effective-scale, 1));margin-left:auto">${f.status}</span>
             </div>
-            <div style="font-size:12px;color:var(--text-dim)">${escapeHtml(f.origin.iata)} → ${escapeHtml(f.destination.iata)}${depStr ? ` · ${depStr}` : ''}${arrStr}</div>
-            ${f.aircraftType ? `<div style="font-size:11px;color:#6b7280">${escapeHtml(f.aircraftType)}</div>` : ''}
-            ${(f.gate || f.terminal) ? `<div style="font-size:11px;color:#6b7280">${f.gate ? `Gate ${escapeHtml(f.gate)}` : ''}${f.terminal ? `${f.gate ? ' · ' : ''}T${escapeHtml(f.terminal)}` : ''}</div>` : ''}
-            ${f.delayMinutes > 0 ? `<div style="color:#f97316;font-size:12px">+${f.delayMinutes}m delay</div>` : ''}
+            <div style="font-size:calc(12px * var(--wm-panel-effective-scale, 1));color:var(--text-dim)">${escapeHtml(f.origin.iata)} → ${escapeHtml(f.destination.iata)}${depStr ? ` · ${depStr}` : ''}${arrStr}</div>
+            ${f.aircraftType ? `<div style="font-size:calc(11px * var(--wm-panel-effective-scale, 1));color:#6b7280">${escapeHtml(f.aircraftType)}</div>` : ''}
+            ${(f.gate || f.terminal) ? `<div style="font-size:calc(11px * var(--wm-panel-effective-scale, 1));color:#6b7280">${f.gate ? `Gate ${escapeHtml(f.gate)}` : ''}${f.terminal ? `${f.gate ? ' · ' : ''}T${escapeHtml(f.terminal)}` : ''}</div>` : ''}
+            ${f.delayMinutes > 0 ? `<div style="color:#f97316;font-size:calc(12px * var(--wm-panel-effective-scale, 1))">+${f.delayMinutes}m delay</div>` : ''}
           </div>`;
             }).join('');
             setTrustedHtml(this.content, trustedHtml(`${searchBar}<div>${rows}</div>`, "legacy direct innerHTML migration"));
@@ -511,7 +554,7 @@ export class AirlineIntelPanel extends Panel {
         const items = this.newsData.map(n => `
       <div class="news-item" style="padding:8px 0;border-bottom:1px solid var(--border,#2a2a2a)">
         <a href="${sanitizeUrl(n.url)}" target="_blank" rel="noopener" class="news-link">${escapeHtml(n.title)}</a>
-        <div class="news-meta" style="font-size:11px;color:var(--text-dim,#888);margin-top:2px">${escapeHtml(n.sourceName)} · ${n.publishedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        <div class="news-meta" style="font-size:calc(11px * var(--wm-panel-effective-scale, 1));color:var(--text-dim,#888);margin-top:2px">${escapeHtml(n.sourceName)} · ${n.publishedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
       </div>`).join('');
         setTrustedHtml(this.content, trustedHtml(`<div class="news-list" style="padding:0 4px">${items}</div>`, "legacy direct innerHTML migration"));
     }
@@ -545,7 +588,7 @@ export class AirlineIntelPanel extends Panel {
           </select>
           <button id="priceSearchBtn" class="icon-btn" style="padding:4px 10px">${t('header.search')}</button>
         </div>
-        <div id="priceInlineErr" style="color:#ef4444;font-size:11px;min-height:14px"></div>`;
+        <div id="priceInlineErr" style="color:#ef4444;font-size:calc(11px * var(--wm-panel-effective-scale, 1));min-height:14px"></div>`;
 
             let body: string;
             if (this.googleFlightsData.length) {
@@ -586,10 +629,10 @@ export class AirlineIntelPanel extends Panel {
           <input id="datesToInput" class="price-input" placeholder="To" maxlength="3" value="${escapeHtml(this.pricesDest)}" style="width:54px">
           <input id="datesStartInput" class="price-input" type="date" value="${escapeHtml(this.datesStart || localDateStr())}" style="width:128px">
           <input id="datesEndInput" class="price-input" type="date" value="${escapeHtml(this.datesEnd)}" style="width:128px">
-          <label style="display:flex;align-items:center;gap:4px;font-size:12px">
+          <label style="display:flex;align-items:center;gap:4px;font-size:calc(12px * var(--wm-panel-effective-scale, 1))">
             <input id="datesRoundTripCheck" type="checkbox" ${this.datesRoundTrip ? 'checked' : ''}>${escapeHtml(t('components.airlineIntel.roundTrip'))}
           </label>
-          <label style="display:flex;align-items:center;gap:4px;font-size:12px">
+          <label style="display:flex;align-items:center;gap:4px;font-size:calc(12px * var(--wm-panel-effective-scale, 1))">
             ${escapeHtml(t('components.airlineIntel.tripDays'))}:
             <input id="datesTripDurInput" class="price-input" type="number" min="1" value="${this.datesTripDuration}" style="width:44px">
           </label>
@@ -601,7 +644,7 @@ export class AirlineIntelPanel extends Panel {
           </select>
           <button id="datesSearchBtn" class="icon-btn" style="padding:4px 10px">${t('header.search')}</button>
         </div>
-        <div id="datesInlineErr" style="color:#ef4444;font-size:11px;min-height:14px"></div>`;
+        <div id="datesInlineErr" style="color:#ef4444;font-size:calc(11px * var(--wm-panel-effective-scale, 1));min-height:14px"></div>`;
 
             let body: string;
             if (this.datesData.length) {

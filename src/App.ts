@@ -1,5 +1,6 @@
 import type { Monitor, PanelConfig, MapLayers } from '@/types';
 import { WEB_APP_ORIGIN } from '@/config/web-origin';
+import { PRIMARY_BRAND, PRIMARY_BRAND_EN } from '@/config/brand';
 import { openExternalUrl } from '@/services/external-navigation';
 import { normalizeExclusiveChoropleths } from '@/components/resilience-choropleth-utils';
 import type { AppContext } from '@/app/app-context';
@@ -55,7 +56,17 @@ import {
   saveToStorage,
   showToast,
 } from '@/utils';
-import { clearPanelSpans, invalidatePanelStorageCacheForKeys } from '@/utils/panel-storage';
+import {
+  clearPanelSpans,
+  invalidatePanelStorageCacheForKeys,
+  loadPanelCollapsed,
+  savePanelCollapsed,
+} from '@/utils/panel-storage';
+import {
+  FULL_DEFAULT_COLLAPSED_PANEL_KEYS,
+  FULL_ECONOMY_LAYOUT_MIGRATION_KEY,
+  shouldSeedFullEconomyDefaultCollapse,
+} from '@/config/full-layout-defaults';
 import { overlayHistory, type OverlayId } from '@/utils/overlay-history';
 import type { ParsedMapUrlState } from '@/utils';
 import { BreakingNewsBanner } from '@/components/BreakingNewsBanner';
@@ -103,6 +114,7 @@ import { track, trackEvent, trackDeeplinkOpened, initAuthAnalytics } from '@/ser
 import { preloadCountryGeometry, isCountryGeometryLoaded, getCountryNameByCode } from '@/services/country-geometry';
 import { initI18n, t, I18N_RESOURCES_LOADED_EVENT, type I18nResourcesLoadedDetail } from '@/services/i18n';
 import { initDeferredDashboardFonts } from '@/bootstrap/secondary-startup';
+import { applyFontScale, FONT_SCALE_STORAGE_KEY } from '@/services/font-scale-settings';
 
 import {
   CANADA_ARCTIC_OPT_IN_SOURCES,
@@ -197,7 +209,16 @@ import {
   settleAccountOperation,
 } from '@/services/account-operation';
 import type { Id } from '../convex/_generated/dataModel';
-import { initEntitlementSubscription, destroyEntitlementSubscription, resetEntitlementState, onEntitlementChange, getEntitlementState } from '@/services/entitlements';
+import {
+  beginEntitlementVerification,
+  destroyEntitlementSubscription,
+  getEntitlementState,
+  initEntitlementSubscription,
+  markEntitlementVerificationUnavailable,
+  onEntitlementChange,
+  resetEntitlementState,
+  resetEntitlementVerification,
+} from '@/services/entitlements';
 import { initSubscriptionWatch, destroySubscriptionWatch } from '@/services/billing';
 import {
   FREE_TIER_FOLLOW_LIMIT,
@@ -380,6 +401,10 @@ export class App {
     let freeTierLimitsInvoked = false;
     const tierReconciliationDeferred = this.shouldDeferTierPreferenceReconciliation();
     invalidatePanelStorageCacheForKeys(keys);
+
+    if (keySet.has(FONT_SCALE_STORAGE_KEY)) {
+      applyFontScale();
+    }
 
     if (keySet.has(STORAGE_KEYS.panels)) {
       // Cloud can reconcile before Clerk/Convex finishes settling. Preserve
@@ -1097,10 +1122,16 @@ export class App {
       // One-time migration: prune removed panel keys from stored settings and order
       const PANEL_PRUNE_KEY = 'worldmonitor-panel-prune-v1';
       if (!localStorage.getItem(PANEL_PRUNE_KEY)) {
+        // User-created widgets and MCP panels are not part of the static
+        // registry. Keep their persisted panel settings and ordering whenever
+        // their id has the owned dynamic prefix; otherwise a reload preserves
+        // the widget spec but silently removes the panel slot that renders it.
         const validKeys = new Set(Object.keys(ALL_PANELS));
+        const isPersistedDynamicPanel = (key: string): boolean =>
+          key === 'runtime-config' || key.startsWith('cw-') || key.startsWith('mcp-');
         let pruned = false;
         for (const key of Object.keys(panelSettings)) {
-          if (!validKeys.has(key) && key !== 'runtime-config') {
+          if (!validKeys.has(key) && !isPersistedDynamicPanel(key)) {
             delete panelSettings[key];
             pruned = true;
           }
@@ -1112,7 +1143,7 @@ export class App {
             if (!raw) continue;
             const arr = JSON.parse(raw);
             if (!Array.isArray(arr)) continue;
-            const filtered = arr.filter((k: string) => validKeys.has(k));
+            const filtered = arr.filter((k: string) => validKeys.has(k) || isPersistedDynamicPanel(k));
             if (filtered.length !== arr.length) localStorage.setItem(orderKey, JSON.stringify(filtered));
           } catch { localStorage.removeItem(orderKey); }
         }
@@ -1132,6 +1163,22 @@ export class App {
           console.log('[App] Applied layout reset migration (v2.5): cleared panel order/spans');
         }
         localStorage.setItem(LAYOUT_RESET_MIGRATION_KEY, 'done');
+      }
+
+      // Phase 8: a real saved panel order is user-owned and is never reshuffled.
+      // A true first visit (or a layout reset that clears the order) receives the
+      // economy-first full default; provider-dependent military/aviation panels
+      // stay present but collapsed until the user opens them. A collapsed state
+      // is only seeded when no prior value exists for that panel.
+      if (currentVariant === 'full' && !localStorage.getItem(FULL_ECONOMY_LAYOUT_MIGRATION_KEY)) {
+        const hasSavedPanelOrder = localStorage.getItem(PANEL_ORDER_KEY) !== null;
+        if (shouldSeedFullEconomyDefaultCollapse(currentVariant, hasSavedPanelOrder)) {
+          const collapsed = loadPanelCollapsed();
+          for (const key of FULL_DEFAULT_COLLAPSED_PANEL_KEYS) {
+            if (!(key in collapsed)) savePanelCollapsed(key, true);
+          }
+        }
+        localStorage.setItem(FULL_ECONOMY_LAYOUT_MIGRATION_KEY, 'done');
       }
     }
 
@@ -1682,15 +1729,18 @@ export class App {
     // Localize the static index.html shell — <title>, meta description, and
     // the accessible <h1> are baked in English before the app boots; once i18n
     // is ready we swap them to the user's locale.
-    document.title = t('shell.documentTitle');
+    const shellTitle = SITE_VARIANT === 'full'
+      ? `${PRIMARY_BRAND} - ${PRIMARY_BRAND_EN}`
+      : t('shell.documentTitle');
+    document.title = shellTitle;
     const setMeta = (sel: string, val: string) => {
       const el = document.querySelector(sel);
       if (el) el.setAttribute('content', val);
     };
     setMeta('meta[name="description"]', t('shell.metaDescription'));
-    setMeta('meta[property="og:title"]', t('shell.documentTitle'));
+    setMeta('meta[property="og:title"]', shellTitle);
     setMeta('meta[property="og:description"]', t('shell.metaDescription'));
-    setMeta('meta[name="twitter:title"]', t('shell.documentTitle'));
+    setMeta('meta[name="twitter:title"]', shellTitle);
     setMeta('meta[name="twitter:description"]', t('shell.metaDescription'));
     // Mirror of OG_LOCALE in pro-test/src/i18n.ts. The two packages have
     // separate Vite roots and bundlers and can't share an import — keep the
@@ -1705,7 +1755,11 @@ export class App {
     const baseLang = (document.documentElement.lang || 'en').split('-')[0] || 'en';
     setMeta('meta[property="og:locale"]', ogLocaleMap[baseLang] || `${baseLang}_${baseLang.toUpperCase()}`);
     const srH1 = document.querySelector('body > h1');
-    if (srH1) srH1.textContent = t('shell.documentTitle');
+    // This fork has an explicitly confirmed independent primary brand. Keep
+    // that accessible product identity stable across every dashboard variant;
+    // variant-specific document titles remain available through <title> and
+    // metadata, but must not overwrite the ownership signal after hydration.
+    if (srH1) srH1.textContent = `${PRIMARY_BRAND} - ${PRIMARY_BRAND_EN}`;
     const aiFlow = getAiFlowSettings();
     if (aiFlow.browserModel || isDesktopRuntime()) {
       await mlWorker.init();
@@ -1907,7 +1961,9 @@ export class App {
           ),
           effects: {
             destroyEntitlementSubscription,
+            beginEntitlementVerification,
             resetEntitlementState,
+            markEntitlementVerificationUnavailable,
             destroySubscriptionWatch,
             rebindConvexAuthForWatchHandoff,
             initEntitlementSubscription,
@@ -2024,6 +2080,7 @@ export class App {
         destroySubscriptionWatch();
         cloudPrefsSignOut();
         resetEntitlementState();
+        resetEntitlementVerification();
         this.tierPreferenceHandoff.clear();
         this.pendingPreferenceHandoffGeneration = undefined;
       }

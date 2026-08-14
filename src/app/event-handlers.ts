@@ -276,6 +276,7 @@ export class EventHandlerManager implements AppModule {
   private readonly mobilePrimaryNav: MobilePrimaryNav;
   private boundPanelCloseHandler: ((e: Event) => void) | null = null;
   private boundWidgetModifyHandler: ((e: Event) => void) | null = null;
+  private boundWidgetAccentChangeHandler: ((e: Event) => void) | null = null;
   private boundUndoHandler: ((e: KeyboardEvent) => void) | null = null;
   private boundNotifyForCountryHandler: ((e: Event) => void) | null = null;
   private boundMissionOutsideHandler: ((e: MouseEvent) => void) | null = null;
@@ -503,6 +504,10 @@ export class EventHandlerManager implements AppModule {
       this.ctx.container.removeEventListener('wm:widget-modify', this.boundWidgetModifyHandler);
       this.boundWidgetModifyHandler = null;
     }
+    if (this.boundWidgetAccentChangeHandler) {
+      this.ctx.container.removeEventListener('wm:widget-accent-change', this.boundWidgetAccentChangeHandler);
+      this.boundWidgetAccentChangeHandler = null;
+    }
     if (this.boundUndoHandler) {
       document.removeEventListener('keydown', this.boundUndoHandler);
       this.boundUndoHandler = null;
@@ -674,6 +679,24 @@ export class EventHandlerManager implements AppModule {
       })).catch((err) => console.error('[widget-chat] failed to lazy-load WidgetChatModal', err));
     }) as EventListener;
     this.ctx.container.addEventListener('wm:widget-modify', this.boundWidgetModifyHandler);
+
+    this.boundWidgetAccentChangeHandler = ((e: CustomEvent<{ widgetId: string; accentColor: string }>) => {
+      const spec = getWidget(e.detail.widgetId);
+      if (!spec) return;
+      const accentColor = e.detail.accentColor;
+      // The panel emits palette values from a closed local list. Keep this
+      // guard at the persistence boundary as well, since CustomEvents can be
+      // dispatched by any in-page code.
+      if (!/^#[0-9a-f]{6}$/i.test(accentColor)) return;
+      const updated = { ...spec, accentColor, updatedAt: Date.now() };
+      void saveWidget(updated).then(() => {
+        (this.ctx.panels[updated.id] as CustomWidgetPanel | undefined)?.updateSpec(updated);
+      }).catch((error) => {
+        console.error('[widget-accent] failed to save accent color', error);
+        showToast(t('widgets.saveFailed'));
+      });
+    }) as EventListener;
+    this.ctx.container.addEventListener('wm:widget-accent-change', this.boundWidgetAccentChangeHandler);
 
     this.ctx.container.addEventListener('wm:mcp-configure', ((e: CustomEvent<{ panelId: string }>) => {
       const spec = getMcpPanel(e.detail.panelId);
@@ -1794,6 +1817,7 @@ export class EventHandlerManager implements AppModule {
             trackPanelToggled(key, nextConfig.enabled);
           }
           Object.assign(current, nextConfig);
+          if (nextConfig.fontScale === undefined) delete current.fontScale;
           // Object.assign cannot DELETE a key, so a stale gate marker would
           // survive a settings-driven toggle. Re-apply through the owner helper.
           if (enabledChanged) userSetPanelEnabled(current, nextConfig.enabled);
@@ -1841,10 +1865,26 @@ export class EventHandlerManager implements AppModule {
         }
       },
       getAllSourceNames: () => this.getAllSourceNames(),
+      // Sources are applied to ctx.disabledSources on click, but DataLoader
+      // only re-reads that set when a load runs — so before this, a source
+      // toggle first showed up at RefreshScheduler's `news` tick,
+      // REFRESH_INTERVALS.feeds = 20 minutes away, or on reload (#6380).
+      //
+      // No invalidateNewsHydration() here, deliberately: DataLoader's news gate
+      // keys its work-list signature on ctx.disabledSources
+      // (data-loader.ts shouldHydrateNews / newsWorkListSignature), so a real
+      // change re-arms the load on its own. Dropping the signature as well
+      // would ALSO refetch when the net change is nil — the toggled-off-and-
+      // back-on case UnifiedSettings already declines to report — and spending
+      // a digest request on a work-list that did not move is precisely what the
+      // #5376 budget guard exists to prevent.
+      onSourcesChanged: () => { void this.callbacks.loadAllData(); },
       getLocalizedPanelName: (key: string, fallback: string) => this.getLocalizedPanelName(key, fallback),
       resetLayout: () => {
         clearPanelSpans();
         clearPanelColSpans();
+        for (const panel of Object.values(this.ctx.panelSettings)) delete panel.fontScale;
+        saveToStorage(STORAGE_KEYS.panels, this.ctx.panelSettings);
         removeStorageValue(this.ctx.PANEL_ORDER_KEY);
         removeStorageValue(this.ctx.PANEL_ORDER_KEY + '-bottom');
         removeStorageValue(this.ctx.PANEL_ORDER_KEY + '-bottom-set');
@@ -1917,7 +1957,7 @@ export class EventHandlerManager implements AppModule {
         this.restoreSnapshot(snapshot);
       } else {
         this.ctx.isPlaybackMode = false;
-        this.callbacks.loadAllData();
+        void this.callbacks.loadAllData();
       }
     });
 

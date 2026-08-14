@@ -3,6 +3,10 @@ import { t } from '@/services/i18n';
 import type { MarketData, CryptoData, TokenData } from '@/types';
 import { formatPrice, formatChange, getChangeClass, getHeatmapClass } from '@/utils';
 import { escapeHtml, unsafeRawHtml } from '@/utils/sanitize';
+import { normalizeStockWorkspaceSymbol, stockWorkspaceUrl } from '@/features/pokieticker/stock-workspace-route';
+import { maritimeLogisticsUrl } from '@/features/maritime-logistics/maritime-logistics-route';
+import { chinaFactoryUrl } from '@/features/china-factory/china-factory-route';
+import { providerOperationsUrl } from '@/features/provider-operations/provider-operations-route';
 import { miniSparkline } from '@/utils/sparkline';
 import { SITE_VARIANT } from '@/config';
 import { createWatchlistButton } from './watchlist-modal';
@@ -58,6 +62,30 @@ export class MarketPanel extends Panel {
   constructor() {
     super({ id: 'markets', title: t('panels.markets'), infoTooltip: t('components.markets.infoTooltip') });
     this.header.appendChild(createWatchlistButton());
+    const stockWorkspaceLink = document.createElement('a');
+    stockWorkspaceLink.href = stockWorkspaceUrl('AAPL');
+    stockWorkspaceLink.textContent = '股票工作区';
+    stockWorkspaceLink.className = 'watchlist-btn';
+    stockWorkspaceLink.setAttribute('aria-label', '打开股票工作区');
+    this.header.appendChild(stockWorkspaceLink);
+    const logisticsLink = document.createElement('a');
+    logisticsLink.href = maritimeLogisticsUrl();
+    logisticsLink.textContent = '海运物流';
+    logisticsLink.className = 'watchlist-btn';
+    logisticsLink.setAttribute('aria-label', '打开海运物流工作区');
+    this.header.appendChild(logisticsLink);
+    const chinaFactoryLink = document.createElement('a');
+    chinaFactoryLink.href = chinaFactoryUrl();
+    chinaFactoryLink.textContent = '中国世界工厂';
+    chinaFactoryLink.className = 'watchlist-btn';
+    chinaFactoryLink.setAttribute('aria-label', '打开中国世界工厂工作区');
+    this.header.appendChild(chinaFactoryLink);
+    const providerOperationsLink = document.createElement('a');
+    providerOperationsLink.href = providerOperationsUrl();
+    providerOperationsLink.textContent = 'Provider 控制中心';
+    providerOperationsLink.className = 'watchlist-btn';
+    providerOperationsLink.setAttribute('aria-label', '打开 Provider 统一控制中心');
+    this.header.appendChild(providerOperationsLink);
 
     // Delegated once on the persistent content element (each render only swaps
     // innerHTML): click or Enter/Space on a plottable ticker opens its terminal chart.
@@ -89,11 +117,15 @@ export class MarketPanel extends Panel {
           idx,
           t('components.markets.chart.title', { symbol: stock.display }),
         );
+        const workspaceSymbol = normalizeStockWorkspaceSymbol(stock.symbol);
+        const displaySymbol = workspaceSymbol
+          ? `<a class="market-symbol" data-stock-workspace href="${escapeHtml(stockWorkspaceUrl(workspaceSymbol))}" aria-label="在股票工作区打开 ${escapeHtml(stock.display)}">${escapeHtml(stock.display)}</a>`
+          : `<span class="market-symbol">${escapeHtml(stock.display)}</span>`;
         return `
       <div${attrs}>
         <div class="market-info">
           <span class="market-name">${escapeHtml(stock.name)}</span>
-          <span class="market-symbol">${escapeHtml(stock.display)}</span>
+          ${displaySymbol}
         </div>
         <div class="market-data">
           ${miniSparkline(stock.sparkline, stock.change)}
@@ -201,8 +233,8 @@ export class HeatmapPanel extends Panel {
     const hasValuations = Object.keys(this._valuations).length > 0;
     if (!hasValuations) return '';
     return `<div style="display:flex;gap:4px;margin-bottom:8px">
-      <button class="panel-tab${this._tab === 'performance' ? ' active' : ''}" data-tab="performance" style="font-size:11px;padding:3px 10px">Performance</button>
-      <button class="panel-tab${this._tab === 'valuations' ? ' active' : ''}" data-tab="valuations" style="font-size:11px;padding:3px 10px">Valuations</button>
+      <button class="panel-tab${this._tab === 'performance' ? ' active' : ''}" data-tab="performance" style="font-size:calc(11px * var(--wm-panel-effective-scale, 1));padding:3px 10px">Performance</button>
+      <button class="panel-tab${this._tab === 'valuations' ? ' active' : ''}" data-tab="valuations" style="font-size:calc(11px * var(--wm-panel-effective-scale, 1));padding:3px 10px">Valuations</button>
     </div>`;
   }
 
@@ -277,7 +309,7 @@ export class HeatmapPanel extends Panel {
       .filter((e) => e.forwardPE !== null || e.trailingPE !== null);
 
     if (entries.length === 0) {
-      return '<div style="padding:8px;color:var(--text-dim);font-size:12px">No valuation data available</div>';
+      return '<div style="padding:8px;color:var(--text-dim);font-size:calc(12px * var(--wm-panel-effective-scale, 1))">No valuation data available</div>';
     }
 
     const sorted = [...entries].sort((a, b) => (a.forwardPE ?? a.trailingPE ?? 999) - (b.forwardPE ?? b.trailingPE ?? 999));
@@ -325,20 +357,20 @@ export class HeatmapPanel extends Panel {
         // snapshot, so it must not read as current data.
         const isStale = this._staleValuationSymbols.has(e.symbol.toUpperCase());
         const staleMark = isStale
-          ? ` <span title="Last known value; not refreshed this cycle" style="color:var(--text-dim);font-size:9px">(stale)</span>`
+          ? ` <span title="Last known value; not refreshed this cycle" style="color:var(--text-dim);font-size:calc(9px * var(--wm-panel-effective-scale, 1))">(stale)</span>`
           : '';
         return `<tr${isStale ? ' style="opacity:0.65"' : ''}>
-  <td style="padding:3px 6px;white-space:nowrap;font-size:11px">${escapeHtml(name)}${staleMark}</td>
-  <td style="padding:3px 6px;text-align:right;font-size:11px;color:${peColor(e.trailingPE)}">${fmtPE(e.trailingPE)}</td>
-  <td style="padding:3px 6px;text-align:right;font-size:11px;color:${peColor(e.forwardPE)}">${fmtPE(e.forwardPE)}</td>
-  <td style="padding:3px 6px;text-align:right;font-size:11px">${fmtBeta(e.beta)}</td>
-  <td style="padding:3px 6px;text-align:right;font-size:11px;color:${e.ytdReturn === null ? 'var(--text-dim)' : e.ytdReturn >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtPct(e.ytdReturn)}</td>
+  <td style="padding:3px 6px;white-space:nowrap;font-size:calc(11px * var(--wm-panel-effective-scale, 1))">${escapeHtml(name)}${staleMark}</td>
+  <td style="padding:3px 6px;text-align:right;font-size:calc(11px * var(--wm-panel-effective-scale, 1));color:${peColor(e.trailingPE)}">${fmtPE(e.trailingPE)}</td>
+  <td style="padding:3px 6px;text-align:right;font-size:calc(11px * var(--wm-panel-effective-scale, 1));color:${peColor(e.forwardPE)}">${fmtPE(e.forwardPE)}</td>
+  <td style="padding:3px 6px;text-align:right;font-size:calc(11px * var(--wm-panel-effective-scale, 1))">${fmtBeta(e.beta)}</td>
+  <td style="padding:3px 6px;text-align:right;font-size:calc(11px * var(--wm-panel-effective-scale, 1));color:${e.ytdReturn === null ? 'var(--text-dim)' : e.ytdReturn >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtPct(e.ytdReturn)}</td>
 </tr>`;
       })
       .join('');
 
     const table = `<div style="overflow-x:auto">
-<table style="width:100%;border-collapse:collapse;font-size:11px">
+<table style="width:100%;border-collapse:collapse;font-size:calc(11px * var(--wm-panel-effective-scale, 1))">
   <thead><tr style="color:var(--text-dim);border-bottom:1px solid var(--border)">
     <th style="padding:3px 6px;text-align:left;font-weight:500">Sector</th>
     <th style="padding:3px 6px;text-align:right;font-weight:500">Trail P/E</th>
@@ -520,16 +552,16 @@ export class CommoditiesPanel extends Panel {
   private _buildTabBar(hasFx: boolean, hasXau: boolean): string {
     const firstTabLabel = 'Commodities';
     const tabs: string[] = [
-      `<button class="panel-tab${this._tab === 'commodities' ? ' active' : ''}" data-tab="commodities" style="font-size:11px;padding:3px 10px">${firstTabLabel}</button>`,
+      `<button class="panel-tab${this._tab === 'commodities' ? ' active' : ''}" data-tab="commodities" style="font-size:calc(11px * var(--wm-panel-effective-scale, 1));padding:3px 10px">${firstTabLabel}</button>`,
     ];
-    if (hasFx) tabs.push(`<button class="panel-tab${this._tab === 'fx' ? ' active' : ''}" data-tab="fx" style="font-size:11px;padding:3px 10px">EUR FX</button>`);
-    if (hasXau) tabs.push(`<button class="panel-tab${this._tab === 'xau' ? ' active' : ''}" data-tab="xau" style="font-size:11px;padding:3px 10px">XAU/FX</button>`);
+    if (hasFx) tabs.push(`<button class="panel-tab${this._tab === 'fx' ? ' active' : ''}" data-tab="fx" style="font-size:calc(11px * var(--wm-panel-effective-scale, 1));padding:3px 10px">EUR FX</button>`);
+    if (hasXau) tabs.push(`<button class="panel-tab${this._tab === 'xau' ? ' active' : ''}" data-tab="xau" style="font-size:calc(11px * var(--wm-panel-effective-scale, 1));padding:3px 10px">XAU/FX</button>`);
     return tabs.length > 1 ? `<div style="display:flex;gap:4px;margin-bottom:8px">${tabs.join('')}</div>` : '';
   }
 
   private _renderXau(): string {
     const gcf = this._commodityData.find(d => d.symbol === 'GC=F' && d.price !== null);
-    if (!gcf?.price) return `<div style="padding:8px;color:var(--text-dim);font-size:12px">Gold price unavailable</div>`;
+    if (!gcf?.price) return `<div style="padding:8px;color:var(--text-dim);font-size:calc(12px * var(--wm-panel-effective-scale, 1))">Gold price unavailable</div>`;
 
     const goldUsd = gcf.price;
     const fxMap = new Map(this._commodityData.filter(d => d.symbol?.endsWith('=X')).map(d => [d.symbol!, d]));
@@ -542,7 +574,7 @@ export class CommoditiesPanel extends Panel {
       const formatted = Math.round(xauPrice).toLocaleString();
       return `<div class="commodity-item">
         <div class="commodity-name">${escapeHtml(cfg.flag)} XAU/${escapeHtml(cfg.label)}</div>
-        <div class="commodity-price" style="font-size:11px">${escapeHtml(formatted)}</div>
+        <div class="commodity-price" style="font-size:calc(11px * var(--wm-panel-effective-scale, 1))">${escapeHtml(formatted)}</div>
       </div>`;
     }).filter(Boolean);
 
@@ -550,12 +582,12 @@ export class CommoditiesPanel extends Panel {
       const placeholders = XAU_CURRENCY_CONFIG.map(cfg =>
         `<div class="commodity-item">
           <div class="commodity-name">${escapeHtml(cfg.flag)} XAU/${escapeHtml(cfg.label)}</div>
-          <div class="commodity-price" style="font-size:11px">--</div>
+          <div class="commodity-price" style="font-size:calc(11px * var(--wm-panel-effective-scale, 1))">--</div>
         </div>`
       ).join('');
-      return `<div class="commodities-grid">${placeholders}</div><div style="margin-top:6px;font-size:9px;color:var(--text-dim)">FX rates unavailable</div>`;
+      return `<div class="commodities-grid">${placeholders}</div><div style="margin-top:6px;font-size:calc(9px * var(--wm-panel-effective-scale, 1));color:var(--text-dim)">FX rates unavailable</div>`;
     }
-    return `<div class="commodities-grid">${rows.join('')}</div><div style="margin-top:6px;font-size:9px;color:var(--text-dim)">Computed from GC=F + Yahoo FX</div>`;
+    return `<div class="commodities-grid">${rows.join('')}</div><div style="margin-top:6px;font-size:calc(9px * var(--wm-panel-effective-scale, 1));color:var(--text-dim)">Computed from GC=F + Yahoo FX</div>`;
   }
 
   private _render(): void {
@@ -580,7 +612,7 @@ export class CommoditiesPanel extends Panel {
           ${changeStr ? `<div class="commodity-change ${escapeHtml(changeClass)}">${escapeHtml(changeStr)}</div>` : ''}
         </div>`;
       }).join('');
-      this.setSafeContent(unsafeRawHtml(tabBar + `<div class="commodities-grid">${items}</div><div style="margin-top:6px;font-size:9px;color:var(--text-dim)">Source: ECB</div>`, 'legacy Panel.setContent() migration'));
+      this.setSafeContent(unsafeRawHtml(tabBar + `<div class="commodities-grid">${items}</div><div style="margin-top:6px;font-size:calc(9px * var(--wm-panel-effective-scale, 1));color:var(--text-dim)">Source: ECB</div>`, 'legacy Panel.setContent() migration'));
       return;
     }
 
@@ -602,7 +634,7 @@ export class CommoditiesPanel extends Panel {
         this.showRetrying(t('common.failedCommodities'));
         return;
       }
-      this.setSafeContent(unsafeRawHtml(tabBar + `<div style="padding:8px;color:var(--text-dim);font-size:12px">${t('common.failedCommodities')}</div>`, 'legacy Panel.setContent() migration'));
+      this.setSafeContent(unsafeRawHtml(tabBar + `<div style="padding:8px;color:var(--text-dim);font-size:calc(12px * var(--wm-panel-effective-scale, 1))">${t('common.failedCommodities')}</div>`, 'legacy Panel.setContent() migration'));
       return;
     }
 

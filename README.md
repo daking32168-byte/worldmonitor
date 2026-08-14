@@ -1,4 +1,8 @@
-# World Monitor
+# 全球实时热点追踪·探长版
+
+> **独立 AGPL-3.0-only 分发。** Based on [World Monitor](https://github.com/koala73/worldmonitor)（链接到原仓库），modified and distributed under AGPL-3.0-only. 本项目不是 World Monitor 的官方部署，也不使用其标志作为主品牌。
+
+Phase 1 locks the upstream baseline at `ae0a0fe26bcbdb683b366899e4dc38fb8ccfb5ad` and records the MIT-licensed PokieTicker reference at `c16b7e34e72c2d09bb50d7b3159fa5cd6697fd19`. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for licenses and provenance; no legacy market database is included or represented as live data.
 
 [简体中文](README.zh-CN.md) | [日本語](README.ja-JP.md)
 
@@ -111,7 +115,7 @@ See the **[self-hosting guide](https://www.worldmonitor.app/docs/getting-started
 | **Frontend** | Vanilla TypeScript, Vite, globe.gl + Three.js, deck.gl + MapLibre GL |
 | **Desktop** | Tauri 2 (Rust) with Node.js sidecar |
 | **AI/ML** | Ollama / Groq / OpenRouter, Transformers.js (browser-side) |
-| **API Contracts** | Protocol Buffers (295 protos, 36 services), sebuf HTTP annotations |
+| **API Contracts** | Protocol Buffers (304 protos, 36 services), sebuf HTTP annotations |
 | **Deployment** | Vercel Edge Functions (60+), Railway relay, Tauri, PWA |
 | **Caching** | Redis (Upstash), 3-tier cache, CDN, service worker |
 
@@ -147,7 +151,7 @@ Flight data provided graciously by [Wingbits](https://wingbits.com?utm_source=wo
 
 ## Data Sources
 
-WorldMonitor aggregates 530+ observed upstream hosts across geopolitics, finance, energy, climate, aviation, cyber, military, infrastructure, and news intelligence — surfaced through 500+ curated feeds and tracked by a freshness monitor covering 35 source groups. See the full [data sources catalog](https://www.worldmonitor.app/docs/data-sources) for providers, feed tiers, license posture, and collection methods.
+WorldMonitor aggregates 533+ observed upstream hosts across geopolitics, finance, energy, climate, aviation, cyber, military, infrastructure, and news intelligence — surfaced through 500+ curated feeds and tracked by a freshness monitor covering 35 source groups. See the full [data sources catalog](https://www.worldmonitor.app/docs/data-sources) for providers, feed tiers, license posture, and collection methods.
 
 ---
 

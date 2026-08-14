@@ -3,6 +3,7 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import http, { createServer, request as httpRequest } from 'node:http';
 import https from 'node:https';
 import { createHmac } from 'node:crypto';
+import dns from 'node:dns/promises';
 import { EventEmitter } from 'node:events';
 import net from 'node:net';
 import { brotliDecompressSync, gunzipSync } from 'node:zlib';
@@ -1258,6 +1259,50 @@ test('blocks cloud fallback in Docker mode even when explicitly requested', asyn
   }
 });
 
+test('blocks cloud fallback in explicit SELF_HOSTED_MODE and reports local-admin authentication as required', async () => {
+  const remote = await setupRemoteServer();
+  const localApi = await setupApiDir({
+    'self-hosted-test.js': `
+      export default async function handler() {
+        return new Response(JSON.stringify({ source: 'local-error' }), {
+          status: 500,
+          headers: { 'content-type': 'application/json' }
+        });
+      }
+    `,
+  });
+  const warnings = [];
+  const app = await createLocalApiServer({
+    port: 0,
+    apiDir: localApi.apiDir,
+    remoteBase: remote.remoteBase,
+    cloudFallback: 'true',
+    selfHostedMode: true,
+    allowPrivateRemoteBase: true,
+    logger: { log() {}, warn(...args) { warnings.push(args.join(' ')); }, error() {} },
+  });
+  const { port } = await app.start();
+
+  try {
+    const response = await authFetch(`http://127.0.0.1:${port}/api/self-hosted-test`);
+    assert.equal(response.status, 500);
+    assert.deepEqual(await response.json(), { source: 'local-error' });
+    assert.equal(remote.hits.length, 0, 'self-hosted mode must not fall back to the official cloud');
+    assert.ok(warnings.some(w => w.includes('SELF_HOSTED_MODE')));
+
+    const status = await authFetch(`http://127.0.0.1:${port}/api/local-status`);
+    assert.equal(status.status, 200);
+    const payload = await status.json();
+    assert.equal(payload.selfHostedMode, true);
+    assert.equal(payload.localAdminAuthRequired, true);
+    assert.equal(payload.cloudFallback, false);
+  } finally {
+    await app.close();
+    await localApi.cleanup();
+    await remote.close();
+  }
+});
+
 test('responds to OPTIONS preflight with CORS headers', async () => {
   const localApi = await setupApiDir({
     'data.js': `
@@ -2161,6 +2206,114 @@ test('default-deny: rejects every authenticated route when LOCAL_API_TOKEN is un
     if (originalToken !== undefined) {
       process.env.LOCAL_API_TOKEN = originalToken;
     }
+    await app.close();
+    await localApi.cleanup();
+  }
+});
+
+test('rss-proxy pins an IPv6-only hostname to the validated address', async () => {
+  const localApi = await setupApiDir({});
+  const originalResolve4 = dns.resolve4;
+  const originalResolve6 = dns.resolve6;
+  const originalHttpsRequest = https.request;
+  const publicIpv6 = '2606:4700:4700::1111';
+  let outboundOptions = null;
+  let pinnedLookup = null;
+
+  dns.resolve4 = async () => {
+    const error = new Error('No A records');
+    error.code = 'ENODATA';
+    throw error;
+  };
+  dns.resolve6 = async (hostname) => {
+    assert.equal(hostname, 'ipv6-only.example');
+    return [publicIpv6];
+  };
+  https.request = (options, onResponse) => {
+    outboundOptions = options;
+    if (typeof options.lookup === 'function') {
+      options.lookup(options.hostname, { family: options.family }, (error, address, family) => {
+        assert.ifError(error);
+        pinnedLookup = { address, family };
+      });
+    }
+
+    const req = new EventEmitter();
+    req.setTimeout = () => {};
+    req.write = () => {};
+    req.destroy = (error) => {
+      if (error) req.emit('error', error);
+    };
+    req.end = () => {
+      queueMicrotask(() => {
+        const res = new EventEmitter();
+        res.statusCode = 200;
+        res.statusMessage = 'OK';
+        res.headers = { 'content-type': 'application/rss+xml' };
+        onResponse(res);
+        res.emit('data', Buffer.from('<rss />'));
+        res.emit('end');
+      });
+    };
+    return req;
+  };
+
+  const app = await createLocalApiServer({
+    port: 0,
+    apiDir: localApi.apiDir,
+    logger: { log() {}, warn() {}, error() {} },
+  });
+  const { port } = await app.start();
+
+  try {
+    const feedUrl = encodeURIComponent('https://ipv6-only.example/feed.xml');
+    const response = await authFetch(`http://127.0.0.1:${port}/api/rss-proxy?url=${feedUrl}`);
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), '<rss />');
+    assert.equal(outboundOptions?.hostname, 'ipv6-only.example');
+    assert.equal(outboundOptions?.family, 6);
+    assert.deepEqual(pinnedLookup, { address: publicIpv6, family: 6 });
+  } finally {
+    dns.resolve4 = originalResolve4;
+    dns.resolve6 = originalResolve6;
+    https.request = originalHttpsRequest;
+    await app.close();
+    await localApi.cleanup();
+  }
+});
+
+test('rss-proxy rejects a hostname with mixed public and private DNS answers', async () => {
+  const localApi = await setupApiDir({});
+  const originalResolve4 = dns.resolve4;
+  const originalResolve6 = dns.resolve6;
+  const originalHttpsRequest = https.request;
+  let outboundCalls = 0;
+
+  dns.resolve4 = async () => ['93.184.216.34'];
+  dns.resolve6 = async () => ['fd00::1'];
+  https.request = () => {
+    outboundCalls += 1;
+    throw new Error('blocked DNS result must not reach the network');
+  };
+
+  const app = await createLocalApiServer({
+    port: 0,
+    apiDir: localApi.apiDir,
+    logger: { log() {}, warn() {}, error() {} },
+  });
+  const { port } = await app.start();
+
+  try {
+    const feedUrl = encodeURIComponent('https://mixed-dns.example/feed.xml');
+    const response = await authFetch(`http://127.0.0.1:${port}/api/rss-proxy?url=${feedUrl}`);
+    assert.equal(response.status, 403);
+    const body = await response.json();
+    assert.match(body.error, /private\/reserved/);
+    assert.equal(outboundCalls, 0);
+  } finally {
+    dns.resolve4 = originalResolve4;
+    dns.resolve6 = originalResolve6;
+    https.request = originalHttpsRequest;
     await app.close();
     await localApi.cleanup();
   }

@@ -36,6 +36,7 @@ import {
   enforceFreePanelLimit,
 } from '@/config';
 import { BETA_MODE } from '@/config/beta';
+import { PRIMARY_BRAND, UPSTREAM_ATTRIBUTION_TEXT, UPSTREAM_REPOSITORY_URL } from '@/config/brand';
 import { t } from '@/services/i18n';
 import { getCurrentTheme } from '@/utils';
 import { trackCriticalBannerAction, trackCheckoutSuccess, trackCheckoutFailed, trackGateHit, replayPendingCheckoutSuccess, replayPendingProFunnelEvents, replayPendingConversionEvents } from '@/services/analytics';
@@ -84,6 +85,7 @@ import type { SupplyChainPanel } from '@/components/SupplyChainPanel';
 import { setTrustedHtml, trustedHtml } from '@/utils/dom-utils';
 import { loadPanelCollapsed, loadPanelColSpans, loadPanelSpans } from '@/utils/panel-storage';
 import { measure, mutate } from '@/utils/layout-batch';
+import { applyPanelFontScale } from '@/services/font-scale-settings';
 import {
   hydrateGeoHubPanelFromClusters,
   hydrateTechHubPanelFromClusters,
@@ -637,10 +639,10 @@ export class PanelLayoutManager implements AppModule {
     });
 
     // Handle analyst action chip "Create chart widget →" click
-    this.boundWidgetCreatorHandler = ((e: CustomEvent<{ initialMessage?: string }>) => {
+    this.boundWidgetCreatorHandler = ((e: CustomEvent<{ initialMessage?: string; tier?: 'basic' | 'pro' }>) => {
       void import('@/components/WidgetChatModal').then((m) => m.openWidgetChatModal({
         mode: 'create',
-        tier: 'pro',
+        tier: e.detail.tier ?? 'pro',
         initialMessage: e.detail.initialMessage,
         onComplete: (spec) => {
           void this.addCustomWidget(spec).catch((error) => {
@@ -956,12 +958,8 @@ export class PanelLayoutManager implements AppModule {
               <span class="variant-label">Good News</span>
             </a>`;
       })()}</div>
-          <span class="logo">MONITOR</span><span class="logo-mobile">World Monitor</span><span class="version">v${__APP_VERSION__}</span>${BETA_MODE ? '<span class="beta-badge">BETA</span>' : ''}
-          <a href="https://x.com/eliehabib" target="_blank" rel="noopener" class="credit-link">
-            <svg class="x-logo" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            <span class="credit-text">@eliehabib</span>
-          </a>
-          <a href="https://github.com/koala73/worldmonitor" target="_blank" rel="noopener" class="github-link" title="${t('header.viewOnGitHub')}">
+          <span class="logo">${PRIMARY_BRAND}</span><span class="logo-mobile">${PRIMARY_BRAND}</span><span class="version">v${__APP_VERSION__}</span>${BETA_MODE ? '<span class="beta-badge">BETA</span>' : ''}
+          <a href="https://github.com/daking32168-byte/worldmonitor" target="_blank" rel="noopener" class="github-link" title="${t('header.viewOnGitHub')}">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
           </a>
           <button class="mobile-settings-btn" id="mobileSettingsBtn" title="${t('header.settings')}">
@@ -1001,7 +999,7 @@ export class PanelLayoutManager implements AppModule {
       <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
       <nav class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
-          <span class="mobile-menu-title">WORLD MONITOR</span>
+          <span class="mobile-menu-title">${PRIMARY_BRAND}</span>
           <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
@@ -1050,10 +1048,6 @@ export class PanelLayoutManager implements AppModule {
           <span class="mobile-menu-item-icon">${getCurrentTheme() === 'dark' ? '☀️' : '🌙'}</span>
           <span class="mobile-menu-item-label">${getCurrentTheme() === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
         </button>
-        <a class="mobile-menu-item" href="https://x.com/eliehabib" target="_blank" rel="noopener">
-          <span class="mobile-menu-item-icon"><svg class="x-logo" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>
-          <span class="mobile-menu-item-label">@eliehabib</span>
-        </a>
         <div class="mobile-menu-divider"></div>
         <div class="mobile-menu-footer-links">
           ${referenceLinksHtml}
@@ -1136,8 +1130,8 @@ export class PanelLayoutManager implements AppModule {
         <div class="site-footer-brand">
           <img src="/favico/android-chrome-96x96.png" alt="" width="28" height="28" loading="lazy" decoding="async" class="site-footer-icon" />
           <div class="site-footer-brand-text">
-            <span class="site-footer-name">WORLD MONITOR</span>
-            <span class="site-footer-sub">v${__APP_VERSION__} &middot; <a href="https://x.com/eliehabib" target="_blank" rel="noopener" class="site-footer-credit">@eliehabib</a></span>
+            <span class="site-footer-name">${PRIMARY_BRAND}</span>
+            <span class="site-footer-sub">v${__APP_VERSION__}</span>
           </div>
         </div>
         <nav>
@@ -1146,12 +1140,13 @@ export class PanelLayoutManager implements AppModule {
           <a href="${this.ctx.isDesktopApp ? 'https://worldmonitor.app/blog/' : 'https://www.worldmonitor.app/blog/'}" target="_blank" rel="noopener">Blog</a>
           <a href="${this.ctx.isDesktopApp ? 'https://worldmonitor.app/docs' : 'https://www.worldmonitor.app/docs'}" target="_blank" rel="noopener">Docs</a>
           <a href="https://status.worldmonitor.app/" target="_blank" rel="noopener">Status</a>
-          <a href="https://github.com/koala73/worldmonitor" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/daking32168-byte/worldmonitor" target="_blank" rel="noopener">GitHub</a>
           <a href="https://discord.gg/re63kWKxaz" target="_blank" rel="noopener">Discord</a>
           <a href="https://x.com/worldmonitorai" target="_blank" rel="noopener">X</a>
           ${this.ctx.isDesktopApp ? '' : `<span id="footerDownloadMount"></span>`}
         </nav>
-        <span class="site-footer-copy">&copy; ${new Date().getFullYear()} World Monitor</span>
+        <span class="site-footer-copy">&copy; ${new Date().getFullYear()} ${PRIMARY_BRAND}</span>
+        <span class="site-footer-copy">${UPSTREAM_ATTRIBUTION_TEXT.replace('World Monitor', `<a href="${UPSTREAM_REPOSITORY_URL}" target="_blank" rel="noopener">World Monitor</a>`)}</span>
       </footer>
     `, "legacy direct innerHTML migration"));
     // Mark AFTER the innerHTML swap so the timestamp reflects when the new shell
@@ -1629,6 +1624,8 @@ export class PanelLayoutManager implements AppModule {
         deferred.placeholder.classList.toggle('hidden', !config.enabled);
       }
       const panel = this.ctx.panels[key];
+      if (deferred?.placeholder?.isConnected) applyPanelFontScale(deferred.placeholder, config.fontScale);
+      if (panel) applyPanelFontScale(panel.getElement(), config.fontScale);
       const liveMediaPanel = panel as { stopLiveMediaForClose?: () => void; resumeLiveMediaForShow?: () => void } | undefined;
       if (!config.enabled) {
         liveMediaPanel?.stopLiveMediaForClose?.();
@@ -1676,6 +1673,7 @@ export class PanelLayoutManager implements AppModule {
         if (addBlock) grid.insertBefore(el, addBlock);
         else grid.appendChild(el);
       }
+      panel.notifyConnected();
       this.applyPanelSettings();
       this.afterPanelMounted('live-news', panel);
     }).catch((err) => {
@@ -1797,6 +1795,7 @@ export class PanelLayoutManager implements AppModule {
   private mountPanelElement(grid: HTMLElement, key: string, panel: Panel, placeholder?: HTMLElement | null): boolean {
     const el = panel.getElement();
     if (el.parentElement) return false;
+    applyPanelFontScale(el, this.ctx.panelSettings[key]?.fontScale);
     this.makeDraggable(el, key);
     if (placeholder?.parentNode) {
       if (import.meta.env.DEV) warnOnDeferredFootprintDrift(key, placeholder, el);
@@ -1825,6 +1824,7 @@ export class PanelLayoutManager implements AppModule {
       ? createDeferredPanelShell(key, this.ctx.panelSettings[key]?.name ?? key, this.getDeferredPanelShellFootprint(key))
       : null;
     if (placeholder && grid) {
+      applyPanelFontScale(placeholder, this.ctx.panelSettings[key]?.fontScale);
       this.insertByOrder(grid, placeholder, key);
       reconcileDeferredPanelShellColSpan(placeholder);
       this.mobilePanelNav?.applyToNewPanel(placeholder);
@@ -1996,6 +1996,15 @@ export class PanelLayoutManager implements AppModule {
   private afterPanelMounted(key: string, panel: Panel): void {
     const config = this.ctx.panelSettings[key];
     if (config) panel.toggle(config.enabled);
+    // A deferred panel is created after the initial applyPanelSettings() pass.
+    // Re-run the live-media show lifecycle once it is connected so an explicit
+    // always-on preference is honored only when the real panel becomes visible.
+    // Without this handoff, an initially deferred Live News/Webcams panel can
+    // remain at its honest preview state until some unrelated settings change.
+    if (config?.enabled) {
+      const liveMediaPanel = panel as { resumeLiveMediaForShow?: () => void };
+      liveMediaPanel.resumeLiveMediaForShow?.();
+    }
     this.observePanelForHydration(panel);
     if (config?.enabled) {
       this.scheduleHydrationForPanelElement(panel.getElement(), 'near');
@@ -2557,10 +2566,21 @@ export class PanelLayoutManager implements AppModule {
     }
 
     // Always load custom widgets — Pro gating is handled reactively by auth state.
+    let repairedDynamicPanelSettings = false;
     for (const spec of loadWidgets()) {
-      if (!this.ctx.panelSettings[spec.id]) {
-        this.ctx.panelSettings[spec.id] = { name: spec.title, enabled: true, priority: 3 };
-      }
+      // Widget specs are device-local. A just-created widget can therefore be
+      // present while the persisted dashboard panel map predates its id (for
+      // example after an HttpOnly-session reload). Register it as enabled
+      // before the initial order is resolved; otherwise it has no shell and
+      // can never trigger its lazy import even though the user owns the spec.
+      const stored = this.ctx.panelSettings[spec.id];
+      if (!stored) repairedDynamicPanelSettings = true;
+      this.ctx.panelSettings[spec.id] = {
+        name: spec.title,
+        enabled: stored?.enabled ?? true,
+        priority: stored?.priority ?? 3,
+        ...(stored?.fontScale !== undefined ? { fontScale: stored.fontScale } : {}),
+      };
       const capturedSpec = spec;
       this.lazyPanel(spec.id, () =>
         this.importPanel(
@@ -2575,6 +2595,7 @@ export class PanelLayoutManager implements AppModule {
     for (const spec of loadMcpPanels()) {
       if (!this.ctx.panelSettings[spec.id]) {
         this.ctx.panelSettings[spec.id] = { name: spec.title, enabled: true, priority: 3 };
+        repairedDynamicPanelSettings = true;
       }
       const capturedSpec = spec;
       this.lazyPanel(spec.id, () =>
@@ -2585,6 +2606,13 @@ export class PanelLayoutManager implements AppModule {
           (McpDataPanel) => new McpDataPanel(capturedSpec),
         ),
       );
+    }
+
+    // Persist a dynamic panel recovered from its canonical widget/MCP spec.
+    // This prevents an earlier static-registry migration from removing the
+    // restored slot again on the following boot.
+    if (repairedDynamicPanelSettings) {
+      saveToStorage(STORAGE_KEYS.panels, this.ctx.panelSettings);
     }
 
     const variantOrder = (VARIANT_DEFAULTS[SITE_VARIANT] ?? VARIANT_DEFAULTS['full'] ?? []).filter(k => k !== 'map');
@@ -2624,7 +2652,10 @@ export class PanelLayoutManager implements AppModule {
     } else {
       allOrder = [...defaultOrder];
 
-      if (SITE_VARIANT !== 'happy') {
+      // The full variant deliberately follows VARIANT_DEFAULTS: markets and
+      // the native stock workspace entry lead a new dashboard. Other variants
+      // retain their historic feed-first treatment.
+      if (SITE_VARIANT !== 'happy' && SITE_VARIANT !== 'full') {
         const liveNewsIdx = allOrder.indexOf('live-news');
         if (liveNewsIdx > 0) {
           allOrder.splice(liveNewsIdx, 1);
@@ -2652,6 +2683,16 @@ export class PanelLayoutManager implements AppModule {
 
     this.resolvedPanelOrder = allOrder;
 
+    // A custom widget is user-created content, not a data-heavy stock panel.
+    // Its saved state must be restored as part of the initial dashboard rather
+    // than waiting for a below-fold IntersectionObserver transition that may
+    // never happen after a reload (the browser restores the same scroll
+    // position and the shell is outside the observer margin). Load it now;
+    // the normal deferred policy remains in place for static panels.
+    const eagerCustomWidgetKeys = new Set(
+      allOrder.filter((key) => key.startsWith('cw-') && this.ctx.panelSettings[key]?.enabled),
+    );
+
     const sidebarOrder = effectiveUltraWide
       ? allOrder.filter(k => !this.bottomSetMemory.has(k))
       : allOrder;
@@ -2661,6 +2702,7 @@ export class PanelLayoutManager implements AppModule {
 
     sidebarOrder.forEach((key: string) => {
       this.insertInitialPanelByKey(panelsGrid, key);
+      if (eagerCustomWidgetKeys.has(key)) this.mountDeferredPanel(key);
     });
 
     // "+" Add Panel block at the end of the grid
@@ -2766,6 +2808,7 @@ export class PanelLayoutManager implements AppModule {
     if (bottomGrid) {
       bottomOrder.forEach(key => {
         this.insertInitialPanelByKey(bottomGrid, key);
+        if (eagerCustomWidgetKeys.has(key)) this.mountDeferredPanel(key);
       });
     }
 
