@@ -47,6 +47,11 @@
 .provider-operations__pill--ready_to_attempt { color: #052e16; background: #86efac; }
 .provider-operations__pill--server_managed_unknown { color: #172554; background: #bfdbfe; }
 .provider-operations__pill--not_configured, .provider-operations__pill--config_invalid { color: #451a03; background: #fde68a; }
+.provider-operations__pill--success { color: #052e16; background: #86efac; }
+.provider-operations__pill--warning { color: #451a03; background: #fde68a; }
+.provider-operations__pill--muted { color: #172554; background: #bfdbfe; }
+.provider-operations__pill--danger { color: #450a0a; background: #fecaca; }
+.provider-operations__pill--model { color: #3b0764; background: #e9d5ff; }
 .provider-operations__purpose, .provider-operations__safety, .provider-operations__last { margin: 0; color: var(--ops-muted); font-size: 12px; line-height: 1.5; }
 .provider-operations__safety { padding: 9px; border-left: 3px solid #fbbf24; background: rgba(120, 53, 15, .16); color: #fde68a; }
 .provider-operations__last { color: #cbd5e1; }

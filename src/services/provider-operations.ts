@@ -15,6 +15,13 @@ import {
   type RuntimeSecretKey,
 } from './runtime-config';
 import { isDesktopRuntime } from './runtime';
+import type {
+  AggregationLevel,
+  CoverageStatus,
+  DataDisplayStatus,
+  EvidenceClass,
+  LicenseStatus,
+} from '../../shared/global-intelligence-contract';
 
 export const SELF_HOSTED_MODE_ENV = 'SELF_HOSTED_MODE';
 
@@ -62,6 +69,14 @@ export type ProviderOperationDefinition = {
   queueKind?: 'NEWS_ANALYSIS' | 'IMPORT' | 'STREAM';
   safetyBoundary: string;
 };
+
+export type ProviderOperationTruthProfile = Readonly<{
+  coverageStatus: CoverageStatus;
+  licenseStatus: LicenseStatus;
+  evidenceClasses: readonly EvidenceClass[];
+  aggregationLevels: readonly AggregationLevel[];
+  licenseNote: string;
+}>;
 
 export const PROVIDER_OPERATIONS: readonly ProviderOperationDefinition[] = [
   {
@@ -192,6 +207,72 @@ export const PROVIDER_OPERATIONS: readonly ProviderOperationDefinition[] = [
   },
 ] as const;
 
+export const PROVIDER_OPERATION_TRUTH: Readonly<Record<ProviderOperationId, ProviderOperationTruthProfile>> = {
+  'market-rest-gap-repair': {
+    coverageStatus: 'PARTIAL',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['OBSERVED_MARKET'],
+    aggregationLevels: ['COMPANY'],
+    licenseNote: 'Provider plan and display/redistribution rights must be verified before an observation is labelled live.',
+  },
+  'market-minute-stream': {
+    coverageStatus: 'PARTIAL',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['OBSERVED_MARKET'],
+    aggregationLevels: ['COMPANY'],
+    licenseNote: 'A configured WebSocket is not proof of licensed realtime display or redistribution.',
+  },
+  'news-ingest': {
+    coverageStatus: 'PARTIAL',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['UNVERIFIED'],
+    aggregationLevels: ['COMPANY'],
+    licenseNote: 'Each publisher and search Provider retains its own use and display terms.',
+  },
+  'news-analysis-layer1': {
+    coverageStatus: 'PARTIAL',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['MODELLED_IMPACT', 'AI_SPECULATION'],
+    aggregationLevels: ['COMPANY'],
+    licenseNote: 'Model access and output-use rights must be verified separately from source-content rights.',
+  },
+  'ais-relay': {
+    coverageStatus: 'PARTIAL',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['AIS_OBSERVATION'],
+    aggregationLevels: ['PORT', 'ROUTE'],
+    licenseNote: 'AIS access does not grant cargo, bill-of-lading, buyer, origin, destination, or redistribution rights.',
+  },
+  'portwatch-batch': {
+    coverageStatus: 'PARTIAL',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['PORT_OBSERVATION'],
+    aggregationLevels: ['PORT'],
+    licenseNote: 'Dataset cadence and reuse terms must be recorded before Provider-backed activation.',
+  },
+  'comtrade-batch': {
+    coverageStatus: 'PARTIAL',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['OBSERVED_TRADE'],
+    aggregationLevels: ['COUNTRY'],
+    licenseNote: 'National/product aggregates do not authorize factory, port, vessel, route, or shipment attribution.',
+  },
+  'china-customs-import': {
+    coverageStatus: 'REFERENCE_ONLY',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['OBSERVED_TRADE'],
+    aggregationLevels: ['COUNTRY'],
+    licenseNote: 'Only an owner-supplied lawful file with recorded reuse rights may be imported.',
+  },
+  'model-evaluation': {
+    coverageStatus: 'OUT_OF_SCOPE',
+    licenseStatus: 'REVIEW_REQUIRED',
+    evidenceClasses: ['MODELLED_IMPACT', 'AI_SPECULATION'],
+    aggregationLevels: ['GLOBAL'],
+    licenseNote: 'Model evaluation is versioned analysis and can never be written as a source fact.',
+  },
+};
+
 export type ProviderOperationTelemetry = {
   lastExecutorSuccessAt?: number;
   lastExecutorFailureAt?: number;
@@ -228,6 +309,8 @@ export type ProviderOperationRunResult = {
 
 export type ProviderOperationSnapshot = ProviderOperationDefinition & {
   readiness: ProviderOperationReadiness;
+  dataStatus: DataDisplayStatus;
+  truthProfile: ProviderOperationTruthProfile;
   telemetry: Readonly<ProviderOperationTelemetry>;
   executorRegistered: boolean;
 };
@@ -314,19 +397,48 @@ export function evaluateProviderOperationReadiness(
   return 'NOT_CONFIGURED';
 }
 
+export function providerOperationDataStatus(
+  operation: ProviderOperationDefinition,
+  readiness: ProviderOperationReadiness,
+  operationTelemetry: Readonly<ProviderOperationTelemetry>,
+): DataDisplayStatus {
+  if (readiness === 'NOT_CONFIGURED') return 'NOT_CONFIGURED';
+  if (readiness === 'CONFIG_INVALID' || readiness === 'SERVER_MANAGED_UNKNOWN') return 'UNAVAILABLE';
+  const profile = PROVIDER_OPERATION_TRUTH[operation.id];
+  const hasVerifiedExecution = operationTelemetry.lastExecutorSuccessAt !== undefined;
+  if (operationTelemetry.lastOutcome === 'FAILURE' || operationTelemetry.lastOutcome === 'RATE_LIMITED') {
+    return hasVerifiedExecution ? 'STALE' : 'UNAVAILABLE';
+  }
+  if (operationTelemetry.lastOutcome === 'SUCCESS') {
+    if (profile.evidenceClasses.includes('AI_SPECULATION')) return 'AI_SPECULATION';
+    if (profile.evidenceClasses.every((item) => item.startsWith('MODELLED_'))) return 'MODELLED_ESTIMATE';
+    if (profile.licenseStatus !== 'VERIFIED') return 'DELAYED_UNVERIFIED';
+    if (operation.id === 'market-minute-stream') return 'REALTIME_VERIFIED';
+    return 'OBSERVED';
+  }
+  if (hasVerifiedExecution) return profile.licenseStatus === 'VERIFIED' ? 'OBSERVED' : 'DELAYED_UNVERIFIED';
+  return 'SOURCE_REQUIRED';
+}
+
 export function getProviderOperationsSnapshot(): ProviderOperationSnapshot[] {
   const secretStatuses = currentSecretStatuses();
   const desktop = isDesktopRuntime();
-  return PROVIDER_OPERATIONS.map((operation) => ({
-    ...operation,
-    readiness: evaluateProviderOperationReadiness(operation, {
+  return PROVIDER_OPERATIONS.map((operation) => {
+    const readiness = evaluateProviderOperationReadiness(operation, {
       desktop,
       secretStatuses,
       featureEnabled: isFeatureEnabled,
-    }),
-    telemetry: { ...getTelemetry(operation.id) },
-    executorRegistered: executors.has(operation.id),
-  }));
+    });
+    const operationTelemetry = { ...getTelemetry(operation.id) };
+    return {
+      ...operation,
+      readiness,
+      dataStatus: providerOperationDataStatus(operation, readiness, operationTelemetry),
+      truthProfile: PROVIDER_OPERATION_TRUTH[operation.id],
+      telemetry: operationTelemetry,
+      executorRegistered: executors.has(operation.id),
+    };
+  });
 }
 
 export function getProviderOperationAuditEvents(): readonly ProviderOperationAuditEvent[] {
