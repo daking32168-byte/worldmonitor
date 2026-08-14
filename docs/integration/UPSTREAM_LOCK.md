@@ -375,3 +375,7 @@ Phase 13 is local-only unless a later explicit delivery step authorizes a
 normal non-force push and a separate stacked Draft PR. It does not authorize
 main/upstream writes, force push, PR #1 mutation, merge, deployment, release,
 Provider activation, rebase, newer-upstream intake or backup deletion.
+
+The local Phase 13 implementation commit is
+`f026caedefb71f60034bcb169b92dabf91edf5c3`; it changes none of the locked
+upstream, `main`, original integration, or Draft PR refs above.

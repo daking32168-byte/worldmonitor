@@ -118,7 +118,8 @@ No generated product-fact artifact was rewritten. Final protected-ref checks
 measured:
 
 ```text
-Phase 13 branch parent/HEAD: cc5d8bfd81a8320f0940dee91e39572b13a47c2e
+Phase 13 branch parent:      cc5d8bfd81a8320f0940dee91e39572b13a47c2e
+Phase 13 implementation:    f026caedefb71f60034bcb169b92dabf91edf5c3
 main/origin-main:            0fca203c776dd5fa4913c4bd52f99cd2c3c13a25
 original local/remote tip:   cc5d8bfd81a8320f0940dee91e39572b13a47c2e
 c730fc6... ancestor exit:    0
