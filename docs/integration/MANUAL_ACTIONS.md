@@ -378,3 +378,18 @@ No owner account, purchase, CAPTCHA, credential or license action is required
 for the Phase 13 documentation gate. Phase 14 can implement disabled-state
 contracts without such inputs; any real Provider activation remains a separate
 owner/legal action.
+
+## Phase 14 full-data closure (2026-08-15)
+
+- [x] Implement and locally commit the shared truth contract and compatibility
+  layer at `1a58948d7c84be9b758b555d13f272c89babea34`.
+- [x] Pass focused contract, legacy API, type, API, DOM, source and production
+  build gates.
+- [ ] Run the unmodified repository `test:data` command in an existing
+  Linux/CI Node+npm environment and retain a zero-exit receipt.
+- [ ] Only after that receipt, mark Phase 14 complete and begin Phase 15.
+
+No credential, Provider purchase or license activation is needed for this
+closure. The available Windows host has no installed WSL distribution, Docker,
+Bash or npm; installing a system runtime requires separate authorization and
+was not attempted. Do not weaken or skip the full data gate.

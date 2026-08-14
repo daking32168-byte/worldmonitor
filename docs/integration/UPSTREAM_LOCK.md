@@ -379,3 +379,9 @@ Provider activation, rebase, newer-upstream intake or backup deletion.
 The local Phase 13 implementation commit is
 `f026caedefb71f60034bcb169b92dabf91edf5c3`; it changes none of the locked
 upstream, `main`, original integration, or Draft PR refs above.
+
+Phase 14 candidate implementation commit
+`1a58948d7c84be9b758b555d13f272c89babea34` is a local descendant only. The
+detached LF verifier at `D:\wm-gi-v2-lf` points to that exact commit and has not
+been published. No upstream fetch/intake, main write, original integration
+branch change or Draft PR #1 mutation occurred.

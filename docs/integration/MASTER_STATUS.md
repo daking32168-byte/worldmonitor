@@ -708,3 +708,19 @@ The branch remains local and no existing Draft PR or remote ref was modified.
 `f026caedefb71f60034bcb169b92dabf91edf5c3`. The following local documentation
 receipt records that immutable implementation SHA; it does not publish or
 upgrade any remote gate.
+
+## Phase 14 - shared evidence, identity and Provider envelope
+
+Phase 14 implementation is **CANDIDATE — BLOCKED ON FULL DATA GATE** at
+`1a58948d7c84be9b758b555d13f272c89babea34`. The shared contract, compatibility
+adapters, canonical UI state mapping and Provider Operations truth profiles are
+implemented. Focused contract/legacy tests, production and API TypeScript, the
+sebuf contract, 293 DOM tests, source/docs/product truth gates, strict secret
+scan, Biome and the production Vite build pass.
+
+The unmodified repository-wide data suite is not green in the available native
+Windows environment. Its best isolated ASCII/LF/Node-PATH run records 22,580
+tests, 22,485 passes, 82 unrelated infrastructure/platform failures and 13
+skips. Representative failures require Linux path semantics or npm. Phase 15
+has not started. Exact receipts and the required closure condition are in
+`evidence/phase14-shared-truth-contract.md`.

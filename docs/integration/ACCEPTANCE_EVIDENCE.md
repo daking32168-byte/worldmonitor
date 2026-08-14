@@ -572,3 +572,19 @@ the immutable record SHA and contains no source/provider/runtime change.
 The complete baseline and branch evidence is in
 `evidence/phase13-baseline-and-architecture.md`. All local Phase 13 gates are
 complete; publication, PR mutation, merge and deployment were not performed.
+
+## Phase 14 - shared truth contract
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Required vocabulary and SourceEvidence | PASS | 18 evidence classes, 13 aggregation levels, explicit-null/source/conflict validators and stable IDs are covered by the 10-test Phase 14 suite. |
+| No empty success / aggregation / fact-model separation | PASS | Negative tests reject unconfigured empty success, COUNTRY→TOWN claims, and model/AI/social/unverified fact writes. |
+| Legacy API compatibility | PASS | Existing Market, Maritime and China Factory focused suites pass 13/13; no proto/generated file or route shape changed. |
+| Provider Operations and UI mapping | PASS | Existing suite passes 5/5; all nine operations have non-sensitive truth profiles and all nine V2 UI states have one mapping. |
+| Type and API gates | PASS | Production/API TypeScript, Convex string audit and sebuf API contract pass. |
+| DOM, source and build | PASS | DOM 293/293, 533-host source check, 150 doc claims, product facts, strict secret scan and Vite production build pass. |
+| Repository-wide data suite | BLOCKED | Best native verifier: 22,580 total, 22,485 pass, 82 unrelated Windows/npm/toolchain failures, 13 skip. Linux/CI rerun required. |
+| Phase progression | STOPPED | Phase 14 is not complete and Phase 15 has not started. |
+
+Full commands, failure classification and verifier state are retained in
+`evidence/phase14-shared-truth-contract.md`.

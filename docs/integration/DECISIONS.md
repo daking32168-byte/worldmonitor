@@ -611,3 +611,41 @@ R2/KV helpers, while the execution plan does not prescribe a new database.
 **Consequence:** Phase 13 adds no database or migration. Later physical choices
 must satisfy the responsibilities and isolation in
 `docs/integration/adr/0045-storage-strategy.md`.
+
+## D-0046 - One runtime-neutral Global Intelligence truth contract
+
+**Decision:** Put the controlled evidence, aggregation, status, explicit-null,
+conflict, stable-ID, fact/model and response-envelope vocabulary in
+`shared/global-intelligence-contract.ts`.
+
+**Reason:** Browser, server, sidecar, scripts and later domains need the same
+fail-closed rules without importing a transport, credential or UI module.
+
+**Consequence:** Later phases extend this contract. They may not introduce a
+second evidence/status vocabulary or write model/social/unverified records into
+fact tables.
+
+## D-0047 - Adapt existing domains without changing their public APIs
+
+**Decision:** Map existing Market ProviderStatus, Maritime snapshot state and
+China Factory evidence through an additive compatibility module. Do not edit
+existing proto or generated API files in Phase 14.
+
+**Reason:** Phase 14 establishes shared semantics, while legacy clients and
+accepted RPC/route behavior must remain compatible.
+
+**Consequence:** Migration can proceed consumer by consumer. Empty legacy arrays
+do not become success, national trade remains national, and registry evidence
+does not become a shipment observation.
+
+## D-0048 - Separate Provider execution readiness from data truth
+
+**Decision:** Provider Operations retains its readiness/outcome controls and
+adds non-sensitive coverage, license, evidence and aggregation profiles plus a
+derived canonical data status for visible UI copy.
+
+**Reason:** A configured executor or completed callback is not proof of an
+observation, license right or realtime entitlement.
+
+**Consequence:** Retry safety is unchanged; the UI has one canonical V2 status
+mapping and cannot promote an unreviewed license to observed/live data.

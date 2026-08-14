@@ -467,3 +467,22 @@ c730fc6... accepted functional head
 Future Phase 14 evidence records must reference the original source evidence;
 this architecture documentation cannot itself be used as a market, AIS, news,
 trade, factory, company or prediction observation.
+
+## Phase 14 shared-contract lineage
+
+Phase 14 adds no Provider payload or durable data record. It establishes the
+validation path later data must follow:
+
+```text
+legacy/provider source state
+  -> additive Market / Maritime / China Factory compatibility adapter
+  -> SourceEvidence + stable entity alias + explicit null reasons
+  -> aggregation / conflict / fact-vs-model validation
+  -> GlobalIntelligenceResponse with canonical data status
+```
+
+China Factory registry statements map to `OFFICIAL_CLUSTER` at `CLUSTER`
+aggregation. They never inherit national Comtrade values as town, facility,
+port, route or shipment observations. Market licensed realtime remains the only
+legacy status that maps to `REALTIME_VERIFIED`; Maritime configured-but-empty
+maps to `SOURCE_REQUIRED`, not success.

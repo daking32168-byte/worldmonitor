@@ -284,3 +284,16 @@ All existing market/K-line, AIS, news, trade, factory and model states retain
 their prior truthful disabled, delayed, observed, modelled or unavailable
 meaning. The component inventory is code-reuse evidence only and cannot promote
 an implementation or Provider to live status.
+
+## Phase 14 Provider Operations truth profiles
+
+All nine Provider Operations now publish non-sensitive `coverageStatus`,
+`licenseStatus`, expected `evidenceClasses`, permitted `aggregationLevels` and a
+license note. Every Phase 14 profile remains `REVIEW_REQUIRED`; implementation
+does not assert a new contract, entitlement or redistribution right.
+
+Execution readiness and data truth are separate. `READY_TO_ATTEMPT` with no
+verified execution maps to `SOURCE_REQUIRED`; an executor success with
+unreviewed rights maps to `DELAYED_UNVERIFIED`, never observed or realtime.
+Failure after a prior verified execution may map to stale, while missing or
+invalid configuration remains unavailable/not configured.
