@@ -88,6 +88,22 @@ test('uppercase URL constants are included in the upstream inventory', () => {
   assert.ok(travelpayouts.references.some((reference) => reference.path.endsWith('travelpayouts_data.ts')));
 });
 
+test('explicit excluded hosts remain observed without fetch-shaped hints', () => {
+  const inventory = scanUpstreamHosts(rootDir);
+  const hosts = new Set(inventory.map((entry) => entry.host));
+  for (const host of ['api.groq.com', 'jmespath.org', 'workos.com']) {
+    assert.ok(hosts.has(host), `excluded host must remain observable for drift: ${host}`);
+  }
+});
+
+test('generated attribution marker matches LF and CRLF documents equivalently', () => {
+  const inventory = scanUpstreamHosts(rootDir);
+  const manifest = loadManifest(rootDir);
+  const section = renderAttributionSection(inventory, manifest);
+  assert.equal(matchGeneratedAttributionSection(section), section);
+  assert.equal(matchGeneratedAttributionSection(section.replaceAll('\n', '\r\n')), section);
+});
+
 test('live HLS playback origins are observed with an explicit presentation exclusion', () => {
   const inventory = scanUpstreamHosts(rootDir);
   assert.ok(inventory.some((entry) => entry.host === 'pe-fa-lp02a.9c9media.com'));

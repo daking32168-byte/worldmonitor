@@ -359,3 +359,22 @@ logs.
 No owner input is required to publish and verify this documentation-only
 receipt. Future Provider onboarding and any merge/deployment remain separate
 manual authorization gates.
+
+## Phase 13 architecture follow-up (2026-08-14)
+
+- [x] Preserve all existing dirty worktrees and create a separate clean local
+  branch/worktree from the current integration tip.
+- [x] Store the controlling plan byte-for-byte in `docs/integration/`.
+- [x] Record domain, evidence, stable-ID, Provider-license and storage ADRs.
+- [x] Inventory reusable map, search, status, SSE, Provider Operations, market
+  and desktop components.
+- [x] Complete and record the local documentation/truth/diff gates.
+- [x] Keep Phase 13 local unless a later delivery instruction authorizes a
+  normal non-force push and stacked Draft PR.
+- [x] Do not change Draft PR #1, merge, deploy, release, activate Providers,
+  enter secrets or delete retained backups under Phase 13 authorization.
+
+No owner account, purchase, CAPTCHA, credential or license action is required
+for the Phase 13 documentation gate. Phase 14 can implement disabled-state
+contracts without such inputs; any real Provider activation remains a separate
+owner/legal action.

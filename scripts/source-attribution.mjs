@@ -592,6 +592,8 @@ export function scanUpstreamHosts(rootDir = ROOT) {
     let pendingDeclaration = false;
     for (const match of source.matchAll(URL_LITERAL_RE)) {
       const index = match.index ?? 0;
+      const host = hostFromUrl(match[0]);
+      if (!host) continue;
       const lineNumberIndex = lineNumberAt(index);
       const lineStart = lineStarts[lineNumberIndex];
       const lineEnd = lineStarts[lineNumberIndex + 1] === undefined ? source.length : lineStarts[lineNumberIndex + 1] - 1;
@@ -602,11 +604,13 @@ export function scanUpstreamHosts(rootDir = ROOT) {
         || SOURCE_HINT_RE.test(line)
         || SOURCE_HINT_RE.test(preceding)
         || pendingDeclaration
-        || Boolean(declarationBefore);
+        || Boolean(declarationBefore)
+        // These hosts are deliberately inventoried for drift even when their
+        // URL appears only in a standards comment or presentation/control
+        // string rather than a fetch-shaped statement.
+        || EXCLUDED_HOSTS.has(host);
       pendingDeclaration = DECLARATION_RE.test(line);
       if (!candidate) continue;
-      const host = hostFromUrl(match[0]);
-      if (!host) continue;
       const lineNumber = lineNumberIndex + 1;
       const kind = relativePath === STATUS_FILE
         ? 'operational-status'
@@ -817,14 +821,14 @@ function escapeRegExp(value) {
 
 function inventoryMarkerPattern(leadingNewline) {
   return new RegExp(
-    `${leadingNewline ? '\\n' : ''}## (?:Audited|Observed) Upstream Inventory\\n` +
+    `${leadingNewline ? '\\r?\\n' : ''}## (?:Audited|Observed) Upstream Inventory\\r?\\n` +
       `${escapeRegExp(BEGIN_MARKER)}[\\s\\S]*?${escapeRegExp(END_MARKER)}`,
   );
 }
 
 /** Single source of truth for locating the generated block, shared with the test. */
 export function matchGeneratedAttributionSection(docs) {
-  return docs.match(inventoryMarkerPattern(false))?.[0];
+  return docs.match(inventoryMarkerPattern(false))?.[0].replaceAll('\r\n', '\n');
 }
 
 function updateDocs(rootDir, section) {
@@ -869,8 +873,7 @@ function main() {
   }
   const expectedSection = renderAttributionSection(inventory, previous);
   const docs = read(ROOT, DOCS_PATH);
-  const markerPattern = inventoryMarkerPattern(false);
-  const actual = docs.match(markerPattern)?.[0];
+  const actual = matchGeneratedAttributionSection(docs);
   if (actual !== expectedSection) {
     console.error('source-attribution: docs/data-sources.mdx is out of date; run node scripts/source-attribution.mjs --write');
     process.exitCode = 1;

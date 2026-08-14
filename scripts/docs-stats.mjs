@@ -1612,7 +1612,7 @@ export function validateCategoryExplainerCopy(stats, readFile = read) {
     return [`${file}: file not found`];
   }
 
-  const frontmatter = text.match(/^---\n[\s\S]*?\n---\n/);
+  const frontmatter = text.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
   if (!frontmatter) return [`${file}: missing frontmatter`];
   const body = text.slice(frontmatter[0].length);
   const failures = [];

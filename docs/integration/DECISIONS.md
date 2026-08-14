@@ -545,3 +545,69 @@ failure modes; run 8 supplies the first complete exact-head success set.
 workflows, 13 successful Test jobs and 0 failures in 23,022 data tests. The
 documentation receipt is auditable without promoting PR readiness, merge,
 deployment or Provider availability.
+
+## D-0041 - Preserve one product and establish explicit domain boundaries
+
+**Decision:** Extend the existing Preact/Vite, server/API, generated-contract,
+relay, Provider Operations and Tauri surfaces through five logical layers. Do
+not create a second V2 frontend, API stack, desktop shell or copied domain.
+
+**Reason:** Parallel implementations would split truth, licensing, identity,
+layout, testing and release behavior.
+
+**Consequence:** Phase 14+ work follows
+`docs/integration/adr/0041-domain-boundaries.md` and the repository's existing
+dependency/runtime rules.
+
+## D-0042 - Make evidence and data state first-class
+
+**Decision:** Require shared evidence class, aggregation scope, provenance,
+time, license, freshness, quality, confidence, conflict and explicit-null state.
+Keep fact, observation, social signal, model output and fixture semantics
+separate.
+
+**Reason:** An undifferentiated success result would turn aggregate, stale,
+modelled or unsupported input into false product facts.
+
+**Consequence:** Phase 14 implements the shared contract described in
+`docs/integration/adr/0042-evidence-model.md` before domain phases proceed.
+
+## D-0043 - Use opaque stable IDs and persistent source identity mappings
+
+**Decision:** Give every canonical entity a repository-owned prefixed ID and
+map Provider-native identities to it. Never key canonical records by mutable
+name, URL, coordinate, ticker or platform handle.
+
+**Reason:** Display identifiers change and collide; tickers are not globally
+unique and entity resolution must remain auditable.
+
+**Consequence:** Phase 14 owns one generator, prefix registry, alias mapping and
+merge/split history contract, detailed in
+`docs/integration/adr/0043-stable-entity-ids.md`.
+
+## D-0044 - Gate Provider capabilities by reviewed rights
+
+**Decision:** Separate authentication from allowed use, display,
+redistribution, retention, caching and export rights. Missing or unreviewed
+rights fail closed; secrets never enter the registry or evidence.
+
+**Reason:** A working API key or source-registry entry does not establish legal
+display, redistribution, export or real-time labelling.
+
+**Consequence:** Provider Operations and response envelopes expose only
+non-sensitive reviewed state under
+`docs/integration/adr/0044-provider-licensing.md`.
+
+## D-0045 - Separate storage responsibilities before selecting new infrastructure
+
+**Decision:** Keep source evidence, canonical facts, model output, cache/stream
+state, large permitted artifacts, client state and test fixtures logically
+separate. Reuse existing storage where it fits; require a later measured ADR
+before introducing a new database, graph engine or search service.
+
+**Reason:** The repository already uses Redis, Convex, client persistence and
+R2/KV helpers, while the execution plan does not prescribe a new database.
+
+**Consequence:** Phase 13 adds no database or migration. Later physical choices
+must satisfy the responsibilities and isolation in
+`docs/integration/adr/0045-storage-strategy.md`.

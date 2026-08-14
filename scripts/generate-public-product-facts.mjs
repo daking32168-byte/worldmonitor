@@ -29,10 +29,14 @@ const failures = [];
 const read = (path) => readFileSync(join(ROOT, path), 'utf8');
 const readJson = (path) => JSON.parse(read(path));
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
+const normalizeNewlines = (value) => value.replaceAll('\r\n', '\n');
 
 function emit(path, content) {
   const current = existsSync(join(ROOT, path)) ? read(path) : null;
-  if (current === content) return;
+  // Git may materialize text as CRLF on Windows while generators intentionally
+  // emit canonical LF. Compare semantic text so a clean checkout does not make
+  // every generated artifact appear stale; other content drift still fails.
+  if (current !== null && normalizeNewlines(current) === normalizeNewlines(content)) return;
   if (CHECK) {
     failures.push(`${path} is stale`);
     return;

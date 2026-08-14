@@ -357,3 +357,21 @@ This acceptance receipt is a documentation-only descendant. Its publication
 remains a normal non-force integration-branch fast-forward. Neither run 8 nor
 the receipt authorizes a newer-upstream merge/rebase, direct main/upstream
 write, force push, merge, deployment, release or backup deletion.
+
+## Phase 13 local branch lock
+
+The local Phase 13 branch `integration/global-intelligence-v2` was created from
+the existing integration tip
+`cc5d8bfd81a8320f0940dee91e39572b13a47c2e`. Read-only ancestor checks prove
+that accepted head `c730fc6...` is in its history. No upstream object was
+merged, rebased, cherry-picked, relabelled or fetched into this work.
+
+The reviewed upstream intake remains
+`ae0a0fe26bcbdb683b366899e4dc38fb8ccfb5ad`; protected owner-fork main remains
+`0fca203c776dd5fa4913c4bd52f99cd2c3c13a25`; existing Draft PR #1 remains on
+`integration/pokieticker-maritime-china-factory@cc5d8bfd...`.
+
+Phase 13 is local-only unless a later explicit delivery step authorizes a
+normal non-force push and a separate stacked Draft PR. It does not authorize
+main/upstream writes, force push, PR #1 mutation, merge, deployment, release,
+Provider activation, rebase, newer-upstream intake or backup deletion.

@@ -446,3 +446,24 @@ contain a licensed market observation, price, candle, exchange timestamp, AIS
 cargo fact, deterministic article cause, trade/factory observation, Provider
 secret, deployment response or account entitlement. Those remain governed by
 their source-bearing runtime lineage.
+
+## Phase 13 architecture-document lineage
+
+Phase 13 introduces no data-bearing lineage. Its controlling-plan receipt is a
+byte-identical copy with SHA-256
+`975F72D8BA5CA18ACAD8A8BF1F4B68679B67E9B30A44EE573C8BE82D796FB961`.
+The ADRs and component inventory define future validation and storage
+boundaries but contain no source record, observation, normalized entity,
+Provider payload, import, fixture promotion, model result or migration.
+
+The source-control lineage is:
+
+```text
+c730fc6... accepted functional head
+  -> cc5d8bfd... Phase 12 documentation receipt tip
+  -> integration/global-intelligence-v2 local Phase 13 documentation
+```
+
+Future Phase 14 evidence records must reference the original source evidence;
+this architecture documentation cannot itself be used as a market, AIS, news,
+trade, factory, company or prediction observation.

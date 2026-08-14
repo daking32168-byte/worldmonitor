@@ -552,3 +552,22 @@ activation remain outside this acceptance.
 Run-8 acceptance evidence record commit:
 `6b39dd8a15a41c54fe5353a99ebcb71de648ca96`. This following receipt backfills
 the immutable record SHA and contains no source/provider/runtime change.
+
+## Phase 13 - baseline protection and architecture landing
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Formal root, worktrees, branch and remotes | PASS | Five prior registered worktrees were inventoried; `origin` and `upstream` URLs are retained in `evidence/phase13-baseline-and-architecture.md`. |
+| Accepted-head ancestry | PASS | `merge-base --is-ancestor c730fc6... integration/pokieticker-maritime-china-factory` exited `0`. |
+| Dirty-tree protection | PASS | Existing 5,517 tracked main entries and 790 expanded integration entries were not cleaned; a new worktree was used. |
+| Phase 13 branch/worktree | PASS | `integration/global-intelligence-v2@cc5d8bfd...` checked out clean in the dedicated linked worktree. |
+| Controlling plan receipt | PASS | 71,181-byte source and destination share SHA-256 `975F72D...FB961`. |
+| Five architecture decisions | PASS | ADRs D-0041 through D-0045 cover domain, evidence, identity, license and storage boundaries. |
+| Seven-area reuse inventory | PASS | Map, search, status, SSE, Provider Operations, market and desktop entry points are mapped without product copies. |
+| Product/runtime change | PASS | 23 changed paths are integration documentation, one plan-specific whitespace attribute, or five audit/test files; allowlist reports 0 outside scope and no runtime product path changed. |
+| Documentation and truth gates | PASS | Markdown lint, 150-claim docs stats, 533-host source attribution, product facts, and the 10-test source plus 6-test blog suites pass. |
+| Diff and protected refs | PASS | `git diff --check` exits `0`; `main`, `origin/main`, the original integration branch and its remote ref retain their recorded SHAs. |
+
+The complete baseline and branch evidence is in
+`evidence/phase13-baseline-and-architecture.md`. All local Phase 13 gates are
+complete; publication, PR mutation, merge and deployment were not performed.

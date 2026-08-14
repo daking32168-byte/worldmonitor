@@ -271,3 +271,16 @@ News relevance and sentiment remain non-causal context. Trade/factory feeds
 remain subject to their documented source, observation and freshness gates.
 No credential, account, payment, licence, deployment or Provider state changed
 as a consequence of run 8.
+
+## Phase 13 architecture effect on Provider states
+
+Phase 13 changes no Provider state. It creates no account, credential,
+entitlement, payment, source request, response, schedule, deployment, export or
+redistribution right. ADR D-0044 defines the fail-closed license registry and
+capability gates that Phase 14 must implement; an accepted ADR is not evidence
+that any Provider right has been reviewed or enabled.
+
+All existing market/K-line, AIS, news, trade, factory and model states retain
+their prior truthful disabled, delayed, observed, modelled or unavailable
+meaning. The component inventory is code-reuse evidence only and cannot promote
+an implementation or Provider to live status.

@@ -675,3 +675,31 @@ Run-8 acceptance evidence record commit:
 `6b39dd8a15a41c54fe5353a99ebcb71de648ca96`. This following receipt backfills
 that immutable SHA; it changes documentation only and preserves the accepted
 functional head and Draft boundary.
+
+## Phase 13 - baseline protection and architecture landing
+
+Phase 13 uses the dedicated local branch `integration/global-intelligence-v2`
+and linked worktree
+`D:\使用AI专属文件夹\global-intelligence-earth\worldmonitor-global-intelligence-v2`.
+The branch was created from the existing integration tip
+`cc5d8bfd81a8320f0940dee91e39572b13a47c2e`, which contains the accepted
+functional head `c730fc6...` and its Phase 12 documentation receipts.
+
+Protected `main@0fca203c...`, Draft PR #1, the original integration branch,
+the 5,517-entry tracked main-worktree state, the 790-entry upstream integration
+state, and all existing worktrees were left unchanged. The new worktree was
+clean immediately after checkout.
+
+The controlling plan is stored byte-for-byte in `docs/integration/`; five ADRs
+now define domain boundaries, the evidence model, stable entity IDs, Provider
+licensing and storage responsibilities. The architecture baseline and seven-
+area reusable-component inventory map later phases to existing WorldMonitor
+components.
+
+Phase 13 is **COMPLETE (LOCAL)**. Markdown lint, docs stats, source attribution,
+product facts, 16 focused portability tests, `git diff --check`, the 23-path
+scope guard and protected-ref checks pass. The authored scope is integration
+documentation, one plan-specific whitespace attribute, three audit utilities
+and two focused test files; no product runtime code, Provider, deployment,
+database or runtime behavior is changed.
+The branch remains local and no existing Draft PR or remote ref was modified.

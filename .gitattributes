@@ -1,2 +1,6 @@
 # Preserve the byte-identical upstream Umami patch, including its indented blank lines.
 docker/umami/session-data-upsert.patch -whitespace
+
+# Preserve the byte-identical external Phase 13 execution plan, including its
+# Markdown hard-break spaces. Its SHA-256 is an acceptance invariant.
+docs/integration/GLOBAL_INTELLIGENCE_V2_CODEX_EXECUTION_PLAN_2026-08-14.md -whitespace
