@@ -22,7 +22,8 @@ test('macOS compatibility is a read-only native Apple Silicon PR gate', () => {
   assert.match(block, /NODE_TARGET: aarch64-apple-darwin/);
   assert.match(block, /bash scripts\/download-node\.sh --target "\$NODE_TARGET"/);
   assert.match(block, /desktop:tauri:build -- --no-bundle --target aarch64-apple-darwin/);
-  assert.match(block, /WM_EXPECT_BUILT_OUTPUT=1 npm run test:data/);
+  assert.match(block, /run: npm run test:data/);
+  assert.doesNotMatch(block, /WM_EXPECT_BUILT_OUTPUT/);
   assert.match(block, /git diff --exit-code/);
   assert.doesNotMatch(block, /secrets\./);
   assert.doesNotMatch(block, /upload-artifact|tauri-action|contents: write|gh release|softprops\/action-gh-release/);

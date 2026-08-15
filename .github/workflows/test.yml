@@ -258,7 +258,11 @@ jobs:
       - name: Build unsigned native macOS application without packaging
         run: npm run desktop:tauri:build -- --no-bundle --target aarch64-apple-darwin
       - name: Run the full data contract on macOS
-        run: WM_EXPECT_BUILT_OUTPUT=1 npm run test:data
+        # The marker-enabled built-output contract belongs uniquely to the
+        # Ubuntu unit job; the preceding Tauri build already produced macOS
+        # output, so this leg runs the complete suite without duplicating that
+        # marker (tests/dashboard-build-guards.test.mjs).
+        run: npm run test:data
       - name: Generated desktop inputs remain clean
         run: git diff --exit-code
 
