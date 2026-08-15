@@ -235,11 +235,25 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          # Pre-push contract tests resolve the real branch base and must not
+          # inherit a shallow synthetic Git graph on macOS.
+          fetch-depth: 0
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '24'
           cache: 'npm'
       - run: npm ci
+      - name: Provide GNU timeout for cross-platform hook tests
+        shell: bash
+        run: |
+          brew list coreutils >/dev/null 2>&1 || brew install coreutils
+          echo "$(brew --prefix coreutils)/libexec/gnubin" >> "$GITHUB_PATH"
+      - name: Run the full data contract on clean tracked sources
+        # Run before the Tauri sidecar build creates ignored api/*/v1/[rpc].js
+        # bundles. Source attribution is defined over tracked source files;
+        # generated sidecar bundles must not become duplicate Provider inputs.
+        run: npm run test:data
       - name: Install Rust stable for native Tauri validation
         uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
@@ -257,12 +271,6 @@ jobs:
         run: bash scripts/download-node.sh --target "$NODE_TARGET"
       - name: Build unsigned native macOS application without packaging
         run: npm run desktop:tauri:build -- --no-bundle --target aarch64-apple-darwin
-      - name: Run the full data contract on macOS
-        # The marker-enabled built-output contract belongs uniquely to the
-        # Ubuntu unit job; the preceding Tauri build already produced macOS
-        # output, so this leg runs the complete suite without duplicating that
-        # marker (tests/dashboard-build-guards.test.mjs).
-        run: npm run test:data
       - name: Generated desktop inputs remain clean
         run: git diff --exit-code
 

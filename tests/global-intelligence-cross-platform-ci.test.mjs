@@ -18,7 +18,10 @@ test('macOS compatibility is a read-only native Apple Silicon PR gate', () => {
 
   assert.match(block, /runs-on: macos-14/);
   assert.match(block, /permissions:\s+contents: read/);
+  assert.match(block, /fetch-depth: 0/);
   assert.match(block, /npm ci/);
+  assert.match(block, /brew --prefix coreutils/);
+  assert.match(block, /GITHUB_PATH/);
   assert.match(block, /NODE_TARGET: aarch64-apple-darwin/);
   assert.match(block, /bash scripts\/download-node\.sh --target "\$NODE_TARGET"/);
   assert.match(block, /desktop:tauri:build -- --no-bundle --target aarch64-apple-darwin/);
@@ -27,6 +30,10 @@ test('macOS compatibility is a read-only native Apple Silicon PR gate', () => {
   assert.match(block, /git diff --exit-code/);
   assert.doesNotMatch(block, /secrets\./);
   assert.doesNotMatch(block, /upload-artifact|tauri-action|contents: write|gh release|softprops\/action-gh-release/);
+  assert.ok(
+    block.indexOf('run: npm run test:data') < block.indexOf('run: npm run desktop:tauri:build'),
+    'the source-truth suite must run before ignored sidecar bundles are generated',
+  );
 });
 
 test('macOS compatibility actions are immutable commit pins', () => {
