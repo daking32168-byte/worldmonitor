@@ -93,7 +93,11 @@ export type QualityStatus = (typeof QUALITY_STATUSES)[number];
 export const DATA_DISPLAY_STATUSES = [
   'NOT_CONFIGURED',
   'UNAVAILABLE',
+  'DELAYED_VERIFIED',
   'DELAYED_UNVERIFIED',
+  'END_OF_DAY',
+  'HISTORICAL_SNAPSHOT',
+  'MARKET_CLOSED',
   'STALE',
   'OBSERVED',
   'REALTIME_VERIFIED',
@@ -265,7 +269,7 @@ export function validateSourceEvidence(evidence: SourceEvidence): string[] {
   if (evidence.sourceUrl !== null) {
     try {
       const url = new URL(evidence.sourceUrl);
-      if (url.protocol !== 'https:' && url.protocol !== 'http:') errors.push('sourceUrl must use http or https');
+      if (url.protocol !== 'https:') errors.push('sourceUrl must use https');
     } catch {
       errors.push('sourceUrl must be an absolute URL');
     }
@@ -341,6 +345,12 @@ export function isFactEvidenceClass(value: EvidenceClass): value is FactEvidence
 
 export function assertEvidenceCanEnterFactTable(evidence: SourceEvidence): asserts evidence is SourceEvidence & { evidenceClass: FactEvidenceClass } {
   assertSourceEvidence(evidence);
+  if (evidence.licenseStatus !== 'VERIFIED') {
+    throw new Error(`${evidence.licenseStatus} license cannot enter a fact table; a VERIFIED license is required`);
+  }
+  if (evidence.qualityStatus !== 'VERIFIED' && evidence.qualityStatus !== 'CORROBORATED') {
+    throw new Error(`${evidence.qualityStatus} evidence cannot enter a fact table; VERIFIED or CORROBORATED quality is required`);
+  }
   if (!isFactEvidenceClass(evidence.evidenceClass)) {
     throw new Error(`${evidence.evidenceClass} evidence cannot enter a fact table`);
   }
@@ -438,7 +448,10 @@ export function validateGlobalIntelligenceResponse<T>(response: GlobalIntelligen
   }
   for (const evidence of response.evidence) errors.push(...validateSourceEvidence(evidence));
   for (const conflict of response.conflicts) errors.push(...validateEvidenceConflict(conflict));
-  if (response.data !== null && ['OBSERVED', 'REALTIME_VERIFIED', 'STALE', 'DELAYED_UNVERIFIED'].includes(response.status) && response.evidence.length === 0) {
+  if (response.data !== null && [
+    'OBSERVED', 'REALTIME_VERIFIED', 'DELAYED_VERIFIED', 'DELAYED_UNVERIFIED',
+    'END_OF_DAY', 'HISTORICAL_SNAPSHOT', 'MARKET_CLOSED', 'STALE',
+  ].includes(response.status) && response.evidence.length === 0) {
     errors.push(`${response.status} data requires SourceEvidence`);
   }
   if (response.status === 'REALTIME_VERIFIED') {

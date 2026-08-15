@@ -1,0 +1,1 @@
+flow_id,reporter_geo_id,origin_geo_id,origin_aggregation_level,destination_geo_id,product_id,hs_version,hs_code,period_start,period_end,trade_direction,value,value_currency,quantity,quantity_unit,net_weight_kg,transport_mode,customs_or_port_ref,source_id

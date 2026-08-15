@@ -65,7 +65,7 @@ function testEvidence(sourceId: StableEntityId, evidenceClass: EvidenceClass, ag
     periodEnd: null,
     evidenceClass,
     aggregationLevel,
-    licenseStatus: 'REVIEW_REQUIRED',
+    licenseStatus: 'VERIFIED',
     freshnessStatus: 'NOT_APPLICABLE',
     qualityStatus: 'VERIFIED',
     confidence: null,
@@ -128,6 +128,7 @@ function positiveRegistry(secondMarket = false): CompanyFacilityRegistry {
   const facility: Facility = {
     facility_id: facilityId,
     company_id: companyId,
+    company_relationship_type: 'OPERATES',
     facility_name: '测试惠东生产基地',
     facility_type: 'MANUFACTURING_PLANT',
     geo_id: GEO_ID,
@@ -194,10 +195,11 @@ function positiveRegistry(secondMarket = false): CompanyFacilityRegistry {
   };
 }
 
-test('production registry fails closed with no promoted company, facility, brand or security facts', () => {
+test('production registry exposes only the licensed reviewed company/facility path and fails closed for securities', () => {
   assert.deepEqual(validateCompanyFacilityRegistry(COMPANY_FACILITY_REGISTRY), []);
-  assert.equal(COMPANY_FACILITY_REGISTRY.companies.length, 0);
-  assert.equal(COMPANY_FACILITY_REGISTRY.facilities.length, 0);
+  assert.equal(COMPANY_FACILITY_REGISTRY.companies.length, 1);
+  assert.equal(COMPANY_FACILITY_REGISTRY.facilities.length, 1);
+  assert.equal(COMPANY_FACILITY_REGISTRY.facilities[0]?.company_relationship_type, 'OWNS');
   assert.equal(COMPANY_FACILITY_REGISTRY.brands.length, 0);
   assert.equal(COMPANY_FACILITY_REGISTRY.securities.length, 0);
   assert.equal(resolveStockIndustryProfile('AAPL').status, 'SOURCE_REQUIRED');
@@ -241,6 +243,15 @@ test('unsourced entities and relationships cannot enter the fact registry', () =
   const unsourcedEdge = { ...registry.relationships[0]!, source_evidence_ids: [] };
   assert.ok(validateCompanyFacilityRegistry({ ...registry, relationships: [unsourcedEdge, ...registry.relationships.slice(1)] })
     .some((error) => /has no source evidence/.test(error)));
+});
+
+test('review-required evidence cannot enter the fact registry', () => {
+  const registry = positiveRegistry();
+  const reviewOnlyEvidence = registry.evidence.map((item, index) => index === 0
+    ? { ...item, licenseStatus: 'REVIEW_REQUIRED' as const }
+    : item);
+  assert.ok(validateCompanyFacilityRegistry({ ...registry, evidence: reviewOnlyEvidence })
+    .some((error) => /VERIFIED license is required/.test(error)));
 });
 
 test('company headquarters, production facility and coverage remain separate and traceable', () => {

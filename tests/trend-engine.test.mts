@@ -30,6 +30,7 @@ function item(index: number, overrides: Partial<SourceItem> = {}): SourceItem {
     provider_id: `fixture-${platform.toLowerCase()}`,
     platform,
     platform_item_id: `platform-${index}`,
+    original_url: `https://example.invalid/items/${index}`,
     canonical_url: `https://example.invalid/items/${index}`,
     author_id: `author-${index}`,
     author_handle: `@author-${index}`,
@@ -52,12 +53,12 @@ function item(index: number, overrides: Partial<SourceItem> = {}): SourceItem {
 }
 
 describe('Phase 20 explainable trend engine', () => {
-  it('returns deterministic snapshots for the same inputs and four configured windows', () => {
+  it('returns deterministic snapshots for the same inputs and all required windows', () => {
     const items = [item(0), item(1), item(2), item(3)];
     const first = computeTrendSnapshot(eventId, items, '2026-08-15T02:00:00Z');
     const second = computeTrendSnapshot(eventId, items, '2026-08-15T02:00:00Z');
     assert.deepEqual(first, second);
-    assert.deepEqual(first.points.map((point) => point.window_minutes), [15, 60, 360, 1440]);
+    assert.deepEqual(first.points.map((point) => point.window_minutes), [5, 15, 30, 60, 360, 1440, 10_080, 43_200]);
     assert.equal(first.points.every((point) => point.algorithm_version === 'TREND_EXPLAINABLE_V1'), true);
     assert.equal(first.points.every((point) => point.trend_point_id.startsWith('trend_')), true);
   });
@@ -89,17 +90,37 @@ describe('Phase 20 explainable trend engine', () => {
   });
 
   it('records reasons across the NORMAL to RESOLVED state machine', () => {
-    const emerging = transitionTrendState('NORMAL', 30, 0);
-    const accelerating = transitionTrendState('NORMAL', 55, 0.5);
+    const rising = transitionTrendState('NORMAL', 25, 0);
+    const fastRising = transitionTrendState('NORMAL', 45, 0.5);
+    const breakoutRisk = transitionTrendState('NORMAL', 60, 0.5);
     const breakout = transitionTrendState('NORMAL', 80, 0.5);
     const cooling = transitionTrendState('BREAKOUT', 15, -0.5);
     const resolved = transitionTrendState('COOLING', 5, -0.5);
     assert.deepEqual(
-      [emerging.next_state, accelerating.next_state, breakout.next_state, cooling.next_state, resolved.next_state],
-      ['EMERGING', 'ACCELERATING', 'BREAKOUT', 'COOLING', 'RESOLVED'],
+      [rising.next_state, fastRising.next_state, breakoutRisk.next_state, breakout.next_state, cooling.next_state, resolved.next_state],
+      ['RISING', 'FAST_RISING', 'BREAKOUT_RISK', 'BREAKOUT', 'COOLING', 'RESOLVED'],
     );
-    assert.equal([emerging, accelerating, breakout, cooling, resolved].every((value) => value.reasons.length > 0), true);
+    assert.equal([rising, fastRising, breakoutRisk, breakout, cooling, resolved].every((value) => value.reasons.length > 0), true);
     assert.equal(transitionTrendState('RESOLVED', 5, 0).next_state, 'RESOLVED');
+  });
+
+  it('explains engagement, geography, language, baselines, duplication and coordination indicators', () => {
+    const inputs = [
+      item(0, { geo_ids: [createStableEntityId('geo', 'nl-veldhoven')], language: 'en', engagement_count: 120 }),
+      item(1, { geo_ids: [createStableEntityId('geo', 'cn-shenzhen')], language: 'zh', engagement_count: 80 }),
+      item(2, { published_at: '2026-08-15T00:20:00Z', engagement_count: 40 }),
+      item(3, { published_at: '2026-08-15T00:25:00Z', engagement_count: 20 }),
+    ];
+    const point = computeTrendPoint(eventId, inputs, '2026-08-15T02:00:00Z', 60);
+    assert.equal(point.geographic_count, 2);
+    assert.equal(point.language_count, 2);
+    assert.equal(point.engagement_count, 200);
+    assert.equal(point.baseline_multiplier, 1);
+    assert.ok('engagement_velocity' in point.components);
+    assert.ok('geographic_spread' in point.components);
+    assert.ok('duplicate_penalty' in point.components);
+    assert.ok('coordination_risk_penalty' in point.components);
+    assert.match(point.reasons.join(' '), /not a coordination finding/);
   });
 
   it('builds a deterministic first-observation propagation path', () => {
@@ -179,6 +200,10 @@ describe('Phase 20 explainable trend engine', () => {
     assert.match(route, /TRENDS_PATH = '\/trends'/);
     assert.match(page, /SOURCE_REQUIRED/);
     assert.match(page, /生产环境不会连接测试流或显示 fixture/);
+    assert.match(page, /onSnapshot\(snapshot\)/);
+    assert.match(page, /snapshots\.set\(snapshot\.event_id, snapshot\)/);
+    assert.match(page, /render\(\)/);
+    assert.match(page, /globalContentRepository\.listTrendSnapshots\(\)/);
     assert.match(main, /isTrendsPath/);
     assert.equal(isTrendsPath('/trends/event_example'), true);
     assert.deepEqual(parseTrendsRoute('/trends/event_example'), { kind: 'detail', eventId: 'event_example' });
@@ -186,7 +211,7 @@ describe('Phase 20 explainable trend engine', () => {
     assert.match(operations, /trend-realtime-sse/);
     assert.match(operations, /test fixtures are forbidden from the production SSE path/);
     assert.doesNotMatch(`${route}\n${page}\n${engine}\n${realtime}`, /from ['"].*(?:tests|fixtures)\//);
-    assert.deepEqual(DEFAULT_TREND_ENGINE_CONFIG.windows_minutes, [15, 60, 360, 1440]);
+    assert.deepEqual(DEFAULT_TREND_ENGINE_CONFIG.windows_minutes, [5, 15, 30, 60, 360, 1440, 10_080, 43_200]);
     assert.equal(TREND_REALTIME_PROVIDER.production_fixture_enabled, false);
   });
 });

@@ -148,6 +148,30 @@ function requireTimestamp(value: string, field: string): void {
   if (!value.trim() || !Number.isFinite(Date.parse(value))) throw new Error(`${field} must be an ISO timestamp`);
 }
 
+export function assertTradeFlowObservation(flow: TradeFlowObservation, evidence: SourceEvidence): void {
+  assertEvidenceCanEnterFactTable(evidence);
+  if (evidence.evidenceClass !== 'OBSERVED_TRADE') throw new Error('trade flow evidence must be OBSERVED_TRADE');
+  if (flow.evidence_id !== evidence.sourceId || flow.provider_id !== evidence.providerId) throw new Error('trade flow source identity mismatch');
+  if (flow.origin_aggregation_level !== evidence.aggregationLevel) throw new Error('trade flow aggregation must match its source evidence');
+  assertStableEntityId(flow.flow_id, 'flow');
+  assertStableEntityId(flow.reporter_geo_id, 'geo');
+  assertStableEntityId(flow.origin_geo_id, 'geo');
+  assertStableEntityId(flow.destination_geo_id, 'geo');
+  assertStableEntityId(flow.product_id, 'product');
+  if (!/^\d{2,10}$/u.test(flow.hs_code)) throw new Error('hs_code must contain 2–10 digits');
+  if (!flow.hs_version.trim()) throw new Error('hs_version is required');
+  requireTimestamp(flow.period_start, 'period_start');
+  requireTimestamp(flow.period_end, 'period_end');
+  if (Date.parse(flow.period_start) > Date.parse(flow.period_end)) throw new Error('period_end must not be before period_start');
+  finiteNonNegative(flow.value, 'value');
+  finiteNonNegative(flow.quantity, 'quantity');
+  finiteNonNegative(flow.net_weight_kg, 'net_weight_kg');
+  if ((flow.value === null) !== (flow.value_currency === null)) throw new Error('value and value_currency must be present together');
+  if ((flow.quantity === null) !== (flow.quantity_unit === null)) throw new Error('quantity and quantity_unit must be present together');
+  if (flow.transport_mode !== null && !TRANSPORT_MODES.includes(flow.transport_mode)) throw new Error('transport_mode is invalid');
+  if (flow.quality_status !== evidence.qualityStatus) throw new Error('trade flow quality must match its source evidence');
+}
+
 /** UN Comtrade is adapted only as COUNTRY aggregate evidence. */
 export function adaptComtradeObservation(input: ComtradeAdapterInput, evidence: SourceEvidence): TradeFlowObservation {
   assertEvidenceCanEnterFactTable(evidence);
@@ -162,7 +186,7 @@ export function adaptComtradeObservation(input: ComtradeAdapterInput, evidence: 
   finiteNonNegative(input.netWeightKg, 'netWeightKg');
   if ((input.value === null) !== (input.valueCurrency === null)) throw new Error('value and valueCurrency must be present together');
   if ((input.quantity === null) !== (input.quantityUnit === null)) throw new Error('quantity and quantityUnit must be present together');
-  return Object.freeze({
+  const flow: TradeFlowObservation = Object.freeze({
     flow_id: createStableEntityId('flow', `comtrade-${input.providerRecordId}`),
     reporter_geo_id: input.reporterGeoId,
     origin_geo_id: input.reporterGeoId,
@@ -185,6 +209,8 @@ export function adaptComtradeObservation(input: ComtradeAdapterInput, evidence: 
     evidence_id: evidence.sourceId,
     quality_status: evidence.qualityStatus,
   });
+  assertTradeFlowObservation(flow, evidence);
+  return flow;
 }
 
 export type LawfulCustomsImportManifest = Readonly<{
@@ -254,7 +280,10 @@ export function canDisplayFlowAsActualAt(
 
 function csvCell(value: unknown): string {
   const text = value === null || value === undefined ? '' : String(value);
-  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  const safeText = typeof value === 'string' && /^[\u0000-\u0020\u007f-\u009f\uFEFF]*[=+\-@]/u.test(text)
+    ? `'${text}`
+    : text;
+  return /[",\r\n]/.test(safeText) ? `"${safeText.replace(/"/g, '""')}"` : safeText;
 }
 
 /** Export keeps the truth-bearing period, units, source and aggregation. */

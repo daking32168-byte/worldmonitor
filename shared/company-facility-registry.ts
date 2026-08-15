@@ -21,6 +21,12 @@ import {
   INDUSTRY_MAP_GEO_UNITS,
   INDUSTRY_MAP_PRODUCTS,
 } from './industry-map';
+import {
+  GLEIF_TESLA_EVIDENCE,
+  GLEIF_TESLA_SOURCE_ID,
+  WIKIDATA_GIGA_BERLIN_EVIDENCE,
+  WIKIDATA_GIGA_BERLIN_SOURCE_ID,
+} from './open-industrial-evidence';
 
 export const COMPANY_COVERAGE_TIERS = ['TIER_A', 'TIER_B', 'TIER_C', 'TIER_D'] as const;
 export type CompanyCoverageTier = (typeof COMPANY_COVERAGE_TIERS)[number];
@@ -72,6 +78,7 @@ export type Company = Readonly<{
 export type Facility = Readonly<{
   facility_id: StableEntityId;
   company_id: StableEntityId;
+  company_relationship_type: 'OPERATES' | 'OWNS';
   facility_name: string;
   facility_type: FacilityType;
   geo_id: StableEntityId;
@@ -322,8 +329,8 @@ export function validateCompanyFacilityRegistry(registry: CompanyFacilityRegistr
     if (facility.lon !== null && (facility.lon < -180 || facility.lon > 180)) errors.push(`${facility.facility_id} longitude is out of range`);
     if (!isIsoTimestamp(facility.last_verified_at)) errors.push(`${facility.facility_id} has an invalid verification time`);
     validateRecordEvidence(facility.facility_id, facility.source_evidence_ids, evidenceById, errors);
-    if (!hasSourcedEdge(registry, facility.company_id, facility.facility_id, 'OPERATES')) {
-      errors.push(`${facility.facility_id} operator relationship has no sourced OPERATES edge`);
+    if (!hasSourcedEdge(registry, facility.company_id, facility.facility_id, facility.company_relationship_type)) {
+      errors.push(`${facility.facility_id} company relationship has no sourced ${facility.company_relationship_type} edge`);
     }
     if (!hasSourcedEdge(registry, facility.facility_id, facility.geo_id, 'LOCATED_IN')) {
       errors.push(`${facility.facility_id} location relationship has no sourced LOCATED_IN edge`);
@@ -396,14 +403,90 @@ export function assertCompanyFacilityRegistry(registry: CompanyFacilityRegistry)
   if (errors.length > 0) throw new Error(`Invalid company/facility registry: ${errors.join('; ')}`);
 }
 
-/** No production facts are promoted until Phase 18 source review. */
+const TESLA_COMPANY_ID = createRegisteredCompanyId('US', '0805587591');
+const GIGA_BERLIN_FACILITY_ID = createStableEntityId('facility', 'wikidata-q75327597');
+const GIGA_BERLIN_GEO_ID = createStableEntityId('geo', 'de-brandenburg-giga-berlin-campus');
+const MODEL_Y_PRODUCT_ID = createStableEntityId('product', 'tesla-model-y');
+
+/**
+ * Minimal production registry promoted only from the audit-captured, licensed
+ * and cross-source-reviewed snapshots. Coverage remains explicitly partial.
+ */
 export const COMPANY_FACILITY_REGISTRY: CompanyFacilityRegistry = Object.freeze({
-  companies: Object.freeze([]),
-  facilities: Object.freeze([]),
+  companies: Object.freeze([{
+    company_id: TESLA_COMPANY_ID,
+    legal_name: 'TESLA, INC.',
+    registration_country: 'US',
+    registration_number: '0805587591',
+    canonical_name: 'Tesla, Inc.',
+    alternate_names: Object.freeze(['Tesla']),
+    company_type: 'LEGAL_ENTITY',
+    parent_company_id: null,
+    ultimate_parent_id: null,
+    headquarters_geo_id: null,
+    website: null,
+    listed_status: 'UNKNOWN',
+    source_evidence_ids: Object.freeze([GLEIF_TESLA_SOURCE_ID]),
+    coverage_tier: 'TIER_D',
+    last_verified_at: '2026-08-15T11:05:11.799Z',
+  } satisfies Company]),
+  facilities: Object.freeze([{
+    facility_id: GIGA_BERLIN_FACILITY_ID,
+    company_id: TESLA_COMPANY_ID,
+    company_relationship_type: 'OWNS',
+    facility_name: 'Gigafactory Berlin-Brandenburg',
+    facility_type: 'MANUFACTURING_PLANT',
+    geo_id: GIGA_BERLIN_GEO_ID,
+    address: null,
+    lat: 52.395,
+    lon: 13.79,
+    industrial_park_id: null,
+    operational_status: 'ACTIVE',
+    product_ids: Object.freeze([MODEL_Y_PRODUCT_ID]),
+    process_tags: Object.freeze(['electric vehicle manufacturing']),
+    capacity_disclosures: Object.freeze([]),
+    employment_range: null,
+    oem_odm_brand_mode: Object.freeze(['OWN_BRAND']),
+    source_evidence_ids: Object.freeze([WIKIDATA_GIGA_BERLIN_SOURCE_ID]),
+    last_verified_at: '2026-08-15T11:15:25.569Z',
+  } satisfies Facility]),
   brands: Object.freeze([]),
   securities: Object.freeze([]),
-  relationships: Object.freeze([]),
-  evidence: Object.freeze([]),
+  relationships: Object.freeze([{
+    edge_id: 'edge_tesla-owns-giga-berlin',
+    from_id: TESLA_COMPANY_ID,
+    to_id: GIGA_BERLIN_FACILITY_ID,
+    relationship_type: 'OWNS',
+    evidence_class: 'VERIFIED_FACILITY',
+    source_evidence_ids: Object.freeze([WIKIDATA_GIGA_BERLIN_SOURCE_ID]),
+    confidence: null,
+    valid_from: null,
+    valid_to: null,
+    methodology_version: 'open-industrial-cross-source-review/v1',
+  }, {
+    edge_id: 'edge_giga-berlin-located-campus',
+    from_id: GIGA_BERLIN_FACILITY_ID,
+    to_id: GIGA_BERLIN_GEO_ID,
+    relationship_type: 'LOCATED_IN',
+    evidence_class: 'VERIFIED_FACILITY',
+    source_evidence_ids: Object.freeze([WIKIDATA_GIGA_BERLIN_SOURCE_ID]),
+    confidence: null,
+    valid_from: null,
+    valid_to: null,
+    methodology_version: 'open-industrial-cross-source-review/v1',
+  }, {
+    edge_id: 'edge_giga-berlin-produces-model-y',
+    from_id: GIGA_BERLIN_FACILITY_ID,
+    to_id: MODEL_Y_PRODUCT_ID,
+    relationship_type: 'PRODUCES',
+    evidence_class: 'VERIFIED_FACILITY',
+    source_evidence_ids: Object.freeze([WIKIDATA_GIGA_BERLIN_SOURCE_ID]),
+    confidence: null,
+    valid_from: null,
+    valid_to: null,
+    methodology_version: 'open-industrial-cross-source-review/v1',
+  }] satisfies readonly VerifiedEntityRelationship[]),
+  evidence: Object.freeze([GLEIF_TESLA_EVIDENCE, WIKIDATA_GIGA_BERLIN_EVIDENCE]),
 });
 
 assertCompanyFacilityRegistry(COMPANY_FACILITY_REGISTRY);

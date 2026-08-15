@@ -69,6 +69,7 @@ describe('Phase 19 content and event normalization', () => {
   it('preserves original URL, platform ID and timestamps while removing tracking parameters', () => {
     const normalized = item('X');
     assert.equal(normalized.platform_item_id, 'post-001');
+    assert.equal(normalized.original_url, 'https://social.example.invalid/post/001?utm_source=test');
     assert.equal(normalized.canonical_url, 'https://social.example.invalid/post/001');
     assert.equal(normalized.published_at, '2026-08-15T01:00:00Z');
     assert.equal(normalized.retrieved_at, '2026-08-15T02:00:00Z');
@@ -122,6 +123,13 @@ describe('Phase 19 content and event normalization', () => {
   it('rejects ingestion when licence admission is absent', () => {
     const disabled = CONTENT_PROVIDERS[0]!;
     assert.throws(() => normalizeSourceRecord(disabled, record(), '2026-08-15T02:00:00Z'), /licence is not admitted/);
+  });
+
+  it('rejects insecure source URLs rather than preserving an HTTP ingestion path', () => {
+    assert.throws(
+      () => normalizeSourceRecord(admittedProvider('NEWS'), record({ canonical_url: 'http://example.invalid/story' }), '2026-08-15T02:00:00Z'),
+      /must use HTTPS/,
+    );
   });
 
   it('enforces a minute budget and bounded exponential retry in the shared executor', async () => {

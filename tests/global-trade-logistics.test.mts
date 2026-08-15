@@ -86,6 +86,33 @@ describe('Phase 17 trade and logistics truth boundary', () => {
     assert.match(csv, /licensed-test-provider/);
   });
 
+  it('neutralizes spreadsheet formulas in every exported string cell', () => {
+    const flow = adaptComtradeObservation({
+      providerRecordId: 'csv-formula-probe',
+      reporterGeoId: createStableEntityId('geo', 'country-cn'),
+      partnerGeoId: createStableEntityId('geo', 'country-us'),
+      productId: createStableEntityId('product', 'hs-64-footwear'),
+      hsVersion: 'HS2022',
+      hsCode: '64',
+      periodStart: '2025-01-01T00:00:00Z',
+      periodEnd: '2025-12-31T23:59:59Z',
+      tradeDirection: 'EXPORT',
+      value: 1250,
+      valueCurrency: 'USD',
+      quantity: null,
+      quantityUnit: null,
+      netWeightKg: null,
+      customsOrPortRef: '=HYPERLINK("https://attacker.invalid","open")',
+    }, evidence('OBSERVED_TRADE', 'COUNTRY'));
+    const csv = exportTradeFlowsCsv([{
+      ...flow,
+      provider_id: '\t@SUM(1+1)',
+    }]);
+    assert.match(csv, /'\t@SUM\(1\+1\)/);
+    assert.match(csv, /'=(?:HYPERLINK)/);
+    assert.doesNotMatch(csv, /(?:^|,)\s*[=+@]/m);
+  });
+
   it('rejects down-scoped Comtrade evidence', () => {
     assert.throws(() => adaptComtradeObservation({
       providerRecordId: 'bad-town-flow',

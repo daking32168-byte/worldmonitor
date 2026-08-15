@@ -153,6 +153,10 @@
 .industry-map__result small { font-size: 10px; }
 .industry-map__review-result { cursor: default; }
 .industry-map__review-gap { color: #e5c899 !important; }
+.industry-map__review-source { color: #9bdff2; font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
+.industry-map__review-details { border-top: 1px solid rgba(118, 178, 202, .17); padding-top: 7px; color: #a9c1ca; font-size: 10px; }
+.industry-map__review-details summary { color: #9bdff2; cursor: pointer; font-weight: 700; }
+.industry-map__review-details p { margin: 6px 0 0; line-height: 1.45; }
 .industry-map__result-labels,
 .industry-map__detail-badges { display: flex; flex-wrap: wrap; gap: 5px; }
 
@@ -168,6 +172,15 @@
 .industry-map__boundary-state p { margin: 4px 0 0; color: #aebfc5; font-size: 11px; line-height: 1.5; }
 .industry-map__surface { display: grid; align-content: start; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; min-height: 0; padding: 5px 16px 16px; background-image: linear-gradient(rgba(111, 181, 208, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(111, 181, 208, .04) 1px, transparent 1px); background-size: 26px 26px; }
 .industry-map__entity-surface { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.industry-map__geo-map { grid-column: 1 / -1; min-width: 0; border: 1px solid rgba(110, 199, 230, .2); border-radius: 11px; overflow: hidden; background: radial-gradient(circle at 53% 24%, rgba(39, 121, 150, .24), transparent 45%), #071e29; }
+.industry-map__geo-map svg { display: block; width: 100%; height: auto; max-height: 260px; aspect-ratio: 2 / 1; }
+.industry-map__graticule { stroke: rgba(129, 192, 216, .14); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.industry-map__geo-halo { fill: rgba(101, 220, 250, .18); stroke: rgba(101, 220, 250, .45); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.industry-map__geo-dot { fill: #78e0fb; stroke: #e7fbff; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.industry-map__geo-map a:hover .industry-map__geo-halo,
+.industry-map__geo-map a:focus .industry-map__geo-halo { fill: rgba(255, 195, 92, .32); stroke: #ffd085; outline: none; }
+.industry-map__geo-note { margin: 0; border-top: 1px solid rgba(110, 199, 230, .14); padding: 8px 10px; color: #93afba; font-size: 10px; line-height: 1.45; }
+.industry-map__source-index { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .industry-map__entity-stat { display: grid; gap: 3px; border: 1px solid rgba(114, 184, 211, .18); border-radius: 10px; padding: 14px; background: rgba(7, 31, 42, .82); }
 .industry-map__entity-stat strong { color: #8be3fb; font-size: 25px; }
 .industry-map__entity-stat span { color: #9bb5c0; font-size: 11px; }
@@ -200,6 +213,7 @@
 .industry-map__source-card a { color: #a7e6fa; overflow-wrap: anywhere; }
 .industry-map__source-card span { color: #819eaa; font-size: 10px; }
 .industry-map__detail-link { display: block; margin-top: 7px; border-radius: 7px; padding: 8px; background: rgba(18, 66, 84, .4); }
+.industry-map__ai-card { display: grid; gap: 7px; margin-top: 10px; border: 1px solid rgba(231, 170, 79, .28); border-radius: 10px; padding: 11px; background: rgba(83, 55, 13, .16); }
 .industry-map__empty { border: 1px dashed rgba(202, 157, 90, .38); border-radius: 10px; padding: 14px; color: #d7c7a9; }
 .industry-map__empty p { margin: 7px 0 0; color: #9fb1b7; line-height: 1.5; }
 
@@ -214,12 +228,13 @@
   .industry-map__actions { justify-content: flex-start; }
   .industry-map__truth { display: block; margin: 0 12px; }
   .industry-map__truth p { margin-top: 5px; }
-  .industry-map__modes { padding: 10px 12px; }
+  .industry-map__modes { flex-wrap: wrap; overflow-x: visible; padding: 10px 12px; }
   .industry-map__workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 0 12px 18px; overflow: visible; }
   .industry-map__search-panel { min-height: 330px; max-height: 46dvh; }
   .industry-map__distribution { min-height: 430px; max-height: 62dvh; }
   .industry-map__detail { grid-column: auto; max-height: 58dvh; }
   .industry-map__surface { grid-template-columns: minmax(0, 1fr); }
+  .industry-map__source-index { grid-template-columns: minmax(0, 1fr); }
   .industry-map__entity-surface { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .industry-map__coverage-boundary { grid-column: 1 / -1; }
   .industry-map__definitions { grid-template-columns: minmax(0, 1fr); }

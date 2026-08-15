@@ -105,7 +105,11 @@ describe('Phase 14 Global Intelligence shared truth contract', () => {
     assert.deepEqual(DATA_DISPLAY_STATUSES, [
       'NOT_CONFIGURED',
       'UNAVAILABLE',
+      'DELAYED_VERIFIED',
       'DELAYED_UNVERIFIED',
+      'END_OF_DAY',
+      'HISTORICAL_SNAPSHOT',
+      'MARKET_CLOSED',
       'STALE',
       'OBSERVED',
       'REALTIME_VERIFIED',
@@ -146,6 +150,7 @@ describe('Phase 14 Global Intelligence shared truth contract', () => {
       },
     });
     assert.ok(validateSourceEvidence(untraceable).includes('sourceUrl or sourceReference is required'));
+    assert.ok(validateSourceEvidence(evidence({ sourceUrl: 'http://example.test/insecure' })).includes('sourceUrl must use https'));
   });
 
   it('prevents country evidence from entering town results while permitting equal or finer geographic context', () => {
@@ -155,7 +160,7 @@ describe('Phase 14 Global Intelligence shared truth contract', () => {
     assert.throws(() => assertAggregationCompatible('COUNTRY', 'TOWN'), /Aggregation mismatch/);
   });
 
-  it('keeps model, social, AI, and unverified records out of fact tables', () => {
+  it('keeps non-fact evidence and non-verified licenses out of fact tables', () => {
     assert.doesNotThrow(() => assertEvidenceCanEnterFactTable(evidence()));
     for (const evidenceClass of ['MODELLED_FLOW', 'AI_SPECULATION', 'SOCIAL_SIGNAL', 'UNVERIFIED'] as const) {
       assert.throws(
@@ -163,6 +168,19 @@ describe('Phase 14 Global Intelligence shared truth contract', () => {
         /cannot enter a fact table/,
       );
     }
+    for (const licenseStatus of ['REVIEW_REQUIRED', 'RESTRICTED', 'NOT_CONFIGURED', 'UNKNOWN'] as const) {
+      assert.throws(
+        () => assertEvidenceCanEnterFactTable(evidence({ licenseStatus })),
+        /VERIFIED license is required/,
+      );
+    }
+    for (const qualityStatus of ['CONFLICTED', 'PARTIAL', 'MODELLED', 'UNVERIFIED'] as const) {
+      assert.throws(
+        () => assertEvidenceCanEnterFactTable(evidence({ qualityStatus })),
+        /VERIFIED or CORROBORATED quality is required/,
+      );
+    }
+    assert.doesNotThrow(() => assertEvidenceCanEnterFactTable(evidence({ qualityStatus: 'CORROBORATED' })));
   });
 
   it('retains all conflict candidates and requires an explicit preferred-value rule', () => {
@@ -211,7 +229,10 @@ describe('Phase 14 Global Intelligence shared truth contract', () => {
   it('maps legacy Market, Maritime, and China Factory states without changing their APIs', () => {
     assert.equal(new Set(LEGACY_MARKET_PROVIDER_STATUSES).size, 11);
     assert.equal(mapLegacyMarketProviderStatus('PROVIDER_STATUS_REALTIME_LICENSED'), 'REALTIME_VERIFIED');
-    assert.equal(mapLegacyMarketProviderStatus('PROVIDER_STATUS_MARKET_CLOSED'), 'OBSERVED');
+    assert.equal(mapLegacyMarketProviderStatus('PROVIDER_STATUS_DELAYED_15M'), 'DELAYED_VERIFIED');
+    assert.equal(mapLegacyMarketProviderStatus('PROVIDER_STATUS_END_OF_DAY'), 'END_OF_DAY');
+    assert.equal(mapLegacyMarketProviderStatus('PROVIDER_STATUS_HISTORICAL_SNAPSHOT'), 'HISTORICAL_SNAPSHOT');
+    assert.equal(mapLegacyMarketProviderStatus('PROVIDER_STATUS_MARKET_CLOSED'), 'MARKET_CLOSED');
     assert.equal(mapLegacyMaritimeSnapshotState({ configured: false, connected: false, observationCount: 0 }), 'NOT_CONFIGURED');
     assert.equal(mapLegacyMaritimeSnapshotState({ configured: true, connected: true, observationCount: 0 }), 'SOURCE_REQUIRED');
     assert.equal(mapLegacyMaritimeSnapshotState({ configured: true, connected: true, observationCount: 3 }), 'OBSERVED');
@@ -232,6 +253,7 @@ describe('Phase 14 Global Intelligence shared truth contract', () => {
     assert.deepEqual(Object.keys(GLOBAL_INTELLIGENCE_STATUS_DISPLAY).sort(), [...DATA_DISPLAY_STATUSES].sort());
     assert.equal(globalIntelligenceStatusDisplay('AI_SPECULATION').isObservedFact, false);
     assert.equal(globalIntelligenceStatusDisplay('REALTIME_VERIFIED').isLive, true);
+    assert.equal(globalIntelligenceStatusDisplay('MARKET_CLOSED').isLive, false);
 
     assert.equal(Object.keys(PROVIDER_OPERATION_TRUTH).length, PROVIDER_OPERATIONS.length);
     for (const operation of PROVIDER_OPERATIONS) {
