@@ -32,6 +32,10 @@ import {
   type IndustryMapSearchResult,
 } from '../../../shared/industry-map';
 import {
+  searchIndustrialSeedReviews,
+  type IndustrialSeedReview,
+} from '../../../shared/industrial-seed-review';
+import {
   industryMapClusterUrl,
   industryMapCompanyUrl,
   industryMapFacilityUrl,
@@ -127,6 +131,7 @@ function createSearchPanel(
   state: IndustryMapState,
   clusterResults: readonly IndustryMapSearchResult[],
   entityResults: readonly CompanyFacilitySearchResult[],
+  seedReviewResults: readonly IndustrialSeedReview[],
 ): HTMLElement {
   const aside = element('aside', 'industry-map__search-panel');
   const heading = element('div', 'industry-map__panel-heading');
@@ -151,12 +156,12 @@ function createSearchPanel(
   });
   aside.append(form);
 
-  const visibleCount = state.mode === 'companies' ? entityResults.length : clusterResults.length;
+  const visibleCount = state.mode === 'companies' ? entityResults.length : clusterResults.length + seedReviewResults.length;
   const summary = state.query
     ? `“${state.query}”找到 ${visibleCount} 条有来源记录。`
     : state.mode === 'companies'
       ? `当前事实库：${COMPANY_FACILITY_REGISTRY.companies.length} 家企业、${COMPANY_FACILITY_REGISTRY.facilities.length} 个生产/运营地点。未经来源审核的名称不会显示。`
-      : `当前导入 ${clusterResults.length} 条有来源种子；全球其余地区仍是覆盖缺口。`;
+      : `当前导入 ${clusterResults.length} 条产业种子，并维护 ${seedReviewResults.length} 条 Phase 18 全球来源审查；审查记录不等于完整覆盖。`;
   aside.append(element('p', 'industry-map__summary', summary));
 
   const list = element('div', 'industry-map__results');
@@ -180,6 +185,20 @@ function createSearchPanel(
     card.append(labels, element('strong', undefined, result.title));
     card.append(element('span', undefined, result.location));
     card.append(element('small', undefined, result.products.join(' · ')));
+    list.append(card);
+  }
+  for (const review of seedReviewResults) {
+    const card = element('article', 'industry-map__result industry-map__review-result');
+    const labels = element('div', 'industry-map__result-labels');
+    labels.append(
+      badge('Phase 18 来源审查', 'source'),
+      badge(`${Math.round(review.review_coverage_rate * 100)}% 维度`, review.coverage_status === 'COMPLETE' ? 'partial' : 'reference'),
+      badge('HS/贸易待审', 'unavailable'),
+    );
+    card.append(labels, element('strong', undefined, review.location_name));
+    card.append(element('span', undefined, review.product_labels.join(' · ')));
+    card.append(element('small', undefined, `已审：${review.reviewed_dimensions.join(' / ')} · 验证 ${review.last_verified_at.slice(0, 10)}`));
+    if (review.gaps[0]) card.append(element('small', 'industry-map__review-gap', review.gaps[0]));
     list.append(card);
   }
   for (const result of entityResults) {
@@ -558,12 +577,13 @@ function createDetailPanel(
 function render(root: HTMLElement, state: IndustryMapState): void {
   const clusterResults = state.mode === 'industry' ? searchIndustryMap(state.query) : [];
   const entityResults = state.mode === 'companies' ? searchVerifiedCompaniesAndFacilities(state.query) : [];
+  const seedReviewResults = state.mode === 'industry' ? searchIndustrialSeedReviews(state.query) : [];
   const page = element('main', 'industry-map');
   const header = element('header', 'industry-map__header');
   const title = element('div');
   title.append(element('p', 'industry-map__brand', PRIMARY_BRAND));
   title.append(element('h1', undefined, '全球产业情报地图'));
-  title.append(element('p', 'industry-map__lede', '统一产业、地点、产品、企业和证券骨架 · 当前产业覆盖 22 条种子，企业事实等待逐条来源审核'));
+  title.append(element('p', 'industry-map__lede', '统一产业、地点、产品、企业和证券骨架 · 22 条既有种子 + 6 类全球来源审查，企业事实仍需逐边准入'));
   const actions = element('nav', 'industry-map__actions');
   actions.append(internalLink(root, state, '产业地图首页', industryMapOverviewUrl(), 'industry-map__button'));
   const home = element('a', 'industry-map__button', '返回全球看板');
@@ -577,7 +597,7 @@ function render(root: HTMLElement, state: IndustryMapState): void {
 
   const workspace = element('div', 'industry-map__workspace');
   workspace.append(
-    createSearchPanel(root, state, clusterResults, entityResults),
+    createSearchPanel(root, state, clusterResults, entityResults, seedReviewResults),
     state.mode === 'industry' ? createDistributionSurface(root, state) : createCompanyFacilitySurface(),
     createDetailPanel(root, state, clusterResults, entityResults),
   );

@@ -151,6 +151,8 @@
 .industry-map__result span,
 .industry-map__result small { min-width: 0; overflow-wrap: anywhere; color: #9db8c3; }
 .industry-map__result small { font-size: 10px; }
+.industry-map__review-result { cursor: default; }
+.industry-map__review-gap { color: #e5c899 !important; }
 .industry-map__result-labels,
 .industry-map__detail-badges { display: flex; flex-wrap: wrap; gap: 5px; }
 
