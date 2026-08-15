@@ -752,6 +752,23 @@ fn open_url(webview: Webview, url: String) -> Result<(), String> {
     }
 }
 
+#[tauri::command]
+fn open_notification_settings(webview: Webview) -> Result<(), String> {
+    require_trusted_window(webview.label())?;
+    #[cfg(windows)]
+    {
+        return open_in_shell("ms-settings:notifications");
+    }
+    #[cfg(target_os = "macos")]
+    {
+        return open_in_shell("x-apple.systempreferences:com.apple.preference.notifications");
+    }
+    #[cfg(all(not(windows), not(target_os = "macos")))]
+    {
+        Err("Open notification settings from the Linux desktop settings application".to_string())
+    }
+}
+
 fn open_logs_folder_impl(app: &AppHandle) -> Result<PathBuf, String> {
     let dir = logs_dir_path(app)?;
     open_path_in_shell(&dir)?;
@@ -1662,6 +1679,7 @@ fn main() {
     }
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_notification::init())
         .menu(build_app_menu)
         .on_menu_event(handle_menu_event)
         .manage(LocalApiState::default())
@@ -1685,6 +1703,7 @@ fn main() {
             open_live_channels_window_command,
             close_live_channels_window,
             open_url,
+            open_notification_settings,
             open_youtube_login,
             fetch_polymarket
         ])
