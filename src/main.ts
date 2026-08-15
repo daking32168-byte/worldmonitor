@@ -15,6 +15,7 @@ import { captureContentAttributionFromUrl } from '../shared/content-attribution'
 import { isStockWorkspacePath } from './features/pokieticker/stock-workspace-route';
 import { isMaritimeLogisticsPath } from './features/maritime-logistics/maritime-logistics-route';
 import { isChinaFactoryPath } from './features/china-factory/china-factory-route';
+import { isIndustryMapPath } from './features/industry-map/industry-map-path';
 import { isProviderOperationsPath } from './features/provider-operations/provider-operations-route';
 
 if (SITE_VARIANT === 'happy') {
@@ -635,6 +636,13 @@ if (urlParams.get('settings') === '1') {
   // future contracted bill-of-lading observations visibly separate.
   void import('./features/china-factory/china-factory').then(({ initChinaFactoryWorkspace }) => {
     initChinaFactoryWorkspace('app');
+  }).catch(console.error);
+} else if (isIndustryMapPath(window.location.pathname)) {
+  // Phase 15 remains an owned route in the existing SPA/Tauri binary. It
+  // adapts the reviewed seed registry and never loads maintenance CSV or test
+  // fixtures into the production import graph.
+  void import('./features/industry-map/industry-map').then(({ initIndustryMapWorkspace }) => {
+    initIndustryMapWorkspace('app');
   }).catch(console.error);
 } else if (isProviderOperationsPath(window.location.pathname)) {
   // The operational control center is an owned surface. It observes only
