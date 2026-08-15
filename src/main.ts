@@ -19,6 +19,11 @@ import { isIndustryMapPath } from './features/industry-map/industry-map-path';
 import { isProviderOperationsPath } from './features/provider-operations/provider-operations-route';
 import { isTradeFlowsPath } from './features/trade-flows/trade-flows-route';
 import { isTrendsPath } from './features/trends/trends-route';
+import { isManualActionCenterPath } from './features/manual-action-center/manual-action-center-route';
+import { isGlobalMarketsPath } from './features/global-markets/global-markets-route';
+import { isPredictionsPath } from './features/predictions/predictions-route';
+import { isImpactGraphPath } from './features/impact-graph/impact-graph-route';
+import { isIntelligenceCenterPath } from './features/intelligence-center/intelligence-center-route';
 
 if (SITE_VARIANT === 'happy') {
   // Keeps happy-theme.css off other variants' eager CSS graph. On happy, the
@@ -605,6 +610,32 @@ try {
 // Standalone windows: ?settings=1 = panel display settings, ?live-channels=1 = channel management
 // Both need i18n initialized so t() does not return undefined.
 const urlParams = new URL(location.href).searchParams;
+
+const renderOwnedRouteError = (routeName: string, error: unknown): void => {
+  console.error(`[owned-route] ${routeName} failed to load`, error);
+  const root = document.getElementById('app');
+  if (!root) return;
+  const page = document.createElement('main');
+  page.className = 'owned-route-error';
+  const heading = document.createElement('h1');
+  heading.textContent = `${routeName}加载失败`;
+  const explanation = document.createElement('p');
+  explanation.textContent = '功能未被标记为可用。请重试；若仍失败，请保留此页面用于诊断。';
+  const retry = document.createElement('button');
+  retry.type = 'button';
+  retry.textContent = '重新加载';
+  retry.addEventListener('click', () => window.location.reload());
+  const home = document.createElement('a');
+  home.href = '/';
+  home.textContent = '返回地球';
+  page.append(heading, explanation, retry, document.createTextNode(' '), home);
+  root.replaceChildren(page);
+};
+
+const loadOwnedRoute = (routeName: string, initializer: () => Promise<void>): void => {
+  void initializer().catch((error) => renderOwnedRouteError(routeName, error));
+};
+
 if (urlParams.get('settings') === '1') {
   void Promise.all([import('./services/i18n'), import('./settings-window')]).then(
     async ([i18n, m]) => {
@@ -623,48 +654,82 @@ if (urlParams.get('settings') === '1') {
   // The stock workspace is an owned, full-screen WorldMonitor route. It is
   // deliberately loaded as an island rather than mounting a second React app
   // or framing PokieTicker/the provider in an iframe.
-  void import('./features/pokieticker/stock-workspace').then(({ initStockWorkspace }) => {
+  loadOwnedRoute('股票工作区', async () => {
+    const { initStockWorkspace } = await import('./features/pokieticker/stock-workspace');
     initStockWorkspace('app');
-  }).catch(console.error);
+  });
 } else if (isMaritimeLogisticsPath(window.location.pathname)) {
   // The logistics workspace is another owned WorldMonitor route. It consumes
   // same-origin Maritime/SupplyChain/Shipping contracts and intentionally
   // renders an empty state rather than embedding a provider map or fixture.
-  void import('./features/maritime-logistics/maritime-logistics').then(({ initMaritimeLogistics }) => {
+  loadOwnedRoute('海运物流工作区', async () => {
+    const { initMaritimeLogistics } = await import('./features/maritime-logistics/maritime-logistics');
     initMaritimeLogistics('app');
-  }).catch(console.error);
+  });
 } else if (isChinaFactoryPath(window.location.pathname)) {
   // This native route keeps official cluster facts, model estimates and any
   // future contracted bill-of-lading observations visibly separate.
-  void import('./features/china-factory/china-factory').then(({ initChinaFactoryWorkspace }) => {
+  loadOwnedRoute('中国世界工厂', async () => {
+    const { initChinaFactoryWorkspace } = await import('./features/china-factory/china-factory');
     initChinaFactoryWorkspace('app');
-  }).catch(console.error);
+  });
 } else if (isIndustryMapPath(window.location.pathname)) {
   // Phase 15 remains an owned route in the existing SPA/Tauri binary. It
   // adapts the reviewed seed registry and never loads maintenance CSV or test
   // fixtures into the production import graph.
-  void import('./features/industry-map/industry-map').then(({ initIndustryMapWorkspace }) => {
+  loadOwnedRoute('全球产业地图', async () => {
+    const { initIndustryMapWorkspace } = await import('./features/industry-map/industry-map');
     initIndustryMapWorkspace('app');
-  }).catch(console.error);
+  });
 } else if (isTradeFlowsPath(window.location.pathname)) {
   // Trade/cargo observations are isolated from the AIS workspace. This route
   // never promotes vessel positions or national aggregates into shipments.
-  void import('./features/trade-flows/trade-flows').then(({ initTradeFlowsWorkspace }) => {
+  loadOwnedRoute('贸易流向', async () => {
+    const { initTradeFlowsWorkspace } = await import('./features/trade-flows/trade-flows');
     initTradeFlowsWorkspace('app');
-  }).catch(console.error);
+  });
 } else if (isTrendsPath(window.location.pathname)) {
   // Phase 20 trend views consume only normalized SourceItems and a configured
   // server SSE contract; production never imports test fixtures.
-  void import('./features/trends/trends').then(({ initTrendsWorkspace }) => {
+  loadOwnedRoute('全球趋势', async () => {
+    const { initTrendsWorkspace } = await import('./features/trends/trends');
     initTrendsWorkspace('app');
-  }).catch(console.error);
+  });
 } else if (isProviderOperationsPath(window.location.pathname)) {
   // The operational control center is an owned surface. It observes only
   // protected configuration presence and explicit executor telemetry; it never
   // reads a key or embeds an upstream Provider page.
-  void import('./features/provider-operations/provider-operations').then(({ initProviderOperationsWorkspace }) => {
+  loadOwnedRoute('Provider 运维中心', async () => {
+    const { initProviderOperationsWorkspace } = await import('./features/provider-operations/provider-operations');
     initProviderOperationsWorkspace('app');
-  }).catch(console.error);
+  });
+} else if (isManualActionCenterPath(window.location.pathname)) {
+  // Human-required file choices stay in one owned surface. It uses the native
+  // file picker and automatically verifies every committed or rolled-back revision.
+  loadOwnedRoute('人工操作中心', async () => {
+    const { initManualActionCenter } = await import('./features/manual-action-center/manual-action-center');
+    initManualActionCenter('app');
+  });
+} else if (isGlobalMarketsPath(window.location.pathname)) {
+  loadOwnedRoute('全球交易所与证券市场', async () => {
+    const { initGlobalMarketsWorkspace } = await import('./features/global-markets/global-markets');
+    initGlobalMarketsWorkspace('app');
+  });
+} else if (isPredictionsPath(window.location.pathname)) {
+  loadOwnedRoute('AI 推演与评估', async () => {
+    const { initPredictionsWorkspace } = await import('./features/predictions/predictions');
+    initPredictionsWorkspace('app');
+  });
+} else if (isImpactGraphPath(window.location.pathname)) {
+  loadOwnedRoute('统一影响图谱', async () => {
+    const { initImpactGraphWorkspace } = await import('./features/impact-graph/impact-graph');
+    initImpactGraphWorkspace('app');
+  });
+} else if (isIntelligenceCenterPath(window.location.pathname)) {
+  loadOwnedRoute('个人情报中心', async () => {
+    const { initIntelligenceCenter } = await import('./features/intelligence-center/intelligence-center');
+    initIntelligenceCenter('app');
+  });
 } else {
   installUtmInterceptor();
   markLcpDebug('wm:boot:app-construct');

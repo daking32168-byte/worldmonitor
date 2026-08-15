@@ -14,7 +14,7 @@ import {
 } from '@/config/map-layer-definitions';
 import type { MapRenderer } from '@/config/map-layer-definitions';
 import type { MapVariant } from '@/config/map-layer-definitions';
-import { LAYER_PRESETS, LAYER_KEY_MAP } from '@/config/commands';
+import { LAYER_PRESETS, LAYER_KEY_MAP, WORKSPACE_PATHS } from '@/config/commands';
 import { TIER1_COUNTRIES } from '@/services/country-instability';
 import { getCachedCountryScores } from '@/services/cached-risk-scores';
 import { CURATED_COUNTRIES } from '@/config/countries';
@@ -475,6 +475,12 @@ export class SearchManager implements AppModule {
     const action = cmd.id.slice(colonIdx + 1);
 
     switch (category) {
+      case 'workspace': {
+        const path = WORKSPACE_PATHS[action];
+        if (path) window.location.assign(path);
+        break;
+      }
+
       case 'nav':
         this.ctx.map?.setView(action as MapView);
         {

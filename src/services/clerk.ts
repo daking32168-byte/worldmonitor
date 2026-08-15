@@ -21,10 +21,16 @@
  * cookie-backed signed-in session lights up the UI without a refresh.
  */
 
-import type { Clerk } from '@clerk/clerk-js';
+import type { Clerk } from '@clerk/types';
 import { enqueueSentryCall } from '@/bootstrap/sentry-defer';
 
-type ClerkInstance = Clerk;
+// @clerk/types models the post-load public instance but omits the bootstrap
+// `load()` method exposed by clerk.browser.js. The app owns that one runtime
+// extension because it deliberately loads Clerk's UMD bootstrap rather than
+// bundling @clerk/clerk-js and its unrelated wallet/mobile dependency graph.
+type ClerkInstance = Clerk & {
+  load(options?: Record<string, unknown>): Promise<void>;
+};
 type ClerkSession = NonNullable<ClerkInstance['session']>;
 
 function readPublishableKey(): string | undefined {

@@ -108,7 +108,11 @@ function collectSkills() {
     }
     const bytes = readFileSync(skillPath);
     const md = bytes.toString('utf-8');
+    // GitHub/Vercel serve the repository's canonical LF bytes. Hash the same
+    // payload on every developer OS so a Windows CRLF checkout cannot publish
+    // a digest that disagrees with the deployed SKILL.md.
     const lfMd = md.replace(/\r\n/g, '\n');
+    const canonicalBytes = Buffer.from(lfMd, 'utf-8');
     const fm = parseFrontmatter(lfMd);
     if (!fm.description) {
       throw new Error(`${skillPath} missing "description" in frontmatter`);
@@ -125,7 +129,7 @@ function collectSkills() {
       type: 'skill-md',
       description: fm.description,
       url: `${PUBLIC_BASE}/.well-known/agent-skills/${name}/SKILL.md`,
-      digest: `sha256:${sha256Hex(bytes)}`,
+      digest: `sha256:${sha256Hex(canonicalBytes)}`,
     };
   });
 }

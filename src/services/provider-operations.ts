@@ -38,6 +38,7 @@ export type ProviderOperationId =
   | 'comtrade-batch'
   | 'china-customs-import'
   | 'shipment-provider-import'
+  | 'local-baseline-prediction'
   | 'model-evaluation';
 
 export type ProviderOperationReadiness =
@@ -70,7 +71,7 @@ export type ProviderOperationDefinition = {
   /** Any one complete set permits an attempt; alternatives must never be
    * treated as an all-keys requirement. */
   credentialAlternatives?: readonly (readonly RuntimeSecretKey[])[];
-  queueKind?: 'NEWS_ANALYSIS' | 'IMPORT' | 'STREAM';
+  queueKind?: 'NEWS_ANALYSIS' | 'IMPORT' | 'STREAM' | 'MODEL';
   safetyBoundary: string;
 };
 
@@ -252,6 +253,20 @@ export const PROVIDER_OPERATIONS: readonly ProviderOperationDefinition[] = [
     safetyBoundary: '不得由 AIS、企业地址、国家贸易或模型路线推断货物、买卖方、工厂或提单字段。',
   },
   {
+    id: 'local-baseline-prediction',
+    title: 'LOCAL_BASELINE_V1 推演',
+    provider: '本地确定性基线（无外部 Provider）',
+    purpose: '对已验证输入生成事件爆发、证券、产业或物流推演；输入不足时只保存 INSUFFICIENT_DATA。',
+    cadence: '新证据或新趋势快照到达后；到期结果由独立评估任务记录。',
+    idempotencyScope: 'target + horizon + data cutoff + feature values + model version',
+    lockScope: 'prediction:{target}:{horizon}:{cutoff}:LOCAL_BASELINE_V1',
+    minimumRetryIntervalMs: 15_000,
+    requiredFeatures: [],
+    requiredSecrets: [],
+    queueKind: 'MODEL',
+    safetyBoundary: '本地基线无随机数且未校准；输出永远是 AI_SPECULATION，不能写入事实表或称为已证明因果。',
+  },
+  {
     id: 'model-evaluation',
     title: '模型版本与回测记录',
     provider: '受配置模型 Provider',
@@ -351,6 +366,13 @@ export const PROVIDER_OPERATION_TRUTH: Readonly<Record<ProviderOperationId, Prov
     evidenceClasses: ['CONTRACTED_SHIPMENT'],
     aggregationLevels: ['SHIPMENT'],
     licenseNote: 'A signed Provider contract and field-level display/export rights are required before activation.',
+  },
+  'local-baseline-prediction': {
+    coverageStatus: 'PARTIAL',
+    licenseStatus: 'VERIFIED',
+    evidenceClasses: ['AI_SPECULATION'],
+    aggregationLevels: ['GLOBAL', 'COMPANY', 'CLUSTER', 'ROUTE'],
+    licenseNote: 'First-party deterministic local computation; source-content rights remain independently enforced.',
   },
   'model-evaluation': {
     coverageStatus: 'OUT_OF_SCOPE',

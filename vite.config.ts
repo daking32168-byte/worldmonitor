@@ -28,18 +28,14 @@ const BROTLI_EXTENSIONS = new Set(['.js', '.mjs', '.css', '.html', '.svg', '.jso
 const STATIC_SCRIPT_NONCE = 'wm-static-bootstrap';
 
 // @clerk/clerk-js is loaded as a UMD bundle from the Clerk Frontend API at
-// runtime (src/services/clerk.ts), not bundled. Resolve the version from
-// package.json so the runtime SDK matches the @clerk/clerk-js types we compile
-// against, and inject it via `define` (__CLERK_JS_VERSION__). Fall back to
-// devDependencies in case the (types-only) dep is moved there, and fail the
-// build loudly if it can't be resolved — an empty version yields a `.../@/dist`
-// URL that 404s and silently breaks auth in production.
-const CLERK_DEPS = pkg.dependencies as Record<string, string>;
-const CLERK_DEV_DEPS = (pkg.devDependencies ?? {}) as Record<string, string>;
-const CLERK_JS_VERSION = (CLERK_DEPS['@clerk/clerk-js'] || CLERK_DEV_DEPS['@clerk/clerk-js'] || '')
+// runtime and is deliberately not installed into the application dependency
+// graph. Keep the exact remote runtime version in package.json while compiling
+// only against @clerk/types; this prevents unrelated wallet/mobile packages
+// from entering the build toolchain merely to supply TypeScript declarations.
+const CLERK_JS_VERSION = (pkg.runtimeVersions?.clerkJs || '')
   .replace(/^[\^~>=<\s]*/, '');
 if (!CLERK_JS_VERSION) {
-  throw new Error('[vite] @clerk/clerk-js not found in package.json — __CLERK_JS_VERSION__ would be empty and 404 the Clerk Frontend API script URL.');
+  throw new Error('[vite] runtimeVersions.clerkJs not found in package.json — __CLERK_JS_VERSION__ would be empty and 404 the Clerk Frontend API script URL.');
 }
 // @clerk/ui (the runtime UI controller, pinned by CLERK_UI_VERSION in
 // src/services/clerk.ts) is major 1, which pairs with @clerk/clerk-js major 6.
