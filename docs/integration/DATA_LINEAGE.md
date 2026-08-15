@@ -446,3 +446,178 @@ contain a licensed market observation, price, candle, exchange timestamp, AIS
 cargo fact, deterministic article cause, trade/factory observation, Provider
 secret, deployment response or account entitlement. Those remain governed by
 their source-bearing runtime lineage.
+
+## Phase 13 architecture-document lineage
+
+Phase 13 introduces no data-bearing lineage. Its controlling-plan receipt is a
+byte-identical copy with SHA-256
+`975F72D8BA5CA18ACAD8A8BF1F4B68679B67E9B30A44EE573C8BE82D796FB961`.
+The ADRs and component inventory define future validation and storage
+boundaries but contain no source record, observation, normalized entity,
+Provider payload, import, fixture promotion, model result or migration.
+
+The source-control lineage is:
+
+```text
+c730fc6... accepted functional head
+  -> cc5d8bfd... Phase 12 documentation receipt tip
+  -> integration/global-intelligence-v2 local Phase 13 documentation
+```
+
+Future Phase 14 evidence records must reference the original source evidence;
+this architecture documentation cannot itself be used as a market, AIS, news,
+trade, factory, company or prediction observation.
+
+## Phase 14 shared-contract lineage
+
+Phase 14 adds no Provider payload or durable data record. It establishes the
+validation path later data must follow:
+
+```text
+legacy/provider source state
+  -> additive Market / Maritime / China Factory compatibility adapter
+  -> SourceEvidence + stable entity alias + explicit null reasons
+  -> aggregation / conflict / fact-vs-model validation
+  -> GlobalIntelligenceResponse with canonical data status
+```
+
+China Factory registry statements map to `OFFICIAL_CLUSTER` at `CLUSTER`
+aggregation. They never inherit national Comtrade values as town, facility,
+port, route or shipment observations. Market licensed realtime remains the only
+legacy status that maps to `REALTIME_VERIFIED`; Maritime configured-but-empty
+maps to `SOURCE_REQUIRED`, not success.
+
+## Phase 15 industry-map lineage
+
+Phase 15 does not ingest a new Provider payload. It adapts the reviewed Phase 7
+China Factory registry through the Phase 14 identity/evidence contract:
+
+```text
+ChinaFactoryCluster source statement
+  -> source URL keyed SourceEvidence
+  -> GeoUnit (administrative label; no boundary or centroid)
+  -> IndustryCluster
+  -> ProductTaxonomyNode
+  -> reviewed ProductHsMapping only when the legacy registry has one
+  -> sourced search / distribution index / detail UI
+```
+
+HS 2012 chapter 64 evidence classifies footwear; it is not a Huidong or Putian
+trade observation. No Comtrade response is attached, so neither location may
+display an amount, weight, destination, port or ranking. The 20 MIIT entries
+stop before `ProductHsMapping` and remain `REFERENCE_ONLY`.
+
+The maintenance CSV is an operator template and validation surface, not a
+runtime source. A row cannot enter this lineage until its source, mapping and
+boundary claims are separately reviewed and committed to the authoritative
+registry.
+
+## Phase 16 company/facility/security lineage
+
+Phase 16 ingests no company or facility Provider payload. Its production path
+is a gated registry contract:
+
+```text
+reviewed legal/facility/listing source
+  -> SourceEvidence eligible for fact tables
+  -> stable Company / Facility / Brand / Security identity
+  -> separately sourced relationship edge
+  -> verified search/detail/coverage result
+  -> optional MIC-qualified stock relationship panel
+```
+
+The current production arrays stop before the first step and contain zero
+records. Existing stock symbols, office-location config and industry labels are
+not read into the registry. Test-only positive examples exercise the full path
+inside `tests/global-company-facility-registry.test.mts` and are excluded from
+the Vite import graph.
+
+Operator CSV files are templates, not facts or runtime sources. Their validator
+requires reviewed rows to carry stable source IDs, HTTPS source URLs and
+verification timestamps. Passing the validator still requires explicit code
+review before any record joins the authoritative registry.
+
+## Phase 17 trade and logistics lineage
+
+```text
+UN Comtrade aggregate
+  -> OBSERVED_TRADE SourceEvidence at COUNTRY
+  -> TradeFlowObservation retaining period/unit/provider/aggregation
+
+lawfully supplied customs file
+  -> checksum + publisher + publication + use-right manifest
+  -> reviewed SourceEvidence at its original aggregation
+  -> TradeFlowObservation (never silently downscaled)
+
+contracted shipment Provider
+  -> enabled contract + reviewed licence + permitted field list
+  -> CONTRACTED_SHIPMENT SourceEvidence
+  -> ShipmentObservation at SHIPMENT aggregation
+
+AIS / PortWatch / Shipping
+  -> vessel or port observation only
+  -> optional explicit LogisticsNode/Route relation
+  -X-> cargo, buyer, factory or bill-of-lading fields
+```
+
+Production stops before the first value-bearing observation: all Phase 17
+arrays are empty. The two operator templates are not imported into application
+code. Model routes carry a methodology version and remain separate from actual
+or company-disclosed records.
+
+## Phase 18 industrial seed review lineage
+
+```text
+official government / exchange / issuer / company publication
+  -> SourceEvidence with stable ID, claim class and aggregation
+  -> one of five reviewed dimensions
+  -> IndustrialSeedReview with verification time and named gaps
+  -> product <-> location search card
+  -X-> automatic Phase 16 company/facility/security promotion
+  -X-> automatic HS mapping or TradeFlowObservation
+```
+
+The coverage rate has the closed denominator of five source-review dimensions.
+It must not be reused as a market, company, factory or data-provider coverage
+rate. The review queue remains separate from the empty authoritative entity
+registry and from every value-bearing trade registry.
+
+## Phase 19 content and event lineage
+
+```text
+licensed Provider API / lawfully supplied content file
+  -> Provider policy admission (ingest/display/export/rate/retry)
+  -> SourceItem retaining platform ID, canonical URL and timestamps
+  -> deterministic language/entity/location extraction
+  -> platform-ID / URL / content+author de-duplication
+  -> EventCandidate with original-source timeline
+
+unconfigured API / unreviewed licence / web page
+  -X-> SourceItem
+```
+
+Social source authority maps to `SOCIAL_SIGNAL`, not official fact. The event
+candidate becomes official-confirmed only when an admitted SourceItem carries
+explicit official authority. A content fingerprint is an identity/de-dup key,
+not proof that two authors independently verified the event.
+
+## Phase 20 trend lineage
+
+```text
+EventCandidate + admitted unique SourceItems + fixed as_of
+  -> 15m / 1h / 6h / 24h windows
+  -> versioned explainable score components
+  -> NORMAL ... RESOLVED state and reasons
+  -> first-observation cross-platform propagation path
+  -> TrendSnapshot
+  -> configured service SSE -> /trends
+
+null production SSE endpoint
+  -> NOT_CONFIGURED
+  -X-> test fixture or upstream page fallback
+```
+
+Trend heat is a deterministic modelled signal. It is not an official event,
+causal impact, market result or completeness claim. Algorithm version,
+component values and `as_of` travel with every point so a later implementation
+cannot silently reinterpret an earlier score.

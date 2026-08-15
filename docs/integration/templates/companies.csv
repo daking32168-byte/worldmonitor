@@ -1,0 +1,2 @@
+record_status,company_id,legal_name,registration_country,registration_number,canonical_name,alternate_names,company_type,parent_company_id,ultimate_parent_id,headquarters_geo_id,website,listed_status,coverage_tier,source_id,source_url,last_verified_at
+TEMPLATE,company_cn-example-registration,示例企业（禁止生产导入）,CN,EXAMPLE-REGISTRATION,示例企业,,LEGAL_ENTITY,,,,,UNKNOWN,TIER_D,,,

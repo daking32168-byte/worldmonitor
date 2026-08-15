@@ -1,0 +1,41 @@
+.trade-flows {
+  min-height: 100vh;
+  overflow: auto;
+  color: #e7edf5;
+  background: radial-gradient(circle at 20% 0, #153245 0, #09131e 42%, #050a10 100%);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.trade-flows__shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 30px 0 56px; }
+.trade-flows__header { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; }
+.trade-flows__eyebrow { margin: 0 0 6px; color: #55d6be; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+.trade-flows h1 { margin: 0; font-size: clamp(28px, 4vw, 48px); }
+.trade-flows__subtitle { max-width: 720px; color: #aebdca; line-height: 1.6; }
+.trade-flows__nav { display: flex; flex-wrap: wrap; gap: 10px; }
+.trade-flows__nav a { color: #bdeee5; border: 1px solid #2f665f; border-radius: 999px; padding: 8px 12px; text-decoration: none; }
+.trade-flows__banner, .trade-flows__panel, .trade-flows__metric { border: 1px solid #244154; background: rgba(10, 25, 38, .86); border-radius: 14px; }
+.trade-flows__banner { margin-top: 24px; padding: 18px 20px; border-left: 4px solid #e7ad4b; }
+.trade-flows__banner p { margin: 7px 0 0; color: #c2ccd5; }
+.trade-flows__metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.trade-flows__metric { padding: 18px; display: grid; gap: 5px; }
+.trade-flows__metric strong { font-size: 30px; color: #fff; }
+.trade-flows__metric span { color: #9fb1bf; }
+.trade-flows__panel { margin-top: 14px; padding: 20px; }
+.trade-flows__panel h2 { margin-top: 0; }
+.trade-flows__panel li { margin: 10px 0; line-height: 1.5; }
+.trade-flows__legend { padding: 0; list-style: none; }
+.trade-flows__swatch { display: inline-block; width: 22px; height: 5px; margin-right: 10px; vertical-align: middle; border-radius: 3px; }
+.trade-flows__swatch--observed { background: #43d6b5; }
+.trade-flows__swatch--disclosed { background: #71a7ff; }
+.trade-flows__swatch--modelled { background: repeating-linear-gradient(90deg, #f0ad4e 0 5px, transparent 5px 8px); }
+.trade-flows__empty { color: #e7c682; }
+
+@media (max-width: 760px) {
+  .trade-flows__shell { width: min(100% - 22px, 1180px); padding-top: 20px; }
+  .trade-flows__header { display: grid; }
+  .trade-flows__metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 420px) {
+  .trade-flows__metrics { grid-template-columns: 1fr; }
+}

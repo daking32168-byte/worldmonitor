@@ -545,3 +545,316 @@ failure modes; run 8 supplies the first complete exact-head success set.
 workflows, 13 successful Test jobs and 0 failures in 23,022 data tests. The
 documentation receipt is auditable without promoting PR readiness, merge,
 deployment or Provider availability.
+
+## D-0041 - Preserve one product and establish explicit domain boundaries
+
+**Decision:** Extend the existing Preact/Vite, server/API, generated-contract,
+relay, Provider Operations and Tauri surfaces through five logical layers. Do
+not create a second V2 frontend, API stack, desktop shell or copied domain.
+
+**Reason:** Parallel implementations would split truth, licensing, identity,
+layout, testing and release behavior.
+
+**Consequence:** Phase 14+ work follows
+`docs/integration/adr/0041-domain-boundaries.md` and the repository's existing
+dependency/runtime rules.
+
+## D-0042 - Make evidence and data state first-class
+
+**Decision:** Require shared evidence class, aggregation scope, provenance,
+time, license, freshness, quality, confidence, conflict and explicit-null state.
+Keep fact, observation, social signal, model output and fixture semantics
+separate.
+
+**Reason:** An undifferentiated success result would turn aggregate, stale,
+modelled or unsupported input into false product facts.
+
+**Consequence:** Phase 14 implements the shared contract described in
+`docs/integration/adr/0042-evidence-model.md` before domain phases proceed.
+
+## D-0043 - Use opaque stable IDs and persistent source identity mappings
+
+**Decision:** Give every canonical entity a repository-owned prefixed ID and
+map Provider-native identities to it. Never key canonical records by mutable
+name, URL, coordinate, ticker or platform handle.
+
+**Reason:** Display identifiers change and collide; tickers are not globally
+unique and entity resolution must remain auditable.
+
+**Consequence:** Phase 14 owns one generator, prefix registry, alias mapping and
+merge/split history contract, detailed in
+`docs/integration/adr/0043-stable-entity-ids.md`.
+
+## D-0044 - Gate Provider capabilities by reviewed rights
+
+**Decision:** Separate authentication from allowed use, display,
+redistribution, retention, caching and export rights. Missing or unreviewed
+rights fail closed; secrets never enter the registry or evidence.
+
+**Reason:** A working API key or source-registry entry does not establish legal
+display, redistribution, export or real-time labelling.
+
+**Consequence:** Provider Operations and response envelopes expose only
+non-sensitive reviewed state under
+`docs/integration/adr/0044-provider-licensing.md`.
+
+## D-0045 - Separate storage responsibilities before selecting new infrastructure
+
+**Decision:** Keep source evidence, canonical facts, model output, cache/stream
+state, large permitted artifacts, client state and test fixtures logically
+separate. Reuse existing storage where it fits; require a later measured ADR
+before introducing a new database, graph engine or search service.
+
+**Reason:** The repository already uses Redis, Convex, client persistence and
+R2/KV helpers, while the execution plan does not prescribe a new database.
+
+**Consequence:** Phase 13 adds no database or migration. Later physical choices
+must satisfy the responsibilities and isolation in
+`docs/integration/adr/0045-storage-strategy.md`.
+
+## D-0046 - One runtime-neutral Global Intelligence truth contract
+
+**Decision:** Put the controlled evidence, aggregation, status, explicit-null,
+conflict, stable-ID, fact/model and response-envelope vocabulary in
+`shared/global-intelligence-contract.ts`.
+
+**Reason:** Browser, server, sidecar, scripts and later domains need the same
+fail-closed rules without importing a transport, credential or UI module.
+
+**Consequence:** Later phases extend this contract. They may not introduce a
+second evidence/status vocabulary or write model/social/unverified records into
+fact tables.
+
+## D-0047 - Adapt existing domains without changing their public APIs
+
+**Decision:** Map existing Market ProviderStatus, Maritime snapshot state and
+China Factory evidence through an additive compatibility module. Do not edit
+existing proto or generated API files in Phase 14.
+
+**Reason:** Phase 14 establishes shared semantics, while legacy clients and
+accepted RPC/route behavior must remain compatible.
+
+**Consequence:** Migration can proceed consumer by consumer. Empty legacy arrays
+do not become success, national trade remains national, and registry evidence
+does not become a shipment observation.
+
+## D-0048 - Separate Provider execution readiness from data truth
+
+**Decision:** Provider Operations retains its readiness/outcome controls and
+adds non-sensitive coverage, license, evidence and aggregation profiles plus a
+derived canonical data status for visible UI copy.
+
+**Reason:** A configured executor or completed callback is not proof of an
+observation, license right or realtime entitlement.
+
+**Consequence:** Retry safety is unchanged; the UI has one canonical V2 status
+mapping and cannot promote an unreviewed license to observed/live data.
+
+## D-0049 - Use hosted Ubuntu and native macOS as cross-platform gates
+
+**Decision:** Use GitHub-hosted Ubuntu 24.04 with Node 24 and `npm ci` as the
+authoritative Phase 14/15 data gate. Add a read-only `macos-14` Apple Silicon
+PR job that builds the unsigned Tauri application without packaging and runs
+the same full data contract. Keep Intel packaging on the explicit
+`macos-15-intel` release runner.
+
+**Reason:** WSL would reproduce Linux only, mutate the developer host and still
+provide no native macOS coverage. The hosted runners are disposable and have
+the npm, shell and path semantics missing from the current Windows runtime;
+the native macOS leg also tests the application architecture users will run.
+
+**Consequence:** Validation jobs have `contents: read`, use full-SHA action
+pins, receive no Apple secrets, publish no artifact and create no Release.
+Signing, notarization and DMG packaging remain isolated in the existing release
+workflow. Phase 14 remains blocked until the remote Ubuntu job returns a real
+zero-exit receipt; a locally valid workflow is not represented as a CI pass.
+That condition was satisfied by Run 12 at `a23d9af9...`; native macOS also
+returned a zero-failure data receipt and an unsigned ARM64 Tauri build receipt.
+
+## D-0050 - Adapt the 22-seed registry and fail closed on geography
+
+**Decision:** Keep `shared/china-factory-clusters.ts` as the maintained source
+of all 22 Phase 15 seeds. Adapt it into stable `GeoUnit`, `IndustryCluster`,
+`ProductTaxonomyNode`, `ProductHsMapping` and `SourceEvidence` objects. Do not
+copy source facts, invent centroids or draw unreviewed boundaries.
+
+**Reason:** A second registry would drift from the already accepted source and
+HS review. Administrative names support a searchable distribution index but do
+not by themselves support precise points or polygons.
+
+**Consequence:** The first industry-map mode is a sourced administrative
+distribution index. Every current boundary/centroid is explicitly unavailable;
+only Huidong and Putian have reviewed HS 64 mappings, and even those mappings
+do not authorize a location-level trade number.
+
+## D-0051 - Keep maintenance CSV out of the production import graph
+
+**Decision:** Store the Phase 15 CSV as an operator template under integration
+documentation and validate it with a Node-only script. Production code does not
+read the CSV; promotion remains an explicit source/code review.
+
+**Reason:** Runtime CSV loading would let examples or partially reviewed rows
+silently become product facts and would complicate offline Tauri packaging.
+
+**Consequence:** The validator rejects unsafe statistics, boundary and HS
+claims. Vite emits the industry workspace as a lazy chunk and bundles neither
+the template nor test fixtures on web, Windows or macOS.
+
+## D-0052 - Start the production company/facility registry empty
+
+**Decision:** Implement the complete Phase 16 registry and UI contract without
+promoting the existing stock-symbol list, tech-company office configuration or
+industry labels into company/facility facts.
+
+**Reason:** Those inputs do not prove a legal registration identity, production
+site, MIC-qualified security or the required relationship edges.
+
+**Consequence:** The production registry contains zero entities until Phase 18
+source review. Search, details, coverage and stock integration remain usable
+and explicitly show `SOURCE_REQUIRED` or unavailable coverage instead of
+fabricating examples.
+
+## D-0053 - Key securities by MIC plus ticker and source every edge
+
+**Decision:** Derive company IDs from registration country/number and Security
+IDs from MIC/local ticker. Require each entity and every represented relation
+to reference fact-capable SourceEvidence.
+
+**Reason:** Names and tickers collide globally, and an identity source does not
+automatically prove headquarters, factory, ownership, brand, listing or
+industry membership.
+
+**Consequence:** Equal company names remain separate; equal tickers on separate
+markets return `MIC_REQUIRED`; unsourced entities and relationship edges fail
+validation and never enter default results.
+
+## D-0054 - Treat coverage rate as unknown without a denominator
+
+**Decision:** Show verified company/facility counts, tier, source count and
+verification date, but keep coverage rate null and completeness false until a
+reviewed total-population denominator exists.
+
+**Reason:** A partial set of sourced facilities cannot justify a percentage or
+complete-list claim.
+
+**Consequence:** Location and cluster UI communicates the exact gap. Operator
+templates cannot bypass this boundary and remain outside production bundles.
+
+## D-0055 - Separate trade, shipment and vessel evidence
+
+**Decision:** Store national/product trade, contracted shipments and AIS/port
+observations as different evidence classes and models. AIS is rejected at the
+shipment admission function.
+
+**Reason:** A vessel position says nothing reliable about cargo, buyer,
+factory, bill of lading or commercial origin.
+
+**Consequence:** Existing Maritime remains the vessel/port surface;
+`/trade-flows` owns cargo/product observations and can connect them only
+through explicit sourced nodes or routes.
+
+## D-0056 - Preserve source aggregation without downscaling
+
+**Decision:** The Comtrade adapter always emits `COUNTRY`, CSV export carries
+aggregation, and actual display requires both geographic ID and aggregation to
+match the request.
+
+**Reason:** Country trade cannot evidence an actual Huidong, company, factory,
+port or shipment flow.
+
+**Consequence:** Fine-grained pages remain empty until a compatible lawful
+source exists; no allocation or proportional model is labelled actual.
+
+## D-0057 - Keep uncontracted shipment access disabled
+
+**Decision:** Add a field-scoped shipment Provider contract and Provider
+Operations entry, but set its licence to `NOT_CONFIGURED` and register no
+executor.
+
+**Reason:** Shipment/BOL data rights are contract-specific and cannot be
+inferred from a URL, AIS credential or aggregate trade source.
+
+**Consequence:** The UI gives an actionable disabled state. Enabling requires
+owner/legal approval, reviewed fields and a server/sidecar executor; browser
+code receives no credential.
+
+## D-0058 - Measure review completion, not industrial coverage
+
+**Decision:** Calculate Phase 18 coverage only over five explicit source-review
+dimensions and label the denominator in the data model and UI.
+
+**Reason:** Six reviewed examples cannot establish the total number of firms,
+factories, products or sites in any place.
+
+**Consequence:** A 100% review card means all five questions have at least one
+source-backed answer; it never means complete market or facility coverage.
+
+## D-0059 - Keep review candidates outside authoritative entity facts
+
+**Decision:** Store Phase 18 companies, facilities and securities in a review
+queue until their exact Phase 16 identities and relationship edges are closed.
+
+**Reason:** A government site-plan, issuer annual report and exchange ticker can
+refer to related but non-identical legal objects. Shenzhen/BYD demonstrates the
+risk directly.
+
+**Consequence:** Search can expose the reviewed claim and gap without inserting
+ASML, BMW or BYD candidates into the production entity registry prematurely.
+
+## D-0060 - Disable HS and trade for every new seed
+
+**Decision:** Every Phase 18 seed starts with `hs_trade_status` equal to
+`SOURCE_REQUIRED`, even when its product and facility claims are reviewed.
+
+**Reason:** Product labels do not uniquely prove an HS mapping, and neither a
+location nor a factory statement proves an export observation.
+
+**Consequence:** No trade query, value, shipment, buyer, port or export claim is
+generated by the source-review work.
+
+## D-0061 - Admit licensed content transports only
+
+**Decision:** Content Providers accept only a reviewed Provider API or a
+lawfully supplied licensed file. There is no HTML/page scrape fallback.
+
+**Reason:** A public page is not permission to automate ingestion, retain its
+content, display it or redistribute it.
+
+**Consequence:** News, X and Bilibili remain `NOT_CONFIGURED` until their own
+licence, quota and server/sidecar executor are approved.
+
+## D-0062 - Preserve raw provenance and keep social non-official
+
+**Decision:** SourceItems retain platform ID, canonical URL, author and both
+timestamps. Social authority maps to `SOCIAL_SIGNAL` unless the item explicitly
+identifies an official source.
+
+**Reason:** Content similarity, popularity or repeated posting cannot prove
+official confirmation.
+
+**Consequence:** Event timelines are auditable and candidate status cannot be
+promoted merely by cross-post count.
+
+## D-0063 - Bound trend amplification with de-duplication and saturation
+
+**Decision:** Compute trends from de-duplicated items and use logarithmically
+saturated content/author contributions plus an audience-concentration penalty.
+
+**Reason:** Straight post or follower sums allow repost storms and one large
+account to dominate a signal without independent corroboration.
+
+**Consequence:** Reposts do not grow heat linearly, and one large account is
+distinguishable from many independent smaller authors.
+
+## D-0064 - Version trend state and fail realtime closed
+
+**Decision:** Store algorithm version, components and transition reasons on
+every TrendPoint. Create an SSE connection only for an explicit secure
+endpoint; the production endpoint and fixture flag default to disabled.
+
+**Reason:** Trend values must remain reproducible, and a missing live Provider
+must not be disguised by fixture data.
+
+**Consequence:** `/trends` shows `NOT_CONFIGURED`/`SOURCE_REQUIRED` until a
+real admitted stream exists, while controlled loopback tests still exercise
+the complete SSE lifecycle.

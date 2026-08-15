@@ -16,6 +16,7 @@ import {
   type ProviderOperationOutcome,
   type ProviderOperationReadiness,
 } from '@/services/provider-operations';
+import { globalIntelligenceStatusDisplay } from '@/services/global-intelligence-status';
 import './provider-operations.css';
 
 const READINESS_COPY: Record<ProviderOperationReadiness, string> = {
@@ -57,17 +58,25 @@ function operationCard(operation: ReturnType<typeof getProviderOperationsSnapsho
   const title = element('div');
   title.append(element('h2', 'provider-operations__card-title', operation.title));
   title.append(element('p', 'provider-operations__provider', operation.provider));
+  const statusDisplay = globalIntelligenceStatusDisplay(operation.dataStatus);
   const status = element(
     'span',
-    `provider-operations__pill provider-operations__pill--${operation.readiness.toLowerCase()}`,
-    READINESS_COPY[operation.readiness],
+    `provider-operations__pill provider-operations__pill--${statusDisplay.tone}`,
+    statusDisplay.label,
   );
+  status.dataset.dataStatus = operation.dataStatus;
   header.append(title, status);
   card.append(header);
 
   card.append(element('p', 'provider-operations__purpose', operation.purpose));
   const metadata = element('dl', 'provider-operations__metadata');
   const values: Array<[string, string]> = [
+    ['执行就绪', READINESS_COPY[operation.readiness]],
+    ['许可状态', operation.truthProfile.licenseStatus],
+    ['覆盖状态', operation.truthProfile.coverageStatus],
+    ['证据类型', operation.truthProfile.evidenceClasses.join(', ')],
+    ['聚合层级', operation.truthProfile.aggregationLevels.join(', ')],
+    ['许可说明', operation.truthProfile.licenseNote],
     ['计划', operation.cadence],
     ['幂等键', operation.idempotencyScope],
     ['锁', operation.lockScope],

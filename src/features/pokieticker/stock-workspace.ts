@@ -20,6 +20,12 @@ import {
 } from '@/generated/client/worldmonitor/market/v1/service_client';
 import { providerStatusDisplay } from '@/services/market-data-truth';
 import { getRpcBaseUrl, rpcFetch } from '@/services/rpc-client';
+import { resolveStockIndustryProfile } from '../../../shared/company-facility-registry';
+import {
+  industryMapClusterUrl,
+  industryMapCompanyUrl,
+  industryMapFacilityUrl,
+} from '../industry-map/industry-map-route';
 import {
   DEFAULT_STOCK_WORKSPACE_SYMBOL,
   normalizeStockWorkspaceSymbol,
@@ -346,6 +352,7 @@ class StockWorkspace {
 
     page.append(this.renderSelector());
     page.append(this.renderProviderStrip());
+    page.append(this.renderIndustryRelationships());
 
     const layout = element('section', 'pokie-workspace__layout');
     const chartColumn = element('section', 'pokie-workspace__chart-column');
@@ -440,6 +447,41 @@ class StockWorkspace {
     }
     strip.append(details);
     return strip;
+  }
+
+  private renderIndustryRelationships(): HTMLElement {
+    const requestedMic = new URLSearchParams(window.location.search).get('mic');
+    const profile = resolveStockIndustryProfile(this.state.symbol, requestedMic);
+    const section = element('section', 'pokie-workspace__industry-relations');
+    const heading = element('div', 'pokie-workspace__industry-heading');
+    heading.append(element('strong', undefined, '企业、生产基地与产业关系'));
+    heading.append(element('span', undefined, profile.status));
+    section.append(heading);
+    if (profile.status === 'SOURCE_REQUIRED') {
+      section.append(element('p', undefined, `${profile.reason} 当前股票搜索结果不会自动充当企业身份、生产地点或产业关系证据。`));
+      return section;
+    }
+    if (profile.status === 'MIC_REQUIRED') {
+      section.append(element('p', undefined, `${profile.reason} 候选 MIC：${profile.candidate_mics.join('、')}。`));
+      return section;
+    }
+    const identity = element('div', 'pokie-workspace__industry-links');
+    const company = element('a', undefined, `${profile.company.canonical_name} · ${profile.mic}:${profile.ticker}`);
+    company.href = industryMapCompanyUrl(profile.company.company_id);
+    identity.append(company);
+    for (const facility of profile.facilities) {
+      const link = element('a', undefined, `${facility.facility_name} · ${facility.facility_type}`);
+      link.href = industryMapFacilityUrl(facility.facility_id);
+      identity.append(link);
+    }
+    for (const clusterId of profile.cluster_ids) {
+      const link = element('a', undefined, `产业关系 ${clusterId}`);
+      link.href = industryMapClusterUrl(clusterId);
+      identity.append(link);
+    }
+    section.append(identity);
+    section.append(element('small', undefined, `${profile.source_evidence_ids.length} 条去重来源覆盖证券、上市主体及已显示关系；总部和生产地点分开。`));
+    return section;
   }
 
   private renderPriceHeader(): HTMLElement {

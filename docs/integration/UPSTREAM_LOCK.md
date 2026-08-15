@@ -357,3 +357,82 @@ This acceptance receipt is a documentation-only descendant. Its publication
 remains a normal non-force integration-branch fast-forward. Neither run 8 nor
 the receipt authorizes a newer-upstream merge/rebase, direct main/upstream
 write, force push, merge, deployment, release or backup deletion.
+
+## Phase 13 local branch lock
+
+The local Phase 13 branch `integration/global-intelligence-v2` was created from
+the existing integration tip
+`cc5d8bfd81a8320f0940dee91e39572b13a47c2e`. Read-only ancestor checks prove
+that accepted head `c730fc6...` is in its history. No upstream object was
+merged, rebased, cherry-picked, relabelled or fetched into this work.
+
+The reviewed upstream intake remains
+`ae0a0fe26bcbdb683b366899e4dc38fb8ccfb5ad`; protected owner-fork main remains
+`0fca203c776dd5fa4913c4bd52f99cd2c3c13a25`; existing Draft PR #1 remains on
+`integration/pokieticker-maritime-china-factory@cc5d8bfd...`.
+
+Phase 13 is local-only unless a later explicit delivery step authorizes a
+normal non-force push and a separate stacked Draft PR. It does not authorize
+main/upstream writes, force push, PR #1 mutation, merge, deployment, release,
+Provider activation, rebase, newer-upstream intake or backup deletion.
+
+The local Phase 13 implementation commit is
+`f026caedefb71f60034bcb169b92dabf91edf5c3`; it changes none of the locked
+upstream, `main`, original integration, or Draft PR refs above.
+
+Phase 14 implementation commit
+`1a58948d7c84be9b758b555d13f272c89babea34` and its cross-platform descendants
+are published only on `integration/global-intelligence-v2` through stacked
+Draft PR #2. The accepted gate head is
+`a23d9af9a84f78aae43ffd1462619da42e8adffb`; its tree
+`b0dd7232a22813789036ef21e3c6322de69145b5` was verified byte-for-byte against
+the local intended tree before and after the user-authorized GitHub application
+advanced the branch with `force=false`.
+
+GitHub Actions Run 12 passed Ubuntu and native macOS full-data gates and the
+unsigned ARM64 Tauri build. This changes no upstream intake rule: the original
+integration branch, Draft PR #1, `main`, upstream, release assets and deployment
+remain unchanged. Phase 15 continues only on the stacked V2 branch.
+
+Phase 15 implementation `ac5ab6a403ce36f6c756fb73aa4815438e1d7f10` and
+evidence head `6d35a83b6796b941b197c26ffeef2238aee0b0c2` are descendants
+on that same branch. Run 13 accepted the latter head on Ubuntu and native
+macOS. They adapt the locked 22-seed registry and do not merge, rebase,
+cherry-pick or fetch a newer upstream. Draft PR #1, `main`, the original
+integration branch, upstream, releases and deployments remain protected.
+
+Phase 16 candidate `fea9e555b40d8bd312454c4d47b986a9b6e48b1c` is the next
+local descendant on the stacked V2 branch. It introduces no upstream merge,
+rebase, cherry-pick or newer object intake and promotes no external company or
+facility fact. Its evidence receipt remains a separate descendant for immutable
+review. Draft PR #1, `main`, the original integration branch, upstream,
+releases and deployments remain protected.
+
+Phase 16 evidence descendant `9fbbdc5e9ff8fae7e53c801431170799de702293`
+passed stacked Draft PR #2 GitHub Actions Run 14 on Ubuntu and native macOS;
+it did not merge, rebase, cherry-pick or fetch a newer upstream. Phase 17 is a
+new local descendant and introduces no upstream object intake. Draft PR #1,
+`main`, the original integration branch, upstream, releases and deployments
+remain protected.
+
+Phase 18 source review is a local descendant of the pushed Phase 17 candidate.
+It uses public official source URLs as provenance but performs no upstream Git
+merge, rebase, cherry-pick or newer object intake. Draft PR #1, `main`, the
+original integration branch, releases and deployments remain protected.
+
+Phase 19 and Phase 20 are local descendants of pushed Phase 18 evidence head
+`267a5fb1011b271cd281c5d247efd00044d50822`. They add owned contracts/routes
+in remote implementation `a663e5c48e5bfc50534786e4d62fbaebc6d39784` and no
+upstream object intake. GitHub Runs 15 and 16 each had one unrelated
+timing-test failure on different platforms, so neither changed the accepted
+head or protection rule. The next candidate may advance only the stacked
+`integration/global-intelligence-v2` ref by ordinary non-force push. Draft PR
+#1, `main`, the original integration branch, upstream, releases, deployments,
+signing and notarization remain protected.
+
+Run 19 accepted Phase 17–20 implementation descendant
+`8ddd9cc1eba76fe2632f23b01a158a111936a52b`: all five workflows, Ubuntu
+full-data, native macOS full-data, optimized unsigned Tauri and generated-input
+cleanliness passed. This acceptance introduces no upstream object, merge,
+deployment, release, signing, notarization or Provider activation. The closure
+receipt that records these already-observed results changes documentation only.

@@ -1,0 +1,2 @@
+record_status,facility_id,company_id,facility_name,facility_type,geo_id,address,lat,lon,industrial_park_id,operational_status,product_ids,process_tags,capacity_disclosures,employment_range,oem_odm_brand_mode,source_id,source_url,last_verified_at
+TEMPLATE,facility_example-source-required,company_cn-example-registration,示例生产基地（禁止生产导入）,MANUFACTURING_PLANT,geo_example-source-required,,,,,UNKNOWN,,,,,,,,

@@ -552,3 +552,144 @@ activation remain outside this acceptance.
 Run-8 acceptance evidence record commit:
 `6b39dd8a15a41c54fe5353a99ebcb71de648ca96`. This following receipt backfills
 the immutable record SHA and contains no source/provider/runtime change.
+
+## Phase 13 - baseline protection and architecture landing
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Formal root, worktrees, branch and remotes | PASS | Five prior registered worktrees were inventoried; `origin` and `upstream` URLs are retained in `evidence/phase13-baseline-and-architecture.md`. |
+| Accepted-head ancestry | PASS | `merge-base --is-ancestor c730fc6... integration/pokieticker-maritime-china-factory` exited `0`. |
+| Dirty-tree protection | PASS | Existing 5,517 tracked main entries and 790 expanded integration entries were not cleaned; a new worktree was used. |
+| Phase 13 branch/worktree | PASS | `integration/global-intelligence-v2@cc5d8bfd...` checked out clean in the dedicated linked worktree. |
+| Controlling plan receipt | PASS | 71,181-byte source and destination share SHA-256 `975F72D...FB961`. |
+| Five architecture decisions | PASS | ADRs D-0041 through D-0045 cover domain, evidence, identity, license and storage boundaries. |
+| Seven-area reuse inventory | PASS | Map, search, status, SSE, Provider Operations, market and desktop entry points are mapped without product copies. |
+| Product/runtime change | PASS | 23 changed paths are integration documentation, one plan-specific whitespace attribute, or five audit/test files; allowlist reports 0 outside scope and no runtime product path changed. |
+| Documentation and truth gates | PASS | Markdown lint, 150-claim docs stats, 533-host source attribution, product facts, and the 10-test source plus 6-test blog suites pass. |
+| Diff and protected refs | PASS | `git diff --check` exits `0`; `main`, `origin/main`, the original integration branch and its remote ref retain their recorded SHAs. |
+| Local implementation commit | PASS | `f026caedefb71f60034bcb169b92dabf91edf5c3` contains the 23-path Phase 13 implementation and remains unpublished. |
+
+The complete baseline and branch evidence is in
+`evidence/phase13-baseline-and-architecture.md`. All local Phase 13 gates are
+complete; publication, PR mutation, merge and deployment were not performed.
+
+## Phase 14 - shared truth contract
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Required vocabulary and SourceEvidence | PASS | 18 evidence classes, 13 aggregation levels, explicit-null/source/conflict validators and stable IDs are covered by the 10-test Phase 14 suite. |
+| No empty success / aggregation / fact-model separation | PASS | Negative tests reject unconfigured empty success, COUNTRY→TOWN claims, and model/AI/social/unverified fact writes. |
+| Legacy API compatibility | PASS | Existing Market, Maritime and China Factory focused suites pass 13/13; no proto/generated file or route shape changed. |
+| Provider Operations and UI mapping | PASS | Existing suite passes 5/5; all nine operations have non-sensitive truth profiles and all nine V2 UI states have one mapping. |
+| Type and API gates | PASS | Production/API TypeScript, Convex string audit and sebuf API contract pass. |
+| DOM, source and build | PASS | DOM 293/293, 533-host source check, 150 doc claims, product facts, strict secret scan and Vite production build pass. |
+| Repository-wide data suite | PASS | GitHub Test run `31868040572` at `a23d9af9...`: authoritative Ubuntu 23,038 total / 23,032 pass / 0 fail / 6 skip; native macOS clean-source gate 22,880 total / 22,874 pass / 0 fail / 6 skip. |
+| Cross-platform environment | PASS | Ubuntu 24.04 remains authoritative. `macos-14` also passed coreutils/full-history setup, checksum-verified Node sidecar preparation, unsigned native Tauri release-profile build and generated-input cleanliness. All five Run 12 top-level workflows passed. |
+| Phase progression | PASS | Phase 14 is complete. Phase 15 may begin from the accepted stacked Draft PR #2 head; no merge, deployment or release is implied. |
+
+Full commands, failure classification and verifier state are retained in
+`evidence/phase14-shared-truth-contract.md`.
+
+## Phase 15 - global industry map core
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Four required domain models | PASS | `GeoUnit`, `IndustryCluster`, `ProductTaxonomyNode` and `ProductHsMapping` are runtime-neutral and use Phase 14 stable IDs/evidence. |
+| Existing seed import | PASS | Exactly 22 existing registry records are adapted; source values remain maintained in `china-factory-clusters.ts`. |
+| HS/statistics boundary | PASS | Huidong and Putian alone retain reviewed HS 2012 chapter 64; 20 MIIT references have no mapping and statistics remain disabled. |
+| Routes and base map mode | PASS | `/industry-map`, location and cluster detail routes work; five modes exist and only `INDUSTRY_DISTRIBUTION` is enabled. |
+| Search `女鞋` | PASS | Exactly one sourced Huidong record is returned with its administrative label and two source-evidence IDs. |
+| No invented trade or geography | PASS | No value-bearing trade fields exist; all current boundaries/centroids are null with visible `NOT_REVIEWED`/`UNAVAILABLE` states. |
+| CSV maintenance | PASS | Operator template validates; unsafe statistical promotion is rejected; template is not imported into production. |
+| Mobile and independent scroll | PASS | Browser measurements at 390 x 844 show page width 390/390 and independent distribution/detail overflow. |
+| Production bundle isolation | PASS | Vite build has a lazy industry-map chunk and contains no maintenance-template or `tests/fixtures` marker. |
+| Hosted closure | PASS | Draft PR #2 Run 13 at `6d35a83b...`: all five workflows success; Ubuntu 23,048 total / 23,042 pass / 0 fail / 6 skip; macOS ARM64 22,890 total / 22,884 pass / 0 fail / 6 skip plus optimized unsigned Tauri build and clean generated inputs. |
+| Phase progression | PASS | Phase 15 is complete; Phase 16 may begin without merge, deployment, release, signing or Provider activation. |
+
+Full receipts are retained in `evidence/phase15-global-industry-map.md`.
+
+## Phase 16 - company, facility, brand and security registry
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Four required entities | PASS | Runtime-neutral Company, Facility, Brand and Security types implement the required fields without conflating headquarters, production, brand or listing identities. |
+| Company identity | PASS | IDs derive from registration country + registration number; equal names with different registrations remain distinct. |
+| Security identity | PASS | IDs derive from MIC + local ticker; same ticker on XNAS/XNYS remains distinct and unresolved lookup returns `MIC_REQUIRED`. |
+| Source and relationship boundary | PASS | Unsourced entities and edges are rejected; every represented headquarters/ownership/operation/production/brand/listing/cluster relation requires SourceEvidence. |
+| Search and details | PASS | Company/facility mode, search and detail routes are enabled inside the lazy industry-map workspace; unknown IDs fail closed. |
+| Coverage | PASS | Location/cluster panels expose verified counts, tier, source count, date and explicit denominator gap; coverage rate is null and completeness false. |
+| Stock integration | PASS | Stock workspace shows only evidence-backed relations; AAPL currently renders `SOURCE_REQUIRED`, not an inferred company/factory link. |
+| Maintenance import boundary | PASS | Four templates and a strict CLI validate identity/source rules and stay outside production imports/bundles. |
+| Local quality and browser | PASS | Focused 8/8; combined 28/28; TypeScript, Biome, secret scan and 2,514-module build pass; 1440/390 widths have no horizontal overflow. |
+| Hosted closure | PASS | Draft PR #2 Run 14 at `9fbbdc5e...`: all five workflows success; Ubuntu 23,056 total / 23,050 pass / 0 fail / 6 skip; native macOS ARM64 22,898 total / 22,892 pass / 0 fail / 6 skip plus optimized unsigned Tauri build and clean generated inputs. |
+
+Full receipts are retained in
+`evidence/phase16-company-facility-security.md`.
+
+## Phase 17 - trade flows and multimodal logistics
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Four required models | PASS | Runtime-neutral `TradeFlowObservation`, `ShipmentObservation`, `LogisticsNode` and `LogisticsRoute` contracts cover all required fields and five transport modes. |
+| AIS isolation | PASS | Shipment admission explicitly rejects `AIS_OBSERVATION`; UI states that AIS cannot generate cargo, buyer, factory or bill-of-lading fields. |
+| Aggregation isolation | PASS | Comtrade adapter requires `COUNTRY`; Huidong/county display check returns false for country evidence. |
+| Layer separation | PASS | `/trade-flows` renders visually distinct actual observation, company disclosure and model-route legends. |
+| Export truth fields | PASS | CSV contract test retains period start/end, quantity unit, Provider/evidence source and origin aggregation level. |
+| Provider-disabled state | PASS | Empty production registry returns `NOT_CONFIGURED`; shipment operation has `NOT_CONFIGURED` licence and no executor. |
+| Customs import boundary | PASS | Import requires checksum, publisher, publication date, supported aggregation, source reference and lawful local-analysis use. |
+| Local quality and browser | PASS | Focused 7/7; combined 47/47; TypeScript, Biome, secret scan and 2,518-module build pass; 1440 and 390 widths have no horizontal overflow. |
+| Hosted closure | PASS | Run 19 at `8ddd9cc1...` passed all workflows: Ubuntu 23,088/23,082/0/6 and native macOS 22,930/22,924/0/6 plus optimized unsigned Tauri build and clean inputs. |
+
+Full receipts are retained in `evidence/phase17-trade-flows.md`.
+
+## Phase 18 - China factory deepening and global seeds
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Six case families | PASS | Wenzhou footwear, Jingdezhen ceramics, Dongguan/Dalang, Shenzhen/BYD, Netherlands/ASML and Germany/BMW records exist. |
+| Source review | PASS | Ten official HTTPS evidence records; every case has source IDs, verification date and named gaps. |
+| Unified model | PASS | CN/NL/DE records share one contract, stable Geo IDs, dimension coverage and validation. |
+| Geography/product/process | PASS | Each case records only source-supported values; missing dimensions remain visibly absent. |
+| Company/facility/security separation | PASS | Shenzhen operator, production base, listed issuer and ticker are not merged; Phase 16 facts remain empty. |
+| Bidirectional query | PASS | Product-to-location and Geo-ID-to-product contract tests pass. |
+| HS/trade admission | PASS | Every case remains `SOURCE_REQUIRED`; no export number or trade observation exists. |
+| Local quality/browser | PASS | Focused 7/7, combined 54/54, TypeScript, Biome, secret scan, 2,519-module build, and 1440/390 no-overflow browser checks pass. |
+| Hosted closure | PASS | Run 19 at `8ddd9cc1...` passed authoritative Ubuntu and native macOS with zero failures and contains the Phase 18 descendant. |
+
+Full receipts are retained in
+`evidence/phase18-global-industrial-seeds.md`.
+
+## Phase 19 - content and event normalization
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Provider contracts | PASS | Content/Social interfaces and News/X/Bilibili skeletons share one policy and request boundary. |
+| Disabled admission | PASS | All production skeletons are `NOT_CONFIGURED`, allow zero requests and fail before a request. |
+| Provenance | PASS | Canonical URL, platform ID, author, publication/retrieval time and content fingerprint are retained. |
+| No scrape fallback | PASS | Only Provider API and licensed-file transports are accepted. |
+| De-duplication | PASS | Platform ID, canonical URL and content+author keys prevent duplicate counting. |
+| Confirmation boundary | PASS | Social items remain `SOCIAL_SIGNAL` unless explicit official authority exists. |
+| Event candidates | PASS | Unique source timeline, independent-author/platform counts, entities and locations are retained. |
+| Rate/retry/secret boundary | PASS | Minute budget and bounded retry pass; browser/shared request receives no credential value. |
+| Local quality | PASS | Focused 9/9, combined 72/72, TypeScript, Biome, strict secret scan and 2,525-module build. |
+| Hosted closure | PASS | Run 19 at `8ddd9cc1...` passed all five top-level workflows and both full-data platform gates. |
+
+Full receipts are retained in
+`evidence/phase19-content-event-normalization.md`.
+
+## Phase 20 - cross-platform trend engine
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Deterministic multi-window points | PASS | Deep-equal same-input snapshots across 15/60/360/1,440-minute windows. |
+| Explainable score | PASS | Version, weighted components, counts, velocity, acceleration, concentration and reasons retained. |
+| Repost and account boundary | PASS | De-duplication/log saturation prevent linear repost growth; big account and independent authors differ. |
+| State machine | PASS | NORMAL through RESOLVED transitions and reasons covered. |
+| Propagation | PASS | First observation on each platform and observed delay form a deterministic path. |
+| Routes | PASS | `/trends` overview and encoded detail routes; unknown IDs return `SOURCE_REQUIRED`. |
+| Realtime SSE | PASS | Named serialization, HTTPS/loopback gate, snapshot validation and idempotent close covered. |
+| Production fixture isolation | PASS | Null endpoint creates no EventSource; fixture flag false; no production fixture/test import. |
+| Local quality/browser | PASS | Focused 9/9, combined 72/72, TypeScript, Biome, secret scan, build, and 1440/390 no-overflow checks pass. |
+| Hosted closure | PASS | Run 19: Ubuntu 23,088/23,082/0/6; macOS ARM64 22,930/22,924/0/6; optimized unsigned Tauri build and clean generated inputs. |
+
+Full receipts are retained in `evidence/phase20-trend-engine.md`.

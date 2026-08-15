@@ -271,3 +271,98 @@ News relevance and sentiment remain non-causal context. Trade/factory feeds
 remain subject to their documented source, observation and freshness gates.
 No credential, account, payment, licence, deployment or Provider state changed
 as a consequence of run 8.
+
+## Phase 13 architecture effect on Provider states
+
+Phase 13 changes no Provider state. It creates no account, credential,
+entitlement, payment, source request, response, schedule, deployment, export or
+redistribution right. ADR D-0044 defines the fail-closed license registry and
+capability gates that Phase 14 must implement; an accepted ADR is not evidence
+that any Provider right has been reviewed or enabled.
+
+All existing market/K-line, AIS, news, trade, factory and model states retain
+their prior truthful disabled, delayed, observed, modelled or unavailable
+meaning. The component inventory is code-reuse evidence only and cannot promote
+an implementation or Provider to live status.
+
+## Phase 14 Provider Operations truth profiles
+
+All nine Provider Operations now publish non-sensitive `coverageStatus`,
+`licenseStatus`, expected `evidenceClasses`, permitted `aggregationLevels` and a
+license note. Every Phase 14 profile remains `REVIEW_REQUIRED`; implementation
+does not assert a new contract, entitlement or redistribution right.
+
+Execution readiness and data truth are separate. `READY_TO_ATTEMPT` with no
+verified execution maps to `SOURCE_REQUIRED`; an executor success with
+unreviewed rights maps to `DELAYED_UNVERIFIED`, never observed or realtime.
+Failure after a prior verified execution may map to stale, while missing or
+invalid configuration remains unavailable/not configured.
+
+## Phase 15 industry-map Provider effect
+
+Phase 15 adds no Provider, account, credential, entitlement, redistribution
+right or live request. Its four source-evidence records wrap URLs already used
+by the reviewed China Factory registry and remain `REVIEW_REQUIRED` for license
+purposes. The industry-map route performs no trade, geocoding, boundary,
+company, facility, shipment, AIS or model fetch.
+
+The maintenance CSV cannot activate a Provider or promote a fixture. Reviewed
+statistics require an approved source and HS mapping in code; actual numeric
+display still requires a separately compatible observation at the target
+aggregation level.
+
+## Phase 16 company/facility Provider effect
+
+Phase 16 adds no Provider, credential, account, entitlement, background fetch,
+database write or redistribution right. The company/facility registry begins
+empty, so its visible state is `SOURCE_REQUIRED` and its coverage denominator
+is unavailable. Existing market search responses are not accepted as legal
+entity, facility or MIC evidence.
+
+The CSV validator is an offline operator gate and cannot activate a Provider or
+write a production fact. Future Phase 18 rows require separately reviewed
+source rights and explicit entity plus relationship evidence before display.
+
+## Phase 17 trade/logistics Provider effect
+
+| Provider path | Current state | Permitted evidence | Prohibited promotion |
+|---|---|---|---|
+| UN Comtrade batch | Adapter present; no Phase 17 production rows | National/product `OBSERVED_TRADE` | Factory, town, port, vessel, route or shipment attribution |
+| Lawful customs file | Local executor/import not configured | Original declared geographic aggregation | Unlicensed import, page scraping or shipment inference |
+| Contracted shipment/BOL | `NOT_CONFIGURED`; no executor | Field-scoped `CONTRACTED_SHIPMENT` after licence review | Any field absent from the Provider payload or contract |
+| AIS relay | Existing operation, separately gated | `AIS_OBSERVATION` vessel fields | Cargo, buyer, factory, BOL, destination or trade-flow evidence |
+| IMF PortWatch | Existing operation, separately gated | `PORT_OBSERVATION` at port aggregation | Cargo, company or shipment identity |
+
+No credential, entitlement or background network request was added. The new
+shipment operation is deliberately unusable until a signed contract and a
+bounded service-side executor exist.
+
+## Phase 18 source-review Provider effect
+
+Phase 18 adds no runtime Provider, credential, scheduled request or importer.
+Its ten sources are manually reviewed public government, exchange, filing and
+company-official documents committed as provenance metadata. Runtime code does
+not scrape or refresh those pages. A future refresh must run through a reviewed
+source-maintenance change and cannot enable HS/trade or entity promotion by
+itself.
+
+## Phase 19 content Provider effect
+
+| Provider | State | Transport | Evidence/display boundary |
+|---|---|---|---|
+| News content skeleton | `NOT_CONFIGURED` | Provider API or licensed file only | Publisher reports are not official confirmation; licence controls ingest/display/export independently. |
+| X content skeleton | `NOT_CONFIGURED` | Provider API only | No HTML fallback; observations default to `SOCIAL_SIGNAL`. |
+| Bilibili content skeleton | `NOT_CONFIGURED` | Provider API or licensed file only | No page/video scrape fallback; popularity is not event fact. |
+
+All three policies allow zero requests per minute and register no executor.
+The shared/browser request contains only a credential-presence boolean; actual
+secret material stays in a future admitted server/sidecar executor.
+
+## Phase 20 trend Provider effect
+
+The `trend-realtime-sse` operation is `NOT_CONFIGURED`, has no executor and
+allows no production fixture. Its public endpoint is null. The browser client
+therefore creates no EventSource. A future endpoint must be explicit, HTTPS,
+service-owned and fed only by admitted normalized content; loopback HTTP is
+accepted solely for controlled local tests. Trend snapshots remain modelled
+signals even after the stream becomes live.

@@ -42,7 +42,10 @@ jobs:
             node_target: 'aarch64-apple-darwin'
             label: 'macOS-ARM64'
             timeout: 180
-          - platform: 'macos-latest'
+          # Keep the Intel bundle on a native Intel runner. `macos-latest` is
+          # currently Apple Silicon and is a moving label, so using it here
+          # would silently turn this x64 leg into a cross-compile.
+          - platform: 'macos-15-intel'
             args: '--target x86_64-apple-darwin'
             node_target: 'x86_64-apple-darwin'
             label: 'macOS-x64'

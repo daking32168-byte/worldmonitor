@@ -359,3 +359,165 @@ logs.
 No owner input is required to publish and verify this documentation-only
 receipt. Future Provider onboarding and any merge/deployment remain separate
 manual authorization gates.
+
+## Phase 13 architecture follow-up (2026-08-14)
+
+- [x] Preserve all existing dirty worktrees and create a separate clean local
+  branch/worktree from the current integration tip.
+- [x] Store the controlling plan byte-for-byte in `docs/integration/`.
+- [x] Record domain, evidence, stable-ID, Provider-license and storage ADRs.
+- [x] Inventory reusable map, search, status, SSE, Provider Operations, market
+  and desktop components.
+- [x] Complete and record the local documentation/truth/diff gates.
+- [x] Keep Phase 13 local unless a later delivery instruction authorizes a
+  normal non-force push and stacked Draft PR.
+- [x] Do not change Draft PR #1, merge, deploy, release, activate Providers,
+  enter secrets or delete retained backups under Phase 13 authorization.
+
+No owner account, purchase, CAPTCHA, credential or license action is required
+for the Phase 13 documentation gate. Phase 14 can implement disabled-state
+contracts without such inputs; any real Provider activation remains a separate
+owner/legal action.
+
+## Phase 14 full-data closure (2026-08-15)
+
+- [x] Implement and locally commit the shared truth contract and compatibility
+  layer at `1a58948d7c84be9b758b555d13f272c89babea34`.
+- [x] Pass focused contract, legacy API, type, API, DOM, source and production
+  build gates.
+- [x] Run the unmodified repository `test:data` command in an existing
+  Linux/CI Node+npm environment and retain a zero-exit receipt (Run 12,
+  `31868040572`: 23,038 tests, 0 failures).
+- [x] Only after that receipt, mark Phase 14 complete and begin Phase 15.
+
+Selected closure path:
+
+- [x] Use GitHub-hosted Ubuntu 24.04/Node 24 as the authoritative data gate.
+- [x] Add a no-secret, read-only native Apple Silicon Tauri compatibility job.
+- [x] Pin the Intel macOS release leg to `macos-15-intel`.
+- [x] Validate the workflow contract, YAML, immutable action pins and deploy
+  aggregation locally.
+- [x] Use the user-authorized GitHub application without exposing a token in
+  chat; after transient HTTPS failures, verify exact blob/tree parity and
+  advance the final commit with `force=false`.
+- [x] Publish `integration/global-intelligence-v2`, create stacked Draft PR #2
+  targeting `integration/pokieticker-maritime-china-factory`, and retain the
+  Ubuntu plus macOS Run 12 receipts.
+
+No credential, Provider purchase or license activation is needed for this
+closure. The available Windows host has no installed WSL distribution, Docker,
+Bash or npm; installing a system runtime requires separate authorization and
+was not attempted. Do not weaken or skip the full data gate.
+
+## Phase 15 industry-map maintenance (2026-08-15)
+
+- [x] Adapt the existing 22 source-labelled seeds without copying their facts
+  into a second production dataset.
+- [x] Preserve reviewed HS 64 only for Huidong and Putian; keep the 20 MIIT
+  reference records statistics-disabled.
+- [x] Validate product search, no-number empty state, no-boundary state,
+  production bundle isolation and desktop/mobile scrolling locally.
+- [x] Provide a strict operator CSV template and validator outside the
+  production import graph.
+- [x] Push candidate and receipt to stacked Draft PR #2 and retain the next
+  Ubuntu plus native macOS zero-exit receipts.
+
+Before adding a real row, an owner/reviewer must replace the template ID and
+labels, attach an HTTPS source, review its product/HS scope, and separately
+review any coordinate or boundary. Never change `statistics_enabled` to true
+merely because a source mentions a cluster. A compatible numeric observation
+at the claimed aggregation level remains independently required.
+
+## Phase 16 company/facility source onboarding (2026-08-15)
+
+- [x] Keep the production company, facility, brand, security and relationship
+  registries empty until individual sources are reviewed.
+- [x] Enforce registration identity for companies and MIC+ticker identity for
+  securities; never merge by display name or ticker alone.
+- [x] Require source evidence on each entity and on every displayed
+  headquarters, ownership, operation, production, brand, listing or cluster
+  relationship.
+- [x] Keep coverage rate unavailable when there is no reviewed denominator.
+- [x] Validate four operator templates and prove they are absent from the
+  production bundle.
+- [ ] Before adding a real entity, verify legal identity, source licence,
+  publication/retrieval time and all relationship claims in code review.
+- [ ] Keep actual company/facility seed population for Phase 18 source review;
+  do not import stock search or office configuration as a shortcut.
+- [x] Publish the Phase 16 candidate to stacked Draft PR #2 and retain the next
+  Ubuntu plus native macOS zero-exit receipts.
+
+No credential or Provider purchase is required for the empty fail-closed
+registry. Any paid registry, bulk corporate dataset or redistribution right
+requires owner/legal approval before acquisition or ingestion.
+
+## Phase 17 trade/logistics onboarding (2026-08-15)
+
+- [x] Keep all production trade, shipment, node and route arrays empty until
+  compatible evidence and licences exist.
+- [x] Enforce country-only Comtrade adaptation and prevent country observations
+  from rendering as Huidong/county actuals.
+- [x] Reject AIS as shipment evidence and keep actual, disclosed and modelled
+  route legends distinct.
+- [x] Add a lawful customs manifest gate and disabled shipment Provider
+  operation without adding any credential or network request.
+- [ ] Before a customs import, record file checksum, publisher, publication
+  date, aggregation, source reference, licence and each permitted use.
+- [ ] Before a shipment Provider is enabled, obtain owner/legal approval,
+  document field-level display/export rights, configure only the server/sidecar
+  executor, and run negative AIS/downscoping tests again.
+- [x] Publish the Phase 17 candidate to stacked Draft PR #2.
+- [x] Retain an Ubuntu plus native macOS zero-exit receipt on the final Phase
+  20 descendant; Run 19 passed both after the unwaived Run 15 timing failure.
+
+Signing, notarization, provider purchase, production import, deployment and
+release remain outside this task's authority.
+
+## Phase 18 source-review maintenance (2026-08-15)
+
+- [x] Review at least one source for each of the six requested case families.
+- [x] Keep Chinese and overseas cases on one model and validate bidirectional
+  product/location query.
+- [x] Record five-dimension review coverage, verification time and named gaps;
+  never label it market or factory coverage.
+- [x] Keep all Phase 18 HS/trade queries disabled and the Phase 16 production
+  entity registry empty.
+- [x] Preserve Shenzhen operator/facility/issuer/security separation.
+- [ ] Before promoting a review candidate into Phase 16, verify exact legal
+  registration identity and every ownership, operation, production, listing
+  and location relationship edge independently.
+- [ ] Before enabling HS/trade, review the exact product mapping and ingest a
+  compatible observation at the same geographic aggregation.
+- [x] Publish the Phase 18 candidate to Draft PR #2.
+- [x] Retain an Ubuntu plus native macOS zero-exit receipt on the final Phase
+  20 descendant; Run 19 passed both after the unwaived Run 16 timing failure.
+
+The candidate is published. Run 19 supplied the final zero-exit Ubuntu and
+native-macOS receipt.
+
+## Phase 19 content-provider onboarding (2026-08-15)
+
+- [x] Implement common Provider contracts, normalization, de-duplication and
+  event-candidate timelines with disabled production adapters.
+- [x] Reject HTML/page scraping as a fallback transport.
+- [x] Keep Provider secrets outside browser/shared contracts.
+- [x] Keep social observations distinct from official confirmation.
+- [ ] Before enabling any Provider, obtain owner/legal approval for ingest,
+  display and export, record quota/retry policy and register a bounded
+  service/sidecar executor.
+- [ ] Verify retention/deletion, attribution and user-export terms per source;
+  one Provider's licence never authorizes another platform.
+- [x] Retain the Phase 19 hosted receipt through final descendant Run 19.
+
+## Phase 20 trend/SSE onboarding (2026-08-15)
+
+- [x] Implement the versioned deterministic score, state machine, propagation
+  path, trends routes and secure SSE client contract.
+- [x] Keep the production endpoint null and production fixture disabled.
+- [x] Validate desktop/mobile layouts and unknown-event fail-closed behavior.
+- [ ] Before enabling SSE, admit a service-owned HTTPS endpoint, define
+  authentication/CORS/retention and confirm every input Provider licence.
+- [ ] Treat every algorithm change as a new version and retain component-level
+  comparability; never relabel old points silently.
+- [x] Obtain a zero-exit Ubuntu/native-macOS receipt at the accepted
+  implementation head (`8ddd9cc1...`, Run 19).

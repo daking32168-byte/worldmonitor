@@ -675,3 +675,222 @@ Run-8 acceptance evidence record commit:
 `6b39dd8a15a41c54fe5353a99ebcb71de648ca96`. This following receipt backfills
 that immutable SHA; it changes documentation only and preserves the accepted
 functional head and Draft boundary.
+
+## Phase 13 - baseline protection and architecture landing
+
+Phase 13 uses the dedicated local branch `integration/global-intelligence-v2`
+and linked worktree
+`D:\使用AI专属文件夹\global-intelligence-earth\worldmonitor-global-intelligence-v2`.
+The branch was created from the existing integration tip
+`cc5d8bfd81a8320f0940dee91e39572b13a47c2e`, which contains the accepted
+functional head `c730fc6...` and its Phase 12 documentation receipts.
+
+Protected `main@0fca203c...`, Draft PR #1, the original integration branch,
+the 5,517-entry tracked main-worktree state, the 790-entry upstream integration
+state, and all existing worktrees were left unchanged. The new worktree was
+clean immediately after checkout.
+
+The controlling plan is stored byte-for-byte in `docs/integration/`; five ADRs
+now define domain boundaries, the evidence model, stable entity IDs, Provider
+licensing and storage responsibilities. The architecture baseline and seven-
+area reusable-component inventory map later phases to existing WorldMonitor
+components.
+
+Phase 13 is **COMPLETE (LOCAL)**. Markdown lint, docs stats, source attribution,
+product facts, 16 focused portability tests, `git diff --check`, the 23-path
+scope guard and protected-ref checks pass. The authored scope is integration
+documentation, one plan-specific whitespace attribute, three audit utilities
+and two focused test files; no product runtime code, Provider, deployment,
+database or runtime behavior is changed.
+The branch remains local and no existing Draft PR or remote ref was modified.
+
+**Phase 13 implementation commit:**
+`f026caedefb71f60034bcb169b92dabf91edf5c3`. The following local documentation
+receipt records that immutable implementation SHA; it does not publish or
+upgrade any remote gate.
+
+## Phase 14 - shared evidence, identity and Provider envelope
+
+Phase 14 implementation is **COMPLETE — HOSTED UBUNTU AND MACOS GATES PASS** at
+`1a58948d7c84be9b758b555d13f272c89babea34`. The shared contract, compatibility
+adapters, canonical UI state mapping and Provider Operations truth profiles are
+implemented. Focused contract/legacy tests, production and API TypeScript, the
+sebuf contract, 293 DOM tests, source/docs/product truth gates, strict secret
+scan, Biome and the production Vite build pass.
+
+The native-Windows limitations remain documented, but they no longer block the
+phase. Draft PR #2 head `a23d9af9a84f78aae43ffd1462619da42e8adffb`
+completed GitHub Actions Test run `31868040572`: authoritative Ubuntu ran
+23,038 tests with 23,032 passes, 0 failures and 6 skips; `macos-14` ran 22,880
+tests with 22,874 passes, 0 failures and 6 skips, then built the unsigned native
+Tauri release profile and confirmed generated inputs remained clean. Phase 15
+may now start. Exact local and hosted receipts are in
+`evidence/phase14-shared-truth-contract.md`.
+
+### Cross-platform closure environment
+
+The closure environment is now **SELECTED, LOCALLY VALIDATED AND REMOTELY
+PASSED**. Existing Ubuntu PR CI remains the authoritative `test:data` gate. A
+new read-only `macos-compat` job adds native Apple Silicon Tauri no-bundle
+compilation plus the full data contract; the release x64 leg is pinned to the
+native `macos-15-intel` runner instead of a moving `macos-latest` label.
+
+The workflow contract, one-binary model, deploy aggregation, immutable action
+pins and YAML parsing pass locally. The user-authorized GitHub application
+created exact Git objects after transient HTTPS push failures, and advanced the
+branch with `force=false`; fetched tree `b0dd7232a22813789036ef21e3c6322de69145b5`
+matched the intended local tree exactly. Draft PR #2 and Run 12 supplied the
+remote zero-exit receipt without changing PR #1, `main`, a Release or a
+deployment. See
+`evidence/phase14-cross-platform-environment.md`.
+
+## Phase 15 - global industry map core
+
+Phase 15 is **COMPLETE — HOSTED UBUNTU AND NATIVE MACOS GATES PASS** at
+`ac5ab6a403ce36f6c756fb73aa4815438e1d7f10`. The existing 22 sourced China
+Factory records are adapted into the new `GeoUnit`, `IndustryCluster`,
+`ProductTaxonomyNode` and `ProductHsMapping` model without duplicating their
+source facts. Only Huidong and Putian retain reviewed HS 2012 chapter 64
+mappings; all 20 MIIT references remain statistics-disabled.
+
+The existing SPA/Tauri binary now lazy-loads `/industry-map`, location detail
+and cluster detail routes. It provides sourced product/cluster search, the
+`INDUSTRY_DISTRIBUTION` base mode, five-mode switch contract, and explicit
+source/coverage/gap, boundary-unavailable and trade-unavailable states. No
+trade value, approximate coordinate, unreviewed polygon, company/factory
+fixture or shipment fixture was added.
+
+Local receipts: Phase 15 10/10, combined Phase 14/China Factory regression
+23/23, production TypeScript, changed-file Biome, strict secret scan, CSV
+validator and a 2,513-module Vite build pass. Browser checks at 1440 x 900 and
+390 x 844 show no horizontal overflow and independently scrolling work panes.
+Production output contains neither the maintenance template nor test fixtures.
+
+Draft PR #2 head `6d35a83b6796b941b197c26ffeef2238aee0b0c2`
+completed GitHub Actions Run 13 with all five top-level workflows successful.
+Ubuntu reported 23,048 total / 23,042 pass / 0 fail / 6 skip; native
+`macos-14-arm64` reported 22,890 total / 22,884 pass / 0 fail / 6 skip, then
+built the optimized unsigned Tauri release profile and left generated inputs
+clean. Phase 16 may proceed. Exact receipts are in
+`evidence/phase15-global-industry-map.md`.
+
+## Phase 16 - company, facility, brand and security registry
+
+Phase 16 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS** at
+`fea9e555b40d8bd312454c4d47b986a9b6e48b1c`. It implements the four required
+entities, registration-based company IDs, MIC+ticker security IDs, explicit
+evidence-bearing relationship edges, enterprise/facility search and details,
+location/cluster coverage panels, and a stock-workspace relationship panel.
+
+No existing stock symbol, office record or cluster label was promoted to a
+company/facility fact. The production registry is empty and fail-closed until
+Phase 18 source review supplies evidence for both entities and each displayed
+relationship. Coverage rates stay unavailable without a reviewed denominator.
+Four operator CSV templates remain outside the production import graph.
+
+Local receipts: Phase 16 8/8, combined Phase 14–16/China Factory regression
+28/28, production TypeScript, Biome, strict secret scan, four-template CLI and
+a 2,514-module Vite build pass. Browser checks at 1440 x 900 and 390 x 844 show
+no horizontal overflow; the AAPL page returns `SOURCE_REQUIRED` for the absent
+MIC-qualified relationship. Draft PR #2 Run 14 at `9fbbdc5e...` passed all five
+workflows. Ubuntu reported 23,056 total / 23,050 pass / 0 fail / 6 skip; native
+macOS reported 22,898 total / 22,892 pass / 0 fail / 6 skip, built the optimized
+unsigned ARM64 Tauri application and left generated inputs clean. See
+`evidence/phase16-company-facility-security.md`.
+
+## Phase 17 - trade flows and multimodal logistics
+
+Phase 17 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS**. The shared
+contract defines trade observations, contracted shipment observations,
+logistics nodes and observed/modelled routes across sea, air, rail, road and
+multimodal transport. The owned `/trade-flows` route shows distinct actual,
+company-disclosed and modelled legends and an explicit `NOT_CONFIGURED` state.
+
+Production flow, shipment, node and route arrays remain empty. Comtrade adapts
+only to `COUNTRY` aggregation; a country record cannot render as a Huidong
+actual. Lawful customs import requires checksum, publisher, publication date,
+scope and local-analysis use rights. The shipment contract rejects AIS and
+requires field-level entitlements. Provider Operations adds a disabled
+shipment import operation alongside the existing AIS, PortWatch, Comtrade and
+customs operations.
+
+Local receipts: focused 7/7 and combined 47/47 tests, production TypeScript,
+Biome, strict local secret scan and a 2,518-module Vite build pass. Browser
+checks show 1440/1440 and 390/390 page widths, three distinct legend layers,
+`NOT_CONFIGURED`, and no fixture text. Full receipts are in
+`evidence/phase17-trade-flows.md`.
+
+## Phase 18 - China factory deepening and global industrial seeds
+
+Phase 18 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS**. A validated
+source-review queue now covers six requested case families: Wenzhou footwear,
+Jingdezhen ceramics, a Dongguan/Dalang town case, Shenzhen/BYD manufacturing,
+Netherlands/ASML lithography and Germany/BMW automotive manufacturing. China,
+the Netherlands and Germany use one schema and stable ID/evidence vocabulary.
+
+All ten evidence records point to government, exchange, issuer-filing or
+company-official HTTPS publications. Coverage is explicitly five-dimensional
+source-review completion, not market/company/factory coverage. Every case keeps
+HS/trade queries at `SOURCE_REQUIRED`; the production Phase 16 entity registry
+remains empty. Shenzhen's operator, listed issuer and ticker are distinct
+candidates because the registration/MIC/ownership chain is not closed.
+
+The industry-map search now returns the source-review queue alongside existing
+seeds. Product-to-location and location-to-product lookups are both tested.
+Local receipts: Phase 18 7/7, combined Phase 14-18 54/54, production
+TypeScript, Biome, strict secret scan and 2,519-module build pass. Browser
+searches at 1440 and 390 pixels have no horizontal overflow and retain the
+HS/trade and entity gaps. Full receipt:
+`evidence/phase18-global-industrial-seeds.md`.
+
+Run 15 at the Phase 17 head completed native macOS and four other top-level
+workflows, but one unrelated Ubuntu market-quote deadline test failed. Run 16
+at the Phase 18 head completed Ubuntu and four other top-level workflows, but
+one different native-macOS news-digest timeout test failed. These are useful
+platform receipts but were not zero-exit closure. Run 19 at `8ddd9cc1...`
+subsequently passed both authoritative platforms and all five top-level
+workflows, closing Phase 17 and 18 without waiving either earlier failure.
+
+## Phase 19 - content and event normalization
+
+Phase 19 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS**.
+Runtime-neutral Content/Social Provider interfaces, disabled News/X/Bilibili
+adapters, licensed transports, SourceItem normalization, language/entity/geo
+extraction, de-duplication and event-candidate timelines are implemented.
+
+Production adapters are `NOT_CONFIGURED`, allow zero requests and register no
+executor. There is no HTML scrape fallback. Original canonical URL, platform
+ID and timestamps are retained; social content stays `SOCIAL_SIGNAL` unless
+the source explicitly identifies official authority. Provider keys never
+enter the shared/browser request contract.
+
+Local receipts: focused 9/9, combined Phase 14–20 72/72, production
+TypeScript, Biome, strict secret scan and the shared 2,525-module Vite build
+pass. Full receipt:
+`evidence/phase19-content-event-normalization.md`.
+
+## Phase 20 - cross-platform trend and breakout engine
+
+Phase 20 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS**. The versioned
+trend engine calculates deterministic 15-minute, 1-hour, 6-hour and 24-hour
+points using de-duplicated unique content, independent authors, platform
+diversity, velocity, acceleration, official confirmation and audience
+concentration. Every score stores its components and state-change reasons.
+
+The six-state machine, first-observation propagation path, named SSE envelope,
+secure closable SSE client, `/trends` overview and detail routes are complete.
+Production SSE has no endpoint and no fixture; it returns `NOT_CONFIGURED`
+without constructing `EventSource`. Unknown event IDs return
+`SOURCE_REQUIRED`.
+
+Local receipts: focused 9/9, Phase 19 9/9, combined 72/72, TypeScript, Biome,
+strict secret scan and 2,525-module build pass. Browser checks show 1440/1440
+and 390/390 widths, the disabled SSE state and fixture-free unknown detail.
+Full receipt: `evidence/phase20-trend-engine.md`.
+
+Draft PR #2 Run 19 at `8ddd9cc1eba76fe2632f23b01a158a111936a52b`
+completed all five top-level workflows successfully. Ubuntu reported 23,088
+total / 23,082 pass / 0 fail / 6 skip. Native `macos-14-arm64` reported 22,930
+total / 22,924 pass / 0 fail / 6 skip, then built the optimized unsigned Tauri
+release profile in 1 minute 17 seconds and left generated desktop inputs clean.
+This exact descendant contains Phase 17–20 and closes all four phases.
