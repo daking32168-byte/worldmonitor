@@ -18,6 +18,7 @@ import { isChinaFactoryPath } from './features/china-factory/china-factory-route
 import { isIndustryMapPath } from './features/industry-map/industry-map-path';
 import { isProviderOperationsPath } from './features/provider-operations/provider-operations-route';
 import { isTradeFlowsPath } from './features/trade-flows/trade-flows-route';
+import { isTrendsPath } from './features/trends/trends-route';
 
 if (SITE_VARIANT === 'happy') {
   // Keeps happy-theme.css off other variants' eager CSS graph. On happy, the
@@ -650,6 +651,12 @@ if (urlParams.get('settings') === '1') {
   // never promotes vessel positions or national aggregates into shipments.
   void import('./features/trade-flows/trade-flows').then(({ initTradeFlowsWorkspace }) => {
     initTradeFlowsWorkspace('app');
+  }).catch(console.error);
+} else if (isTrendsPath(window.location.pathname)) {
+  // Phase 20 trend views consume only normalized SourceItems and a configured
+  // server SSE contract; production never imports test fixtures.
+  void import('./features/trends/trends').then(({ initTrendsWorkspace }) => {
+    initTrendsWorkspace('app');
   }).catch(console.error);
 } else if (isProviderOperationsPath(window.location.pathname)) {
   // The operational control center is an owned surface. It observes only

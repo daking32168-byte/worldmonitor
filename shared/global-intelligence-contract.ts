@@ -139,6 +139,7 @@ export const STABLE_ENTITY_PREFIXES = [
   'route',
   'pred',
   'source',
+  'trend',
 ] as const;
 
 export type StableEntityPrefix = (typeof STABLE_ENTITY_PREFIXES)[number];

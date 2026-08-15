@@ -30,6 +30,9 @@ export type ProviderOperationId =
   | 'market-minute-stream'
   | 'news-ingest'
   | 'news-analysis-layer1'
+  | 'x-content-ingest'
+  | 'bilibili-content-ingest'
+  | 'trend-realtime-sse'
   | 'ais-relay'
   | 'portwatch-batch'
   | 'comtrade-batch'
@@ -135,6 +138,48 @@ export const PROVIDER_OPERATIONS: readonly ProviderOperationDefinition[] = [
     credentialAlternatives: [['OLLAMA_API_URL', 'OLLAMA_MODEL'], ['GROQ_API_KEY'], ['OPENROUTER_API_KEY']],
     queueKind: 'NEWS_ANALYSIS',
     safetyBoundary: '模型输出是具版本的分析，不是事实或新闻导致价格变化的证明。',
+  },
+  {
+    id: 'x-content-ingest',
+    title: 'X 授权内容增量采集',
+    provider: 'X API（未配置）',
+    purpose: '通过受许可 API 保留平台 ID、原始 URL、发布时间和作者维度。',
+    cadence: '仅按已批准 API 配额；当前禁用。',
+    idempotencyScope: 'provider + platform item id',
+    lockScope: 'content-ingest:x:{cursor}',
+    minimumRetryIntervalMs: 60_000,
+    requiredFeatures: [],
+    requiredSecrets: [],
+    queueKind: 'IMPORT',
+    safetyBoundary: '没有 API/许可时不抓取网页替代；社交信号不自动升级为官方确认。',
+  },
+  {
+    id: 'bilibili-content-ingest',
+    title: 'B站授权内容增量采集',
+    provider: 'Bilibili API / 合法文件（未配置）',
+    purpose: '通过受许可接口保留 BV/平台 ID、原始 URL、发布时间和作者维度。',
+    cadence: '仅按已批准 API 配额；当前禁用。',
+    idempotencyScope: 'provider + platform item id',
+    lockScope: 'content-ingest:bilibili:{cursor}',
+    minimumRetryIntervalMs: 60_000,
+    requiredFeatures: [],
+    requiredSecrets: [],
+    queueKind: 'IMPORT',
+    safetyBoundary: '没有 API/许可时不抓取页面替代；视频热度不等于事件事实或官方确认。',
+  },
+  {
+    id: 'trend-realtime-sse',
+    title: '跨平台趋势实时 SSE',
+    provider: '标准化事件/趋势服务（未配置）',
+    purpose: '推送具算法版本、分项、状态原因和数据截止时间的趋势快照。',
+    cadence: 'Provider 就绪后按事件增量；当前禁用。',
+    idempotencyScope: 'event id + as-of + algorithm version',
+    lockScope: 'trend-sse:{eventId}',
+    minimumRetryIntervalMs: 30_000,
+    requiredFeatures: [],
+    requiredSecrets: [],
+    queueKind: 'STREAM',
+    safetyBoundary: '无实时 Provider 时不连接 fixture；模型热度不是官方事实或事件影响证明。',
   },
   {
     id: 'ais-relay',
@@ -250,6 +295,27 @@ export const PROVIDER_OPERATION_TRUTH: Readonly<Record<ProviderOperationId, Prov
     evidenceClasses: ['MODELLED_IMPACT', 'AI_SPECULATION'],
     aggregationLevels: ['COMPANY'],
     licenseNote: 'Model access and output-use rights must be verified separately from source-content rights.',
+  },
+  'x-content-ingest': {
+    coverageStatus: 'OUT_OF_SCOPE',
+    licenseStatus: 'NOT_CONFIGURED',
+    evidenceClasses: ['SOCIAL_SIGNAL'],
+    aggregationLevels: ['GLOBAL'],
+    licenseNote: 'No X API or display/export licence is configured; HTML scraping is not a fallback.',
+  },
+  'bilibili-content-ingest': {
+    coverageStatus: 'OUT_OF_SCOPE',
+    licenseStatus: 'NOT_CONFIGURED',
+    evidenceClasses: ['SOCIAL_SIGNAL'],
+    aggregationLevels: ['GLOBAL'],
+    licenseNote: 'No Bilibili API or licensed file feed is configured; page scraping is not a fallback.',
+  },
+  'trend-realtime-sse': {
+    coverageStatus: 'OUT_OF_SCOPE',
+    licenseStatus: 'NOT_CONFIGURED',
+    evidenceClasses: ['MODELLED_IMPACT'],
+    aggregationLevels: ['GLOBAL'],
+    licenseNote: 'No production event stream is configured; test fixtures are forbidden from the production SSE path.',
   },
   'ais-relay': {
     coverageStatus: 'PARTIAL',
