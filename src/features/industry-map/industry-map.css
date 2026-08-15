@@ -165,6 +165,13 @@
 .industry-map__boundary-state { margin: 0 16px 10px; border: 1px dashed rgba(231, 172, 82, .36); border-radius: 9px; padding: 10px; color: #f3d49f; background: rgba(98, 66, 16, .18); }
 .industry-map__boundary-state p { margin: 4px 0 0; color: #aebfc5; font-size: 11px; line-height: 1.5; }
 .industry-map__surface { display: grid; align-content: start; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; min-height: 0; padding: 5px 16px 16px; background-image: linear-gradient(rgba(111, 181, 208, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(111, 181, 208, .04) 1px, transparent 1px); background-size: 26px 26px; }
+.industry-map__entity-surface { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.industry-map__entity-stat { display: grid; gap: 3px; border: 1px solid rgba(114, 184, 211, .18); border-radius: 10px; padding: 14px; background: rgba(7, 31, 42, .82); }
+.industry-map__entity-stat strong { color: #8be3fb; font-size: 25px; }
+.industry-map__entity-stat span { color: #9bb5c0; font-size: 11px; }
+.industry-map__coverage-boundary { grid-column: 1 / -1; border: 1px dashed rgba(231, 172, 82, .36); border-radius: 10px; padding: 13px; color: #d6e7ed; background: rgba(98, 66, 16, .18); }
+.industry-map__coverage-boundary p { color: #aebfc5; font-size: 11px; line-height: 1.55; }
+.industry-map__coverage-boundary p:last-child { margin-bottom: 0; }
 .industry-map__province { min-width: 0; border: 1px solid rgba(114, 184, 211, .18); border-radius: 10px; padding: 10px; background: rgba(7, 31, 42, .74); }
 .industry-map__province-heading { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 7px; color: #cdebf6; font-size: 11px; }
 .industry-map__province-heading span { color: #7294a1; }
@@ -211,5 +218,7 @@
   .industry-map__distribution { min-height: 430px; max-height: 62dvh; }
   .industry-map__detail { grid-column: auto; max-height: 58dvh; }
   .industry-map__surface { grid-template-columns: minmax(0, 1fr); }
+  .industry-map__entity-surface { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .industry-map__coverage-boundary { grid-column: 1 / -1; }
   .industry-map__definitions { grid-template-columns: minmax(0, 1fr); }
 }

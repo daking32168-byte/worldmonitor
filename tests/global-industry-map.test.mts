@@ -100,7 +100,7 @@ test('every current GeoUnit fails closed without reviewed boundary or invented c
   }
 });
 
-test('industry-map overview, location and cluster detail routes reject unknown entities', () => {
+test('industry-map overview, location, cluster and Phase 16 entity routes reject unknown entities', () => {
   const huidongCluster = 'cluster_cn-huidong-womens-footwear';
   const huidongGeo = 'geo_cn-guangdong-huidong';
   assert.equal(isIndustryMapPath('/industry-map'), true);
@@ -110,10 +110,13 @@ test('industry-map overview, location and cluster detail routes reject unknown e
   assert.equal(parseIndustryMapRoute(industryMapLocationUrl(huidongGeo)).kind, 'location');
   assert.equal(parseIndustryMapRoute(industryMapClusterUrl(huidongCluster)).kind, 'cluster');
   assert.equal(parseIndustryMapRoute('/industry-map/cluster/cluster_unknown').kind, 'not-found');
-  assert.equal(isIndustryMapPath('/industry-map/company/company_unknown'), false);
+  assert.equal(isIndustryMapPath('/industry-map/company/company_unknown'), true);
+  assert.equal(parseIndustryMapRoute('/industry-map/company/company_unknown').kind, 'not-found');
+  assert.equal(isIndustryMapPath('/industry-map/facility/facility_unknown'), true);
+  assert.equal(parseIndustryMapRoute('/industry-map/facility/facility_unknown').kind, 'not-found');
 });
 
-test('the five map modes exist and only industry distribution is enabled in Phase 15', () => {
+test('the five map modes exist and Phase 16 enables only distribution and company/facility', () => {
   assert.deepEqual(INDUSTRY_MAP_MODE_OPTIONS.map((mode) => mode.id), [
     'INDUSTRY_DISTRIBUTION',
     'COMPANY_FACILITY',
@@ -123,6 +126,7 @@ test('the five map modes exist and only industry distribution is enabled in Phas
   ]);
   assert.deepEqual(INDUSTRY_MAP_MODE_OPTIONS.filter((mode) => mode.implemented).map((mode) => mode.id), [
     'INDUSTRY_DISTRIBUTION',
+    'COMPANY_FACILITY',
   ]);
 });
 

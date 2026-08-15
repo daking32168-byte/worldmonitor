@@ -39,6 +39,7 @@
     "docs:stats": "node scripts/docs-stats.mjs",
     "docs:check": "node scripts/docs-stats.mjs --check",
     "industry-map:validate": "node scripts/validate-industry-map-csv.mjs docs/integration/templates/industry-map-maintenance.csv",
+    "company-facility:validate": "node scripts/validate-company-facility-csv.mjs docs/integration/templates/companies.csv docs/integration/templates/facilities.csv docs/integration/templates/brands.csv docs/integration/templates/securities.csv",
     "sources:generate": "node scripts/source-attribution.mjs --write",
     "sources:check": "node scripts/source-attribution.mjs --check",
     "dev": "vite",

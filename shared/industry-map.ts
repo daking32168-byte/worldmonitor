@@ -140,7 +140,7 @@ export const INDUSTRY_MAP_MODE_OPTIONS: readonly Readonly<{
   implemented: boolean;
 }>[] = Object.freeze([
   { id: 'INDUSTRY_DISTRIBUTION', label: '全球产业分布', implemented: true },
-  { id: 'COMPANY_FACILITY', label: '企业与工厂', implemented: false },
+  { id: 'COMPANY_FACILITY', label: '企业与工厂', implemented: true },
   { id: 'PRODUCT_FLOW', label: '产品贸易流向', implemented: false },
   { id: 'LOGISTICS_NETWORK', label: '物流网络', implemented: false },
   { id: 'EVENT_IMPACT', label: '事件影响', implemented: false },

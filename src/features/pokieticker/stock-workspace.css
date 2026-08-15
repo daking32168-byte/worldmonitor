@@ -114,6 +114,15 @@
 .pokie-workspace__provider-status { color: var(--pokie-text); }
 .pokie-workspace__provider-details { max-width: 720px; text-align: right; }
 
+.pokie-workspace__industry-relations { display: grid; gap: 7px; margin-top: 10px; border: 1px solid var(--pokie-line); border-left: 4px solid #f59e0b; border-radius: 8px; padding: 10px 14px; color: var(--pokie-muted); background: rgba(12, 25, 42, .82); font-size: 11px; line-height: 1.5; }
+.pokie-workspace__industry-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--pokie-text); }
+.pokie-workspace__industry-heading span { border: 1px solid rgba(245, 158, 11, .45); border-radius: 999px; padding: 2px 7px; color: #fbc97d; font-size: 9px; font-weight: 800; }
+.pokie-workspace__industry-relations p { margin: 0; }
+.pokie-workspace__industry-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.pokie-workspace__industry-links a { border-radius: 6px; padding: 4px 7px; color: #9fdef8; background: #12304a; text-decoration: none; }
+.pokie-workspace__industry-links a:hover,
+.pokie-workspace__industry-links a:focus-visible { color: #fff; outline-color: var(--pokie-accent); }
+
 .pokie-workspace__layout { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(300px, .85fr); gap: 14px; margin-top: 14px; }
 .pokie-workspace__chart-column { min-width: 0; }
 .pokie-workspace__price-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px; border-radius: 10px 10px 0 0; border-bottom: 0; }

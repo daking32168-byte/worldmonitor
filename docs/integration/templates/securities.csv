@@ -1,0 +1,2 @@
+record_status,security_id,issuer_company_id,instrument_type,local_ticker,mic,isin,currency,primary_listing,provider_instrument_ids,valid_from,valid_to,source_id,source_url,last_verified_at
+TEMPLATE,security_xxxx-example,company_cn-example-registration,COMMON_STOCK,EXAMPLE,XXXX,,USD,false,,,,,,

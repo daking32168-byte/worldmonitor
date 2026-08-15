@@ -1,0 +1,2 @@
+record_status,brand_id,brand_name,owner_company_id,operator_company_ids,source_id,source_url,last_verified_at
+TEMPLATE,brand_example-source-required,示例品牌（禁止生产导入）,company_cn-example-registration,,,,
