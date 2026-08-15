@@ -471,3 +471,21 @@ requires owner/legal approval before acquisition or ingestion.
 
 Signing, notarization, provider purchase, production import, deployment and
 release remain outside this task's authority.
+
+## Phase 18 source-review maintenance (2026-08-15)
+
+- [x] Review at least one source for each of the six requested case families.
+- [x] Keep Chinese and overseas cases on one model and validate bidirectional
+  product/location query.
+- [x] Record five-dimension review coverage, verification time and named gaps;
+  never label it market or factory coverage.
+- [x] Keep all Phase 18 HS/trade queries disabled and the Phase 16 production
+  entity registry empty.
+- [x] Preserve Shenzhen operator/facility/issuer/security separation.
+- [ ] Before promoting a review candidate into Phase 16, verify exact legal
+  registration identity and every ownership, operation, production, listing
+  and location relationship edge independently.
+- [ ] Before enabling HS/trade, review the exact product mapping and ingest a
+  compatible observation at the same geographic aggregation.
+- [ ] Publish the Phase 18 candidate to Draft PR #2 and retain Ubuntu plus
+  native macOS zero-exit receipts.

@@ -819,3 +819,26 @@ Biome, strict local secret scan and a 2,518-module Vite build pass. Browser
 checks show 1440/1440 and 390/390 page widths, three distinct legend layers,
 `NOT_CONFIGURED`, and no fixture text. Full receipts are in
 `evidence/phase17-trade-flows.md`.
+
+## Phase 18 - China factory deepening and global industrial seeds
+
+Phase 18 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING**. A validated
+source-review queue now covers six requested case families: Wenzhou footwear,
+Jingdezhen ceramics, a Dongguan/Dalang town case, Shenzhen/BYD manufacturing,
+Netherlands/ASML lithography and Germany/BMW automotive manufacturing. China,
+the Netherlands and Germany use one schema and stable ID/evidence vocabulary.
+
+All ten evidence records point to government, exchange, issuer-filing or
+company-official HTTPS publications. Coverage is explicitly five-dimensional
+source-review completion, not market/company/factory coverage. Every case keeps
+HS/trade queries at `SOURCE_REQUIRED`; the production Phase 16 entity registry
+remains empty. Shenzhen's operator, listed issuer and ticker are distinct
+candidates because the registration/MIC/ownership chain is not closed.
+
+The industry-map search now returns the source-review queue alongside existing
+seeds. Product-to-location and location-to-product lookups are both tested.
+Local receipts: Phase 18 7/7, combined Phase 14-18 54/54, production
+TypeScript, Biome, strict secret scan and 2,519-module build pass. Browser
+searches at 1440 and 390 pixels have no horizontal overflow and retain the
+HS/trade and entity gaps. Full receipt:
+`evidence/phase18-global-industrial-seeds.md`.

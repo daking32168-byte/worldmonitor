@@ -336,3 +336,12 @@ source rights and explicit entity plus relationship evidence before display.
 No credential, entitlement or background network request was added. The new
 shipment operation is deliberately unusable until a signed contract and a
 bounded service-side executor exist.
+
+## Phase 18 source-review Provider effect
+
+Phase 18 adds no runtime Provider, credential, scheduled request or importer.
+Its ten sources are manually reviewed public government, exchange, filing and
+company-official documents committed as provenance metadata. Runtime code does
+not scrape or refresh those pages. A future refresh must run through a reviewed
+source-maintenance change and cannot enable HS/trade or entity promotion by
+itself.

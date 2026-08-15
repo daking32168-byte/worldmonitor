@@ -414,3 +414,8 @@ it did not merge, rebase, cherry-pick or fetch a newer upstream. Phase 17 is a
 new local descendant and introduces no upstream object intake. Draft PR #1,
 `main`, the original integration branch, upstream, releases and deployments
 remain protected.
+
+Phase 18 source review is a local descendant of the pushed Phase 17 candidate.
+It uses public official source URLs as provenance but performs no upstream Git
+merge, rebase, cherry-pick or newer object intake. Draft PR #1, `main`, the
+original integration branch, releases and deployments remain protected.

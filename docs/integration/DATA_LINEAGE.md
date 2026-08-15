@@ -564,3 +564,20 @@ Production stops before the first value-bearing observation: all Phase 17
 arrays are empty. The two operator templates are not imported into application
 code. Model routes carry a methodology version and remain separate from actual
 or company-disclosed records.
+
+## Phase 18 industrial seed review lineage
+
+```text
+official government / exchange / issuer / company publication
+  -> SourceEvidence with stable ID, claim class and aggregation
+  -> one of five reviewed dimensions
+  -> IndustrialSeedReview with verification time and named gaps
+  -> product <-> location search card
+  -X-> automatic Phase 16 company/facility/security promotion
+  -X-> automatic HS mapping or TradeFlowObservation
+```
+
+The coverage rate has the closed denominator of five source-review dimensions.
+It must not be reused as a market, company, factory or data-provider coverage
+rate. The review queue remains separate from the empty authoritative entity
+registry and from every value-bearing trade registry.

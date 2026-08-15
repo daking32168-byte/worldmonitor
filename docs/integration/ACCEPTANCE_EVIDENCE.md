@@ -641,3 +641,20 @@ Full receipts are retained in
 | Hosted closure | PENDING | Phase 17 implementation and this receipt require the next stacked Draft PR #2 Ubuntu and native macOS run. |
 
 Full receipts are retained in `evidence/phase17-trade-flows.md`.
+
+## Phase 18 - China factory deepening and global seeds
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Six case families | PASS | Wenzhou footwear, Jingdezhen ceramics, Dongguan/Dalang, Shenzhen/BYD, Netherlands/ASML and Germany/BMW records exist. |
+| Source review | PASS | Ten official HTTPS evidence records; every case has source IDs, verification date and named gaps. |
+| Unified model | PASS | CN/NL/DE records share one contract, stable Geo IDs, dimension coverage and validation. |
+| Geography/product/process | PASS | Each case records only source-supported values; missing dimensions remain visibly absent. |
+| Company/facility/security separation | PASS | Shenzhen operator, production base, listed issuer and ticker are not merged; Phase 16 facts remain empty. |
+| Bidirectional query | PASS | Product-to-location and Geo-ID-to-product contract tests pass. |
+| HS/trade admission | PASS | Every case remains `SOURCE_REQUIRED`; no export number or trade observation exists. |
+| Local quality/browser | PASS | Focused 7/7, combined 54/54, TypeScript, Biome, secret scan, 2,519-module build, and 1440/390 no-overflow browser checks pass. |
+| Hosted closure | PENDING | The Phase 18 candidate requires the next Draft PR #2 Ubuntu/native macOS run. |
+
+Full receipts are retained in
+`evidence/phase18-global-industrial-seeds.md`.
