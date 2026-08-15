@@ -743,3 +743,27 @@ matched the intended local tree exactly. Draft PR #2 and Run 12 supplied the
 remote zero-exit receipt without changing PR #1, `main`, a Release or a
 deployment. See
 `evidence/phase14-cross-platform-environment.md`.
+
+## Phase 15 - global industry map core
+
+Phase 15 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING** at
+`ac5ab6a403ce36f6c756fb73aa4815438e1d7f10`. The existing 22 sourced China
+Factory records are adapted into the new `GeoUnit`, `IndustryCluster`,
+`ProductTaxonomyNode` and `ProductHsMapping` model without duplicating their
+source facts. Only Huidong and Putian retain reviewed HS 2012 chapter 64
+mappings; all 20 MIIT references remain statistics-disabled.
+
+The existing SPA/Tauri binary now lazy-loads `/industry-map`, location detail
+and cluster detail routes. It provides sourced product/cluster search, the
+`INDUSTRY_DISTRIBUTION` base mode, five-mode switch contract, and explicit
+source/coverage/gap, boundary-unavailable and trade-unavailable states. No
+trade value, approximate coordinate, unreviewed polygon, company/factory
+fixture or shipment fixture was added.
+
+Local receipts: Phase 15 10/10, combined Phase 14/China Factory regression
+23/23, production TypeScript, changed-file Biome, strict secret scan, CSV
+validator and a 2,513-module Vite build pass. Browser checks at 1440 x 900 and
+390 x 844 show no horizontal overflow and independently scrolling work panes.
+Production output contains neither the maintenance template nor test fixtures.
+Hosted closure remains pending; see
+`evidence/phase15-global-industry-map.md`.

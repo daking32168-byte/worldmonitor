@@ -408,3 +408,22 @@ No credential, Provider purchase or license activation is needed for this
 closure. The available Windows host has no installed WSL distribution, Docker,
 Bash or npm; installing a system runtime requires separate authorization and
 was not attempted. Do not weaken or skip the full data gate.
+
+## Phase 15 industry-map maintenance (2026-08-15)
+
+- [x] Adapt the existing 22 source-labelled seeds without copying their facts
+  into a second production dataset.
+- [x] Preserve reviewed HS 64 only for Huidong and Putian; keep the 20 MIIT
+  reference records statistics-disabled.
+- [x] Validate product search, no-number empty state, no-boundary state,
+  production bundle isolation and desktop/mobile scrolling locally.
+- [x] Provide a strict operator CSV template and validator outside the
+  production import graph.
+- [ ] Push candidate and receipt to stacked Draft PR #2 and retain the next
+  Ubuntu plus native macOS zero-exit receipts.
+
+Before adding a real row, an owner/reviewer must replace the template ID and
+labels, attach an HTTPS source, review its product/HS scope, and separately
+review any coordinate or boundary. Never change `statistics_enabled` to true
+merely because a source mentions a cluster. A compatible numeric observation
+at the claimed aggregation level remains independently required.

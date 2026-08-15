@@ -589,3 +589,20 @@ complete; publication, PR mutation, merge and deployment were not performed.
 
 Full commands, failure classification and verifier state are retained in
 `evidence/phase14-shared-truth-contract.md`.
+
+## Phase 15 - global industry map core
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Four required domain models | PASS | `GeoUnit`, `IndustryCluster`, `ProductTaxonomyNode` and `ProductHsMapping` are runtime-neutral and use Phase 14 stable IDs/evidence. |
+| Existing seed import | PASS | Exactly 22 existing registry records are adapted; source values remain maintained in `china-factory-clusters.ts`. |
+| HS/statistics boundary | PASS | Huidong and Putian alone retain reviewed HS 2012 chapter 64; 20 MIIT references have no mapping and statistics remain disabled. |
+| Routes and base map mode | PASS | `/industry-map`, location and cluster detail routes work; five modes exist and only `INDUSTRY_DISTRIBUTION` is enabled. |
+| Search `女鞋` | PASS | Exactly one sourced Huidong record is returned with its administrative label and two source-evidence IDs. |
+| No invented trade or geography | PASS | No value-bearing trade fields exist; all current boundaries/centroids are null with visible `NOT_REVIEWED`/`UNAVAILABLE` states. |
+| CSV maintenance | PASS | Operator template validates; unsafe statistical promotion is rejected; template is not imported into production. |
+| Mobile and independent scroll | PASS | Browser measurements at 390 x 844 show page width 390/390 and independent distribution/detail overflow. |
+| Production bundle isolation | PASS | Vite build has a lazy industry-map chunk and contains no maintenance-template or `tests/fixtures` marker. |
+| Hosted closure | PENDING | Local candidate `ac5ab6a...` must pass the stacked PR Ubuntu and native macOS gates before Phase 15 is marked complete. |
+
+Full receipts are retained in `evidence/phase15-global-industry-map.md`.

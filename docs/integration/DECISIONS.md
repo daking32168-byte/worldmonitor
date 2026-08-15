@@ -670,3 +670,32 @@ workflow. Phase 14 remains blocked until the remote Ubuntu job returns a real
 zero-exit receipt; a locally valid workflow is not represented as a CI pass.
 That condition was satisfied by Run 12 at `a23d9af9...`; native macOS also
 returned a zero-failure data receipt and an unsigned ARM64 Tauri build receipt.
+
+## D-0050 - Adapt the 22-seed registry and fail closed on geography
+
+**Decision:** Keep `shared/china-factory-clusters.ts` as the maintained source
+of all 22 Phase 15 seeds. Adapt it into stable `GeoUnit`, `IndustryCluster`,
+`ProductTaxonomyNode`, `ProductHsMapping` and `SourceEvidence` objects. Do not
+copy source facts, invent centroids or draw unreviewed boundaries.
+
+**Reason:** A second registry would drift from the already accepted source and
+HS review. Administrative names support a searchable distribution index but do
+not by themselves support precise points or polygons.
+
+**Consequence:** The first industry-map mode is a sourced administrative
+distribution index. Every current boundary/centroid is explicitly unavailable;
+only Huidong and Putian have reviewed HS 64 mappings, and even those mappings
+do not authorize a location-level trade number.
+
+## D-0051 - Keep maintenance CSV out of the production import graph
+
+**Decision:** Store the Phase 15 CSV as an operator template under integration
+documentation and validate it with a Node-only script. Production code does not
+read the CSV; promotion remains an explicit source/code review.
+
+**Reason:** Runtime CSV loading would let examples or partially reviewed rows
+silently become product facts and would complicate offline Tauri packaging.
+
+**Consequence:** The validator rejects unsafe statistics, boundary and HS
+claims. Vite emits the industry workspace as a lazy chunk and bundles neither
+the template nor test fixtures on web, Windows or macOS.

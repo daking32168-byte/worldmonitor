@@ -486,3 +486,28 @@ aggregation. They never inherit national Comtrade values as town, facility,
 port, route or shipment observations. Market licensed realtime remains the only
 legacy status that maps to `REALTIME_VERIFIED`; Maritime configured-but-empty
 maps to `SOURCE_REQUIRED`, not success.
+
+## Phase 15 industry-map lineage
+
+Phase 15 does not ingest a new Provider payload. It adapts the reviewed Phase 7
+China Factory registry through the Phase 14 identity/evidence contract:
+
+```text
+ChinaFactoryCluster source statement
+  -> source URL keyed SourceEvidence
+  -> GeoUnit (administrative label; no boundary or centroid)
+  -> IndustryCluster
+  -> ProductTaxonomyNode
+  -> reviewed ProductHsMapping only when the legacy registry has one
+  -> sourced search / distribution index / detail UI
+```
+
+HS 2012 chapter 64 evidence classifies footwear; it is not a Huidong or Putian
+trade observation. No Comtrade response is attached, so neither location may
+display an amount, weight, destination, port or ranking. The 20 MIIT entries
+stop before `ProductHsMapping` and remain `REFERENCE_ONLY`.
+
+The maintenance CSV is an operator template and validation surface, not a
+runtime source. A row cannot enter this lineage until its source, mapping and
+boundary claims are separately reviewed and committed to the authoritative
+registry.

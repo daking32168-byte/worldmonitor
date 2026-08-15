@@ -297,3 +297,16 @@ verified execution maps to `SOURCE_REQUIRED`; an executor success with
 unreviewed rights maps to `DELAYED_UNVERIFIED`, never observed or realtime.
 Failure after a prior verified execution may map to stale, while missing or
 invalid configuration remains unavailable/not configured.
+
+## Phase 15 industry-map Provider effect
+
+Phase 15 adds no Provider, account, credential, entitlement, redistribution
+right or live request. Its four source-evidence records wrap URLs already used
+by the reviewed China Factory registry and remain `REVIEW_REQUIRED` for license
+purposes. The industry-map route performs no trade, geocoding, boundary,
+company, facility, shipment, AIS or model fetch.
+
+The maintenance CSV cannot activate a Provider or promote a fixture. Reviewed
+statistics require an approved source and HS mapping in code; actual numeric
+display still requires a separately compatible observation at the target
+aggregation level.
