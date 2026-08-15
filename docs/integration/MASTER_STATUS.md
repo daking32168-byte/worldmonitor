@@ -842,3 +842,47 @@ TypeScript, Biome, strict secret scan and 2,519-module build pass. Browser
 searches at 1440 and 390 pixels have no horizontal overflow and retain the
 HS/trade and entity gaps. Full receipt:
 `evidence/phase18-global-industrial-seeds.md`.
+
+Run 15 at the Phase 17 head completed native macOS and four other top-level
+workflows, but one unrelated Ubuntu market-quote deadline test failed. Run 16
+at the Phase 18 head completed Ubuntu and four other top-level workflows, but
+one different native-macOS news-digest timeout test failed. These are useful
+platform receipts but not zero-exit closure. The final Phase 20 descendant must
+pass both gates before Phase 17 or 18 is promoted to complete.
+
+## Phase 19 - content and event normalization
+
+Phase 19 is **CANDIDATE — LOCAL GATES PASS, HOSTED DESCENDANT RUN PENDING**.
+Runtime-neutral Content/Social Provider interfaces, disabled News/X/Bilibili
+adapters, licensed transports, SourceItem normalization, language/entity/geo
+extraction, de-duplication and event-candidate timelines are implemented.
+
+Production adapters are `NOT_CONFIGURED`, allow zero requests and register no
+executor. There is no HTML scrape fallback. Original canonical URL, platform
+ID and timestamps are retained; social content stays `SOCIAL_SIGNAL` unless
+the source explicitly identifies official authority. Provider keys never
+enter the shared/browser request contract.
+
+Local receipts: focused 9/9, combined Phase 14–20 72/72, production
+TypeScript, Biome, strict secret scan and the shared 2,525-module Vite build
+pass. Full receipt:
+`evidence/phase19-content-event-normalization.md`.
+
+## Phase 20 - cross-platform trend and breakout engine
+
+Phase 20 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING**. The versioned
+trend engine calculates deterministic 15-minute, 1-hour, 6-hour and 24-hour
+points using de-duplicated unique content, independent authors, platform
+diversity, velocity, acceleration, official confirmation and audience
+concentration. Every score stores its components and state-change reasons.
+
+The six-state machine, first-observation propagation path, named SSE envelope,
+secure closable SSE client, `/trends` overview and detail routes are complete.
+Production SSE has no endpoint and no fixture; it returns `NOT_CONFIGURED`
+without constructing `EventSource`. Unknown event IDs return
+`SOURCE_REQUIRED`.
+
+Local receipts: focused 9/9, Phase 19 9/9, combined 72/72, TypeScript, Biome,
+strict secret scan and 2,525-module build pass. Browser checks show 1440/1440
+and 390/390 widths, the disabled SSE state and fixture-free unknown detail.
+Full receipt: `evidence/phase20-trend-engine.md`.

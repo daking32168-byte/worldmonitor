@@ -466,8 +466,9 @@ requires owner/legal approval before acquisition or ingestion.
 - [ ] Before a shipment Provider is enabled, obtain owner/legal approval,
   document field-level display/export rights, configure only the server/sidecar
   executor, and run negative AIS/downscoping tests again.
-- [ ] Publish the Phase 17 candidate to stacked Draft PR #2 and retain Ubuntu
-  plus native macOS zero-exit receipts.
+- [x] Publish the Phase 17 candidate to stacked Draft PR #2.
+- [ ] Retain an Ubuntu plus native macOS zero-exit receipt on the final Phase
+  20 descendant; Run 15 had one unrelated Ubuntu timing failure.
 
 Signing, notarization, provider purchase, production import, deployment and
 release remain outside this task's authority.
@@ -487,5 +488,35 @@ release remain outside this task's authority.
   and location relationship edge independently.
 - [ ] Before enabling HS/trade, review the exact product mapping and ingest a
   compatible observation at the same geographic aggregation.
-- [ ] Publish the Phase 18 candidate to Draft PR #2 and retain Ubuntu plus
-  native macOS zero-exit receipts.
+- [x] Publish the Phase 18 candidate to Draft PR #2.
+- [ ] Retain an Ubuntu plus native macOS zero-exit receipt on the final Phase
+  20 descendant; Run 16 had one unrelated native-macOS timing failure.
+
+The candidate is published. Run 16 passed Ubuntu but had one unrelated
+native-macOS timing failure, so the zero-exit receipt remains pending and will
+be re-evaluated at the final Phase 20 descendant.
+
+## Phase 19 content-provider onboarding (2026-08-15)
+
+- [x] Implement common Provider contracts, normalization, de-duplication and
+  event-candidate timelines with disabled production adapters.
+- [x] Reject HTML/page scraping as a fallback transport.
+- [x] Keep Provider secrets outside browser/shared contracts.
+- [x] Keep social observations distinct from official confirmation.
+- [ ] Before enabling any Provider, obtain owner/legal approval for ingest,
+  display and export, record quota/retry policy and register a bounded
+  service/sidecar executor.
+- [ ] Verify retention/deletion, attribution and user-export terms per source;
+  one Provider's licence never authorizes another platform.
+
+## Phase 20 trend/SSE onboarding (2026-08-15)
+
+- [x] Implement the versioned deterministic score, state machine, propagation
+  path, trends routes and secure SSE client contract.
+- [x] Keep the production endpoint null and production fixture disabled.
+- [x] Validate desktop/mobile layouts and unknown-event fail-closed behavior.
+- [ ] Before enabling SSE, admit a service-owned HTTPS endpoint, define
+  authentication/CORS/retention and confirm every input Provider licence.
+- [ ] Treat every algorithm change as a new version and retain component-level
+  comparability; never relabel old points silently.
+- [ ] Obtain a zero-exit Ubuntu/native-macOS receipt at the exact final head.

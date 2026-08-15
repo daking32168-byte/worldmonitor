@@ -345,3 +345,24 @@ company-official documents committed as provenance metadata. Runtime code does
 not scrape or refresh those pages. A future refresh must run through a reviewed
 source-maintenance change and cannot enable HS/trade or entity promotion by
 itself.
+
+## Phase 19 content Provider effect
+
+| Provider | State | Transport | Evidence/display boundary |
+|---|---|---|---|
+| News content skeleton | `NOT_CONFIGURED` | Provider API or licensed file only | Publisher reports are not official confirmation; licence controls ingest/display/export independently. |
+| X content skeleton | `NOT_CONFIGURED` | Provider API only | No HTML fallback; observations default to `SOCIAL_SIGNAL`. |
+| Bilibili content skeleton | `NOT_CONFIGURED` | Provider API or licensed file only | No page/video scrape fallback; popularity is not event fact. |
+
+All three policies allow zero requests per minute and register no executor.
+The shared/browser request contains only a credential-presence boolean; actual
+secret material stays in a future admitted server/sidecar executor.
+
+## Phase 20 trend Provider effect
+
+The `trend-realtime-sse` operation is `NOT_CONFIGURED`, has no executor and
+allows no production fixture. Its public endpoint is null. The browser client
+therefore creates no EventSource. A future endpoint must be explicit, HTTPS,
+service-owned and fed only by admitted normalized content; loopback HTTP is
+accepted solely for controlled local tests. Trend snapshots remain modelled
+signals even after the stream becomes live.

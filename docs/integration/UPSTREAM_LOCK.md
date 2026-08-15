@@ -419,3 +419,13 @@ Phase 18 source review is a local descendant of the pushed Phase 17 candidate.
 It uses public official source URLs as provenance but performs no upstream Git
 merge, rebase, cherry-pick or newer object intake. Draft PR #1, `main`, the
 original integration branch, releases and deployments remain protected.
+
+Phase 19 and Phase 20 are local descendants of pushed Phase 18 evidence head
+`267a5fb1011b271cd281c5d247efd00044d50822`. They add owned contracts/routes
+in implementation `1da2acd3e4b76cc84a002631c4bb91f313ae24f8` and no
+upstream object intake. GitHub Runs 15 and 16 each had one unrelated
+timing-test failure on different platforms, so neither changed the accepted
+head or protection rule. The next candidate may advance only the stacked
+`integration/global-intelligence-v2` ref by ordinary non-force push. Draft PR
+#1, `main`, the original integration branch, upstream, releases, deployments,
+signing and notarization remain protected.

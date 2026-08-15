@@ -581,3 +581,43 @@ The coverage rate has the closed denominator of five source-review dimensions.
 It must not be reused as a market, company, factory or data-provider coverage
 rate. The review queue remains separate from the empty authoritative entity
 registry and from every value-bearing trade registry.
+
+## Phase 19 content and event lineage
+
+```text
+licensed Provider API / lawfully supplied content file
+  -> Provider policy admission (ingest/display/export/rate/retry)
+  -> SourceItem retaining platform ID, canonical URL and timestamps
+  -> deterministic language/entity/location extraction
+  -> platform-ID / URL / content+author de-duplication
+  -> EventCandidate with original-source timeline
+
+unconfigured API / unreviewed licence / web page
+  -X-> SourceItem
+```
+
+Social source authority maps to `SOCIAL_SIGNAL`, not official fact. The event
+candidate becomes official-confirmed only when an admitted SourceItem carries
+explicit official authority. A content fingerprint is an identity/de-dup key,
+not proof that two authors independently verified the event.
+
+## Phase 20 trend lineage
+
+```text
+EventCandidate + admitted unique SourceItems + fixed as_of
+  -> 15m / 1h / 6h / 24h windows
+  -> versioned explainable score components
+  -> NORMAL ... RESOLVED state and reasons
+  -> first-observation cross-platform propagation path
+  -> TrendSnapshot
+  -> configured service SSE -> /trends
+
+null production SSE endpoint
+  -> NOT_CONFIGURED
+  -X-> test fixture or upstream page fallback
+```
+
+Trend heat is a deterministic modelled signal. It is not an official event,
+causal impact, market result or completeness claim. Algorithm version,
+component values and `as_of` travel with every point so a later implementation
+cannot silently reinterpret an earlier score.

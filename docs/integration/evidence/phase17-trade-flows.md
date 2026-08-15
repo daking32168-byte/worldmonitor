@@ -1,7 +1,7 @@
 # Phase 17 Trade Flows and Multimodal Logistics Evidence
 
 **Date:** 2026-08-15 (Asia/Shanghai)
-**Status:** CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING
+**Status:** CANDIDATE — LOCAL GATES PASS, HOSTED ZERO-EXIT DESCENDANT PENDING
 
 ## Delivered Scope
 
@@ -65,8 +65,10 @@ after inspection. Dev-only feed failures did not populate the empty registry.
 
 ## Remote Closure Condition
 
-Phase 17 becomes complete only after the implementation and this evidence
-receipt are committed, pushed by ordinary non-force fast-forward to stacked
-Draft PR #2, and the authoritative Ubuntu plus native macOS gates return zero.
+The implementation and receipt were committed and normally pushed. Run 15
+passed native macOS and four other top-level workflows, but an unrelated
+Ubuntu market-quote deadline timing test failed. Phase 17 becomes complete
+only when the final Phase 20 descendant returns zero on authoritative Ubuntu
+and native macOS.
 No merge, deployment, release, signing, notarization, Provider activation or
 production import is authorized by this candidate.

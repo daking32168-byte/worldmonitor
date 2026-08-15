@@ -1,7 +1,7 @@
 # Phase 18 China Factory Deepening and Global Seed Evidence
 
 **Date:** 2026-08-15 (Asia/Shanghai)
-**Status:** CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING
+**Status:** CANDIDATE — LOCAL GATES PASS, HOSTED ZERO-EXIT DESCENDANT PENDING
 
 ## Delivered Scope
 
@@ -72,7 +72,9 @@ The local tab, Vite server and viewport override were cleaned after inspection.
 
 ## Remote Closure Condition
 
-Phase 18 becomes complete only after the implementation and evidence receipt
-are committed and pushed normally to Draft PR #2 and the next Ubuntu/native
-macOS run passes. No production import, Provider activation, merge, deployment,
+The implementation and receipt were committed and normally pushed. Run 16
+passed Ubuntu and four other top-level workflows, but an unrelated native
+macOS news-digest timeout timing test failed. Phase 18 becomes complete only
+when the final Phase 20 descendant returns zero on authoritative Ubuntu and
+native macOS. No production import, Provider activation, merge, deployment,
 release, signing or notarization is authorized.

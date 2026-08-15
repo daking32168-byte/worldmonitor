@@ -638,7 +638,7 @@ Full receipts are retained in
 | Provider-disabled state | PASS | Empty production registry returns `NOT_CONFIGURED`; shipment operation has `NOT_CONFIGURED` licence and no executor. |
 | Customs import boundary | PASS | Import requires checksum, publisher, publication date, supported aggregation, source reference and lawful local-analysis use. |
 | Local quality and browser | PASS | Focused 7/7; combined 47/47; TypeScript, Biome, secret scan and 2,518-module build pass; 1440 and 390 widths have no horizontal overflow. |
-| Hosted closure | PENDING | Phase 17 implementation and this receipt require the next stacked Draft PR #2 Ubuntu and native macOS run. |
+| Hosted closure | PENDING | Run 15 passed native macOS and four other workflows, but an unrelated Ubuntu market-quote deadline timing test failed. A zero-exit Phase 20 descendant is required. |
 
 Full receipts are retained in `evidence/phase17-trade-flows.md`.
 
@@ -654,7 +654,42 @@ Full receipts are retained in `evidence/phase17-trade-flows.md`.
 | Bidirectional query | PASS | Product-to-location and Geo-ID-to-product contract tests pass. |
 | HS/trade admission | PASS | Every case remains `SOURCE_REQUIRED`; no export number or trade observation exists. |
 | Local quality/browser | PASS | Focused 7/7, combined 54/54, TypeScript, Biome, secret scan, 2,519-module build, and 1440/390 no-overflow browser checks pass. |
-| Hosted closure | PENDING | The Phase 18 candidate requires the next Draft PR #2 Ubuntu/native macOS run. |
+| Hosted closure | PENDING | Run 16 passed Ubuntu and four other workflows, but an unrelated native-macOS news-digest timeout timing test failed. A zero-exit Phase 20 descendant is required. |
 
 Full receipts are retained in
 `evidence/phase18-global-industrial-seeds.md`.
+
+## Phase 19 - content and event normalization
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Provider contracts | PASS | Content/Social interfaces and News/X/Bilibili skeletons share one policy and request boundary. |
+| Disabled admission | PASS | All production skeletons are `NOT_CONFIGURED`, allow zero requests and fail before a request. |
+| Provenance | PASS | Canonical URL, platform ID, author, publication/retrieval time and content fingerprint are retained. |
+| No scrape fallback | PASS | Only Provider API and licensed-file transports are accepted. |
+| De-duplication | PASS | Platform ID, canonical URL and content+author keys prevent duplicate counting. |
+| Confirmation boundary | PASS | Social items remain `SOCIAL_SIGNAL` unless explicit official authority exists. |
+| Event candidates | PASS | Unique source timeline, independent-author/platform counts, entities and locations are retained. |
+| Rate/retry/secret boundary | PASS | Minute budget and bounded retry pass; browser/shared request receives no credential value. |
+| Local quality | PASS | Focused 9/9, combined 72/72, TypeScript, Biome, strict secret scan and 2,525-module build. |
+| Hosted closure | PENDING | The final Phase 20 descendant must pass Ubuntu and native macOS with zero failures. |
+
+Full receipts are retained in
+`evidence/phase19-content-event-normalization.md`.
+
+## Phase 20 - cross-platform trend engine
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Deterministic multi-window points | PASS | Deep-equal same-input snapshots across 15/60/360/1,440-minute windows. |
+| Explainable score | PASS | Version, weighted components, counts, velocity, acceleration, concentration and reasons retained. |
+| Repost and account boundary | PASS | De-duplication/log saturation prevent linear repost growth; big account and independent authors differ. |
+| State machine | PASS | NORMAL through RESOLVED transitions and reasons covered. |
+| Propagation | PASS | First observation on each platform and observed delay form a deterministic path. |
+| Routes | PASS | `/trends` overview and encoded detail routes; unknown IDs return `SOURCE_REQUIRED`. |
+| Realtime SSE | PASS | Named serialization, HTTPS/loopback gate, snapshot validation and idempotent close covered. |
+| Production fixture isolation | PASS | Null endpoint creates no EventSource; fixture flag false; no production fixture/test import. |
+| Local quality/browser | PASS | Focused 9/9, combined 72/72, TypeScript, Biome, secret scan, build, and 1440/390 no-overflow checks pass. |
+| Hosted closure | PENDING | The next exact Draft PR #2 head must pass all workflows, Ubuntu and native macOS. |
+
+Full receipts are retained in `evidence/phase20-trend-engine.md`.
