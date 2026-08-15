@@ -394,9 +394,9 @@ unsigned ARM64 Tauri build. This changes no upstream intake rule: the original
 integration branch, Draft PR #1, `main`, upstream, release assets and deployment
 remain unchanged. Phase 15 continues only on the stacked V2 branch.
 
-Phase 15 candidate `ac5ab6a403ce36f6c756fb73aa4815438e1d7f10` is a local
-descendant on that same branch. It adapts the locked 22-seed registry and does
-not merge, rebase, cherry-pick or fetch a newer upstream. Its evidence receipt
-must remain a separate descendant commit so the implementation SHA is
-immutable and auditable. Draft PR #1, `main`, the original integration branch,
-upstream, releases and deployments remain protected.
+Phase 15 implementation `ac5ab6a403ce36f6c756fb73aa4815438e1d7f10` and
+evidence head `6d35a83b6796b941b197c26ffeef2238aee0b0c2` are descendants
+on that same branch. Run 13 accepted the latter head on Ubuntu and native
+macOS. They adapt the locked 22-seed registry and do not merge, rebase,
+cherry-pick or fetch a newer upstream. Draft PR #1, `main`, the original
+integration branch, upstream, releases and deployments remain protected.

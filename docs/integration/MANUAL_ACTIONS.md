@@ -419,7 +419,7 @@ was not attempted. Do not weaken or skip the full data gate.
   production bundle isolation and desktop/mobile scrolling locally.
 - [x] Provide a strict operator CSV template and validator outside the
   production import graph.
-- [ ] Push candidate and receipt to stacked Draft PR #2 and retain the next
+- [x] Push candidate and receipt to stacked Draft PR #2 and retain the next
   Ubuntu plus native macOS zero-exit receipts.
 
 Before adding a real row, an owner/reviewer must replace the template ID and

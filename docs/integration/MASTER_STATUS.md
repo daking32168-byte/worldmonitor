@@ -746,7 +746,7 @@ deployment. See
 
 ## Phase 15 - global industry map core
 
-Phase 15 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING** at
+Phase 15 is **COMPLETE — HOSTED UBUNTU AND NATIVE MACOS GATES PASS** at
 `ac5ab6a403ce36f6c756fb73aa4815438e1d7f10`. The existing 22 sourced China
 Factory records are adapted into the new `GeoUnit`, `IndustryCluster`,
 `ProductTaxonomyNode` and `ProductHsMapping` model without duplicating their
@@ -765,5 +765,11 @@ Local receipts: Phase 15 10/10, combined Phase 14/China Factory regression
 validator and a 2,513-module Vite build pass. Browser checks at 1440 x 900 and
 390 x 844 show no horizontal overflow and independently scrolling work panes.
 Production output contains neither the maintenance template nor test fixtures.
-Hosted closure remains pending; see
+
+Draft PR #2 head `6d35a83b6796b941b197c26ffeef2238aee0b0c2`
+completed GitHub Actions Run 13 with all five top-level workflows successful.
+Ubuntu reported 23,048 total / 23,042 pass / 0 fail / 6 skip; native
+`macos-14-arm64` reported 22,890 total / 22,884 pass / 0 fail / 6 skip, then
+built the optimized unsigned Tauri release profile and left generated inputs
+clean. Phase 16 may proceed. Exact receipts are in
 `evidence/phase15-global-industry-map.md`.

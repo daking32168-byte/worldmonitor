@@ -1,8 +1,9 @@
 # Phase 15 Global Industry Map Evidence
 
 **Date:** 2026-08-15 (Asia/Shanghai)
-**Status:** CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING
+**Status:** COMPLETE — LOCAL, UBUNTU AND NATIVE MACOS GATES PASS
 **Implementation commit:** `ac5ab6a403ce36f6c756fb73aa4815438e1d7f10`
+**Hosted gate head:** `6d35a83b6796b941b197c26ffeef2238aee0b0c2`
 
 ## Implemented Scope
 
@@ -64,6 +65,10 @@ number is rendered.
 | Search `女鞋` | PASS — exactly one sourced Huidong result |
 | Boundary fail-closed | PASS — all 22 records explicitly `NOT_REVIEWED`, with no boundary or centroid |
 | Trade-value fail-closed | PASS — no value-bearing trade field; UI states `UNAVAILABLE` and renders no trade amount/ranking |
+| GitHub Run 13 top-level workflows | PASS — Test `31869353314`, Typecheck, Lint, Lint Code and Pro bundle freshness all completed `success` |
+| Authoritative Ubuntu data gate | PASS — 23,048 total / 23,042 pass / 0 fail / 6 skip; 3,553 suites; 205,908.820225 ms |
+| Native macOS ARM64 gate | PASS — 22,890 total / 22,884 pass / 0 fail / 6 skip; 3,553 suites; 276,086.930375 ms |
+| Native macOS application build | PASS — optimized unsigned ARM64 Tauri release profile in 1m 19s; generated inputs clean |
 
 ## Browser Layout Receipt
 
@@ -96,10 +101,15 @@ self-identifying `TEMPLATE` row. The validator rejects:
 The validator does not import a CSV into the production registry. Promotion of
 any row remains a source-review and code-review operation.
 
-## Remote Closure Condition
+## Remote Closure Receipt
 
-This evidence records a local candidate only. Phase 15 becomes complete after
-the implementation and this receipt are pushed to stacked Draft PR #2 and the
-authoritative Ubuntu plus native macOS Run 13-or-later gates return zero. No
-merge, deployment, release, signing, notarization, Provider activation or
-boundary-data purchase is authorized by this candidate.
+The implementation and candidate receipt were published by ordinary non-force
+fast-forward to stacked Draft PR #2 at head `6d35a83b...`. GitHub Actions Run
+13 returned zero failures in all five top-level workflows. The Test workflow's
+authoritative Ubuntu and native `macos-14-arm64` jobs produced the exact counts
+above; macOS then completed the unsigned native application build and
+`git diff --exit-code` cleanliness check.
+
+Phase 15 is therefore complete and Phase 16 may proceed. This acceptance is
+not a merge, deployment, release, signing, notarization, Provider activation
+or boundary-data purchase authorization.

@@ -603,6 +603,7 @@ Full commands, failure classification and verifier state are retained in
 | CSV maintenance | PASS | Operator template validates; unsafe statistical promotion is rejected; template is not imported into production. |
 | Mobile and independent scroll | PASS | Browser measurements at 390 x 844 show page width 390/390 and independent distribution/detail overflow. |
 | Production bundle isolation | PASS | Vite build has a lazy industry-map chunk and contains no maintenance-template or `tests/fixtures` marker. |
-| Hosted closure | PENDING | Local candidate `ac5ab6a...` must pass the stacked PR Ubuntu and native macOS gates before Phase 15 is marked complete. |
+| Hosted closure | PASS | Draft PR #2 Run 13 at `6d35a83b...`: all five workflows success; Ubuntu 23,048 total / 23,042 pass / 0 fail / 6 skip; macOS ARM64 22,890 total / 22,884 pass / 0 fail / 6 skip plus optimized unsigned Tauri build and clean generated inputs. |
+| Phase progression | PASS | Phase 15 is complete; Phase 16 may begin without merge, deployment, release, signing or Provider activation. |
 
 Full receipts are retained in `evidence/phase15-global-industry-map.md`.
