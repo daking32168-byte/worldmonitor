@@ -444,9 +444,30 @@ at the claimed aggregation level remains independently required.
   publication/retrieval time and all relationship claims in code review.
 - [ ] Keep actual company/facility seed population for Phase 18 source review;
   do not import stock search or office configuration as a shortcut.
-- [ ] Publish the Phase 16 candidate to stacked Draft PR #2 and retain the next
+- [x] Publish the Phase 16 candidate to stacked Draft PR #2 and retain the next
   Ubuntu plus native macOS zero-exit receipts.
 
 No credential or Provider purchase is required for the empty fail-closed
 registry. Any paid registry, bulk corporate dataset or redistribution right
 requires owner/legal approval before acquisition or ingestion.
+
+## Phase 17 trade/logistics onboarding (2026-08-15)
+
+- [x] Keep all production trade, shipment, node and route arrays empty until
+  compatible evidence and licences exist.
+- [x] Enforce country-only Comtrade adaptation and prevent country observations
+  from rendering as Huidong/county actuals.
+- [x] Reject AIS as shipment evidence and keep actual, disclosed and modelled
+  route legends distinct.
+- [x] Add a lawful customs manifest gate and disabled shipment Provider
+  operation without adding any credential or network request.
+- [ ] Before a customs import, record file checksum, publisher, publication
+  date, aggregation, source reference, licence and each permitted use.
+- [ ] Before a shipment Provider is enabled, obtain owner/legal approval,
+  document field-level display/export rights, configure only the server/sidecar
+  executor, and run negative AIS/downscoping tests again.
+- [ ] Publish the Phase 17 candidate to stacked Draft PR #2 and retain Ubuntu
+  plus native macOS zero-exit receipts.
+
+Signing, notarization, provider purchase, production import, deployment and
+release remain outside this task's authority.

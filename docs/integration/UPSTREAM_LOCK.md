@@ -407,3 +407,10 @@ rebase, cherry-pick or newer object intake and promotes no external company or
 facility fact. Its evidence receipt remains a separate descendant for immutable
 review. Draft PR #1, `main`, the original integration branch, upstream,
 releases and deployments remain protected.
+
+Phase 16 evidence descendant `9fbbdc5e9ff8fae7e53c801431170799de702293`
+passed stacked Draft PR #2 GitHub Actions Run 14 on Ubuntu and native macOS;
+it did not merge, rebase, cherry-pick or fetch a newer upstream. Phase 17 is a
+new local descendant and introduces no upstream object intake. Draft PR #1,
+`main`, the original integration branch, upstream, releases and deployments
+remain protected.

@@ -536,3 +536,31 @@ Operator CSV files are templates, not facts or runtime sources. Their validator
 requires reviewed rows to carry stable source IDs, HTTPS source URLs and
 verification timestamps. Passing the validator still requires explicit code
 review before any record joins the authoritative registry.
+
+## Phase 17 trade and logistics lineage
+
+```text
+UN Comtrade aggregate
+  -> OBSERVED_TRADE SourceEvidence at COUNTRY
+  -> TradeFlowObservation retaining period/unit/provider/aggregation
+
+lawfully supplied customs file
+  -> checksum + publisher + publication + use-right manifest
+  -> reviewed SourceEvidence at its original aggregation
+  -> TradeFlowObservation (never silently downscaled)
+
+contracted shipment Provider
+  -> enabled contract + reviewed licence + permitted field list
+  -> CONTRACTED_SHIPMENT SourceEvidence
+  -> ShipmentObservation at SHIPMENT aggregation
+
+AIS / PortWatch / Shipping
+  -> vessel or port observation only
+  -> optional explicit LogisticsNode/Route relation
+  -X-> cargo, buyer, factory or bill-of-lading fields
+```
+
+Production stops before the first value-bearing observation: all Phase 17
+arrays are empty. The two operator templates are not imported into application
+code. Model routes carry a methodology version and remain separate from actual
+or company-disclosed records.

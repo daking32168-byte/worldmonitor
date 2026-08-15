@@ -739,3 +739,41 @@ complete-list claim.
 
 **Consequence:** Location and cluster UI communicates the exact gap. Operator
 templates cannot bypass this boundary and remain outside production bundles.
+
+## D-0055 - Separate trade, shipment and vessel evidence
+
+**Decision:** Store national/product trade, contracted shipments and AIS/port
+observations as different evidence classes and models. AIS is rejected at the
+shipment admission function.
+
+**Reason:** A vessel position says nothing reliable about cargo, buyer,
+factory, bill of lading or commercial origin.
+
+**Consequence:** Existing Maritime remains the vessel/port surface;
+`/trade-flows` owns cargo/product observations and can connect them only
+through explicit sourced nodes or routes.
+
+## D-0056 - Preserve source aggregation without downscaling
+
+**Decision:** The Comtrade adapter always emits `COUNTRY`, CSV export carries
+aggregation, and actual display requires both geographic ID and aggregation to
+match the request.
+
+**Reason:** Country trade cannot evidence an actual Huidong, company, factory,
+port or shipment flow.
+
+**Consequence:** Fine-grained pages remain empty until a compatible lawful
+source exists; no allocation or proportional model is labelled actual.
+
+## D-0057 - Keep uncontracted shipment access disabled
+
+**Decision:** Add a field-scoped shipment Provider contract and Provider
+Operations entry, but set its licence to `NOT_CONFIGURED` and register no
+executor.
+
+**Reason:** Shipment/BOL data rights are contract-specific and cannot be
+inferred from a URL, AIS credential or aggregate trade source.
+
+**Consequence:** The UI gives an actionable disabled state. Enabling requires
+owner/legal approval, reviewed fields and a server/sidecar executor; browser
+code receives no credential.

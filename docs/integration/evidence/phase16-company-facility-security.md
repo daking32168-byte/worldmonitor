@@ -1,7 +1,7 @@
 # Phase 16 Company, Facility, Brand and Security Evidence
 
 **Date:** 2026-08-15 (Asia/Shanghai)
-**Status:** CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING
+**Status:** COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS
 **Implementation commit:** `fea9e555b40d8bd312454c4d47b986a9b6e48b1c`
 
 ## Implemented Scope
@@ -100,10 +100,21 @@ remained the only console warning; the production build generated its service
 worker successfully. Local feed fetch failures during the stock-page dev check
 were fail-closed network responses and did not populate the Phase 16 registry.
 
-## Remote Closure Condition
+## Hosted Closure Receipt
 
-Phase 16 becomes complete only after this implementation and evidence receipt
-are published by ordinary non-force fast-forward to stacked Draft PR #2 and
-the authoritative Ubuntu plus native macOS gates return zero. No merge,
-deployment, release, signing, notarization, Provider activation or data
-promotion is authorized by this candidate.
+The implementation and evidence receipt were published by ordinary non-force
+fast-forward to stacked Draft PR #2 at
+`9fbbdc5e9ff8fae7e53c801431170799de702293`. GitHub Actions Run 14 completed
+with all five top-level workflows successful: Test `31870650902`, Typecheck
+`31870650924`, Lint `31870650910`, Lint Code `31870650907`, and Pro bundle
+freshness `31870650896`.
+
+The Ubuntu unit job `94978653478` reported 23,056 total / 23,050 pass / 0 fail /
+6 skip after its focused 8/8 preflight. Native `macos-14-arm64` job
+`94978653490` reported 22,898 total / 22,892 pass / 0 fail / 6 skip after its
+focused 8/8 preflight, bundled the checksum-verified Node runtime, built the
+optimized unsigned Tauri application at the native ARM64 release path, and
+passed `git diff --exit-code` for generated inputs.
+
+This closes Phase 16. No merge, deployment, release, signing, notarization,
+Provider activation or external data promotion occurred.

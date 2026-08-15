@@ -322,3 +322,17 @@ entity, facility or MIC evidence.
 The CSV validator is an offline operator gate and cannot activate a Provider or
 write a production fact. Future Phase 18 rows require separately reviewed
 source rights and explicit entity plus relationship evidence before display.
+
+## Phase 17 trade/logistics Provider effect
+
+| Provider path | Current state | Permitted evidence | Prohibited promotion |
+|---|---|---|---|
+| UN Comtrade batch | Adapter present; no Phase 17 production rows | National/product `OBSERVED_TRADE` | Factory, town, port, vessel, route or shipment attribution |
+| Lawful customs file | Local executor/import not configured | Original declared geographic aggregation | Unlicensed import, page scraping or shipment inference |
+| Contracted shipment/BOL | `NOT_CONFIGURED`; no executor | Field-scoped `CONTRACTED_SHIPMENT` after licence review | Any field absent from the Provider payload or contract |
+| AIS relay | Existing operation, separately gated | `AIS_OBSERVATION` vessel fields | Cargo, buyer, factory, BOL, destination or trade-flow evidence |
+| IMF PortWatch | Existing operation, separately gated | `PORT_OBSERVATION` at port aggregation | Cargo, company or shipment identity |
+
+No credential, entitlement or background network request was added. The new
+shipment operation is deliberately unusable until a signed contract and a
+bounded service-side executor exist.

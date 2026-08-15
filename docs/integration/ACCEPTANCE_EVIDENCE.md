@@ -621,7 +621,23 @@ Full receipts are retained in `evidence/phase15-global-industry-map.md`.
 | Stock integration | PASS | Stock workspace shows only evidence-backed relations; AAPL currently renders `SOURCE_REQUIRED`, not an inferred company/factory link. |
 | Maintenance import boundary | PASS | Four templates and a strict CLI validate identity/source rules and stay outside production imports/bundles. |
 | Local quality and browser | PASS | Focused 8/8; combined 28/28; TypeScript, Biome, secret scan and 2,514-module build pass; 1440/390 widths have no horizontal overflow. |
-| Hosted closure | PENDING | Implementation `fea9e555...` plus this receipt must pass the stacked PR Ubuntu and native macOS gates before Phase 16 is complete. |
+| Hosted closure | PASS | Draft PR #2 Run 14 at `9fbbdc5e...`: all five workflows success; Ubuntu 23,056 total / 23,050 pass / 0 fail / 6 skip; native macOS ARM64 22,898 total / 22,892 pass / 0 fail / 6 skip plus optimized unsigned Tauri build and clean generated inputs. |
 
 Full receipts are retained in
 `evidence/phase16-company-facility-security.md`.
+
+## Phase 17 - trade flows and multimodal logistics
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Four required models | PASS | Runtime-neutral `TradeFlowObservation`, `ShipmentObservation`, `LogisticsNode` and `LogisticsRoute` contracts cover all required fields and five transport modes. |
+| AIS isolation | PASS | Shipment admission explicitly rejects `AIS_OBSERVATION`; UI states that AIS cannot generate cargo, buyer, factory or bill-of-lading fields. |
+| Aggregation isolation | PASS | Comtrade adapter requires `COUNTRY`; Huidong/county display check returns false for country evidence. |
+| Layer separation | PASS | `/trade-flows` renders visually distinct actual observation, company disclosure and model-route legends. |
+| Export truth fields | PASS | CSV contract test retains period start/end, quantity unit, Provider/evidence source and origin aggregation level. |
+| Provider-disabled state | PASS | Empty production registry returns `NOT_CONFIGURED`; shipment operation has `NOT_CONFIGURED` licence and no executor. |
+| Customs import boundary | PASS | Import requires checksum, publisher, publication date, supported aggregation, source reference and lawful local-analysis use. |
+| Local quality and browser | PASS | Focused 7/7; combined 47/47; TypeScript, Biome, secret scan and 2,518-module build pass; 1440 and 390 widths have no horizontal overflow. |
+| Hosted closure | PENDING | Phase 17 implementation and this receipt require the next stacked Draft PR #2 Ubuntu and native macOS run. |
+
+Full receipts are retained in `evidence/phase17-trade-flows.md`.

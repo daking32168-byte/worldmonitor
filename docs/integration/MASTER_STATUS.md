@@ -776,7 +776,7 @@ clean. Phase 16 may proceed. Exact receipts are in
 
 ## Phase 16 - company, facility, brand and security registry
 
-Phase 16 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING** at
+Phase 16 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS** at
 `fea9e555b40d8bd312454c4d47b986a9b6e48b1c`. It implements the four required
 entities, registration-based company IDs, MIC+ticker security IDs, explicit
 evidence-bearing relationship edges, enterprise/facility search and details,
@@ -792,5 +792,30 @@ Local receipts: Phase 16 8/8, combined Phase 14–16/China Factory regression
 28/28, production TypeScript, Biome, strict secret scan, four-template CLI and
 a 2,514-module Vite build pass. Browser checks at 1440 x 900 and 390 x 844 show
 no horizontal overflow; the AAPL page returns `SOURCE_REQUIRED` for the absent
-MIC-qualified relationship. Hosted closure remains pending; see
+MIC-qualified relationship. Draft PR #2 Run 14 at `9fbbdc5e...` passed all five
+workflows. Ubuntu reported 23,056 total / 23,050 pass / 0 fail / 6 skip; native
+macOS reported 22,898 total / 22,892 pass / 0 fail / 6 skip, built the optimized
+unsigned ARM64 Tauri application and left generated inputs clean. See
 `evidence/phase16-company-facility-security.md`.
+
+## Phase 17 - trade flows and multimodal logistics
+
+Phase 17 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING**. The shared
+contract defines trade observations, contracted shipment observations,
+logistics nodes and observed/modelled routes across sea, air, rail, road and
+multimodal transport. The owned `/trade-flows` route shows distinct actual,
+company-disclosed and modelled legends and an explicit `NOT_CONFIGURED` state.
+
+Production flow, shipment, node and route arrays remain empty. Comtrade adapts
+only to `COUNTRY` aggregation; a country record cannot render as a Huidong
+actual. Lawful customs import requires checksum, publisher, publication date,
+scope and local-analysis use rights. The shipment contract rejects AIS and
+requires field-level entitlements. Provider Operations adds a disabled
+shipment import operation alongside the existing AIS, PortWatch, Comtrade and
+customs operations.
+
+Local receipts: focused 7/7 and combined 47/47 tests, production TypeScript,
+Biome, strict local secret scan and a 2,518-module Vite build pass. Browser
+checks show 1440/1440 and 390/390 page widths, three distinct legend layers,
+`NOT_CONFIGURED`, and no fixture text. Full receipts are in
+`evidence/phase17-trade-flows.md`.
