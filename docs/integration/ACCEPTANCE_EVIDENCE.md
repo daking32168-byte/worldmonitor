@@ -583,9 +583,9 @@ complete; publication, PR mutation, merge and deployment were not performed.
 | Provider Operations and UI mapping | PASS | Existing suite passes 5/5; all nine operations have non-sensitive truth profiles and all nine V2 UI states have one mapping. |
 | Type and API gates | PASS | Production/API TypeScript, Convex string audit and sebuf API contract pass. |
 | DOM, source and build | PASS | DOM 293/293, 533-host source check, 150 doc claims, product facts, strict secret scan and Vite production build pass. |
-| Repository-wide data suite | BLOCKED | Best native verifier: 22,580 total, 22,485 pass, 82 unrelated Windows/npm/toolchain failures, 13 skip. Linux/CI rerun required. |
-| Cross-platform environment | LOCAL PASS / REMOTE PENDING | Ubuntu 24.04 is the authoritative data gate; `macos-14` adds unsigned Apple Silicon Tauri plus full-data validation. Contract tests 19/19, deploy aggregation 3/3 and YAML parsing pass locally; GitHub CLI authentication is still required before remote execution. |
-| Phase progression | STOPPED | Phase 14 is not complete and Phase 15 has not started. |
+| Repository-wide data suite | PASS | GitHub Test run `31868040572` at `a23d9af9...`: authoritative Ubuntu 23,038 total / 23,032 pass / 0 fail / 6 skip; native macOS clean-source gate 22,880 total / 22,874 pass / 0 fail / 6 skip. |
+| Cross-platform environment | PASS | Ubuntu 24.04 remains authoritative. `macos-14` also passed coreutils/full-history setup, checksum-verified Node sidecar preparation, unsigned native Tauri release-profile build and generated-input cleanliness. All five Run 12 top-level workflows passed. |
+| Phase progression | PASS | Phase 14 is complete. Phase 15 may begin from the accepted stacked Draft PR #2 head; no merge, deployment or release is implied. |
 
 Full commands, failure classification and verifier state are retained in
 `evidence/phase14-shared-truth-contract.md`.

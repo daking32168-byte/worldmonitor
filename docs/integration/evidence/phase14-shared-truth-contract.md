@@ -1,7 +1,7 @@
 # Phase 14 Shared Truth Contract Evidence
 
 **Date:** 2026-08-15 (Asia/Shanghai)
-**Status:** CANDIDATE — BLOCKED ON FULL DATA GATE
+**Status:** COMPLETE — HOSTED FULL DATA GATES PASS
 **Implementation commit:** `1a58948d7c84be9b758b555d13f272c89babea34`
 
 ## Implemented Scope
@@ -86,9 +86,22 @@ The detached verifier is retained at `D:\wm-gi-v2-lf`, clean at
 installed Linux distribution; Docker and Bash are unavailable. Installing a
 system runtime was not authorized.
 
-## Stop Condition
+## Hosted Closure Receipt
 
-Phase 14 is not declared complete and Phase 15 has not started. Closure needs
-the unmodified full data gate to pass in an existing Linux/CI Node+npm
-environment, or a separately authorized cross-platform test-infrastructure
-remediation. Focused passes are not represented as a full-data pass.
+The native-Windows results above remain a useful portability diagnosis but no
+longer block the phase. Stacked Draft PR #2 head
+`a23d9af9a84f78aae43ffd1462619da42e8adffb` completed GitHub Actions Test run
+`31868040572` with:
+
+- authoritative Ubuntu `unit`: 23,038 tests, 23,032 pass, 0 fail, 6 skip;
+- native `macos-14` clean-source data gate: 22,880 tests, 22,874 pass, 0 fail,
+  6 skip;
+- checksum-verified Node sidecar preparation and unsigned ARM64 Tauri release
+  profile build;
+- generated desktop inputs clean after the build; and
+- all 14 Test jobs plus the four other Run 12 workflows successful.
+
+The job was read-only, secret-free and artifact-free. It did not sign,
+notarize, package, release, deploy or activate a Provider. Phase 14 is complete
+and Phase 15 may start; the exact cross-platform workflow and Git transport
+receipt is retained in `phase14-cross-platform-environment.md`.

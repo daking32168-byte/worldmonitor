@@ -1,7 +1,7 @@
 # Phase 14 Cross-Platform Environment Evidence
 
 **Date:** 2026-08-15 (Asia/Shanghai)
-**Status:** LOCAL READY — REMOTE AUTHENTICATION AND EXECUTION PENDING
+**Status:** COMPLETE — RUN 12 UBUNTU AND NATIVE MACOS PASS
 
 ## Selected Environment
 
@@ -53,19 +53,31 @@ failures when they spawn `awk`/`bash` or convert file URL pathnames into
 `D:\\D:\\...`. Those are the exact environmental failures this hosted gate is
 designed to adjudicate; they are not recorded as new workflow regressions.
 
-## Remote Stop Condition
+## Remote Closure Receipt
 
-The installed GitHub CLI reports no authenticated host. The connected GitHub
-application confirms repository access, but it is not used to reconstruct a
-different remote commit graph through individual Git-database mutations.
+The user explicitly authorized the connected GitHub application. Draft PR #2
+targets `integration/pokieticker-maritime-china-factory`; PR #1 and `main`
+remain unchanged. Two normal HTTPS push attempts for the final workflow fix
+failed through transient reset/443 transport errors, so the GitHub application
+created the two exact blobs and a tree based on the current remote parent. Blob
+SHAs and tree `b0dd7232a22813789036ef21e3c6322de69145b5` matched local Git exactly.
+The application created single-parent commit
+`a23d9af9a84f78aae43ffd1462619da42e8adffb` and advanced
+`integration/global-intelligence-v2` with `force=false`. A subsequent fetch
+verified the remote parent, tree, subject and zero content diff; the local and
+remote branch refs are aligned.
 
-No push, Draft PR, CI run, artifact, signature, Release or deployment has
-occurred. Phase 14 stays blocked and Phase 15 stays unstarted until:
+GitHub Actions Run 12 at that head returned:
 
-1. the owner authenticates locally with `gh auth login` without sharing a token
-   in chat;
-2. the branch is normally and non-forcibly pushed;
-3. a stacked Draft PR targets
-   `integration/pokieticker-maritime-china-factory` without modifying PR #1;
-4. the Ubuntu full-data job exits zero; and
-5. the macOS compatibility job returns its native build and data receipts.
+| Workflow/job | Receipt |
+|---|---|
+| Test / Ubuntu `unit` | PASS — 23,038 tests, 23,032 pass, 0 fail, 6 skip; 3,553 suites; 284,120.85 ms |
+| Test / `macos-compat` data | PASS — 22,880 tests, 22,874 pass, 0 fail, 6 skip; 3,553 suites; 233,823.52 ms |
+| Test / `macos-compat` native build | PASS — ARM64 release profile finished; checksum-verified Node sidecar prepared; generated inputs clean |
+| Test workflow | PASS — run `31868040572`, all 14 jobs successful |
+| Lint Code / Typecheck / Lint / Pro bundle freshness | PASS — Run 12 at the same head |
+
+The compatibility job remained read-only and used no Apple signing or
+notarization secret, uploaded no artifact, created no Release and performed no
+deployment. Phase 14 is complete; this CI receipt authorizes Phase 15 work but
+does not authorize merge or publication.

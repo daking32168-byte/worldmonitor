@@ -668,3 +668,5 @@ pins, receive no Apple secrets, publish no artifact and create no Release.
 Signing, notarization and DMG packaging remain isolated in the existing release
 workflow. Phase 14 remains blocked until the remote Ubuntu job returns a real
 zero-exit receipt; a locally valid workflow is not represented as a CI pass.
+That condition was satisfied by Run 12 at `a23d9af9...`; native macOS also
+returned a zero-failure data receipt and an unsigned ARM64 Tauri build receipt.

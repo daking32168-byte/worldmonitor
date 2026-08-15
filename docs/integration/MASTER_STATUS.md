@@ -711,31 +711,35 @@ upgrade any remote gate.
 
 ## Phase 14 - shared evidence, identity and Provider envelope
 
-Phase 14 implementation is **CANDIDATE — BLOCKED ON FULL DATA GATE** at
+Phase 14 implementation is **COMPLETE — HOSTED UBUNTU AND MACOS GATES PASS** at
 `1a58948d7c84be9b758b555d13f272c89babea34`. The shared contract, compatibility
 adapters, canonical UI state mapping and Provider Operations truth profiles are
 implemented. Focused contract/legacy tests, production and API TypeScript, the
 sebuf contract, 293 DOM tests, source/docs/product truth gates, strict secret
 scan, Biome and the production Vite build pass.
 
-The unmodified repository-wide data suite is not green in the available native
-Windows environment. Its best isolated ASCII/LF/Node-PATH run records 22,580
-tests, 22,485 passes, 82 unrelated infrastructure/platform failures and 13
-skips. Representative failures require Linux path semantics or npm. Phase 15
-has not started. Exact receipts and the required closure condition are in
+The native-Windows limitations remain documented, but they no longer block the
+phase. Draft PR #2 head `a23d9af9a84f78aae43ffd1462619da42e8adffb`
+completed GitHub Actions Test run `31868040572`: authoritative Ubuntu ran
+23,038 tests with 23,032 passes, 0 failures and 6 skips; `macos-14` ran 22,880
+tests with 22,874 passes, 0 failures and 6 skips, then built the unsigned native
+Tauri release profile and confirmed generated inputs remained clean. Phase 15
+may now start. Exact local and hosted receipts are in
 `evidence/phase14-shared-truth-contract.md`.
 
 ### Cross-platform closure environment
 
-The closure environment is now **SELECTED AND LOCALLY VALIDATED, REMOTE RUN
-PENDING**. Existing Ubuntu PR CI remains the authoritative `test:data` gate. A
+The closure environment is now **SELECTED, LOCALLY VALIDATED AND REMOTELY
+PASSED**. Existing Ubuntu PR CI remains the authoritative `test:data` gate. A
 new read-only `macos-compat` job adds native Apple Silicon Tauri no-bundle
 compilation plus the full data contract; the release x64 leg is pinned to the
 native `macos-15-intel` runner instead of a moving `macos-latest` label.
 
 The workflow contract, one-binary model, deploy aggregation, immutable action
-pins and YAML parsing pass locally. The host GitHub CLI is installed but not
-authenticated, so no branch or Draft PR was published and no remote job has
-run. Phase 14 remains blocked and Phase 15 remains unstarted until that normal
-non-force publication and remote zero-exit receipt occur. See
+pins and YAML parsing pass locally. The user-authorized GitHub application
+created exact Git objects after transient HTTPS push failures, and advanced the
+branch with `force=false`; fetched tree `b0dd7232a22813789036ef21e3c6322de69145b5`
+matched the intended local tree exactly. Draft PR #2 and Run 12 supplied the
+remote zero-exit receipt without changing PR #1, `main`, a Release or a
+deployment. See
 `evidence/phase14-cross-platform-environment.md`.

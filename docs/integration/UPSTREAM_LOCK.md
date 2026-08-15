@@ -380,15 +380,16 @@ The local Phase 13 implementation commit is
 `f026caedefb71f60034bcb169b92dabf91edf5c3`; it changes none of the locked
 upstream, `main`, original integration, or Draft PR refs above.
 
-Phase 14 candidate implementation commit
-`1a58948d7c84be9b758b555d13f272c89babea34` is a local descendant only. The
-detached LF verifier at `D:\wm-gi-v2-lf` points to that exact commit and has not
-been published. No upstream fetch/intake, main write, original integration
-branch change or Draft PR #1 mutation occurred.
+Phase 14 implementation commit
+`1a58948d7c84be9b758b555d13f272c89babea34` and its cross-platform descendants
+are published only on `integration/global-intelligence-v2` through stacked
+Draft PR #2. The accepted gate head is
+`a23d9af9a84f78aae43ffd1462619da42e8adffb`; its tree
+`b0dd7232a22813789036ef21e3c6322de69145b5` was verified byte-for-byte against
+the local intended tree before and after the user-authorized GitHub application
+advanced the branch with `force=false`.
 
-The cross-platform gate preparation remains local. GitHub connector metadata
-confirms the owner fork is accessible, but the installed GitHub CLI has no
-authenticated host. No connector Git-database workaround was used: the local
-commit graph will be published only by a normal non-force Git push after CLI
-authentication. The original integration branch, Draft PR #1, `main`, upstream,
-release workflow and release assets remain unchanged.
+GitHub Actions Run 12 passed Ubuntu and native macOS full-data gates and the
+unsigned ARM64 Tauri build. This changes no upstream intake rule: the original
+integration branch, Draft PR #1, `main`, upstream, release assets and deployment
+remain unchanged. Phase 15 continues only on the stacked V2 branch.

@@ -385,9 +385,10 @@ owner/legal action.
   layer at `1a58948d7c84be9b758b555d13f272c89babea34`.
 - [x] Pass focused contract, legacy API, type, API, DOM, source and production
   build gates.
-- [ ] Run the unmodified repository `test:data` command in an existing
-  Linux/CI Node+npm environment and retain a zero-exit receipt.
-- [ ] Only after that receipt, mark Phase 14 complete and begin Phase 15.
+- [x] Run the unmodified repository `test:data` command in an existing
+  Linux/CI Node+npm environment and retain a zero-exit receipt (Run 12,
+  `31868040572`: 23,038 tests, 0 failures).
+- [x] Only after that receipt, mark Phase 14 complete and begin Phase 15.
 
 Selected closure path:
 
@@ -396,11 +397,12 @@ Selected closure path:
 - [x] Pin the Intel macOS release leg to `macos-15-intel`.
 - [x] Validate the workflow contract, YAML, immutable action pins and deploy
   aggregation locally.
-- [ ] Authenticate the installed GitHub CLI with `gh auth login` without
-  sharing a token in chat.
-- [ ] Normally push `integration/global-intelligence-v2`, create a stacked
-  Draft PR targeting `integration/pokieticker-maritime-china-factory`, and
-  retain the Ubuntu plus macOS job receipts.
+- [x] Use the user-authorized GitHub application without exposing a token in
+  chat; after transient HTTPS failures, verify exact blob/tree parity and
+  advance the final commit with `force=false`.
+- [x] Publish `integration/global-intelligence-v2`, create stacked Draft PR #2
+  targeting `integration/pokieticker-maritime-china-factory`, and retain the
+  Ubuntu plus macOS Run 12 receipts.
 
 No credential, Provider purchase or license activation is needed for this
 closure. The available Windows host has no installed WSL distribution, Docker,
