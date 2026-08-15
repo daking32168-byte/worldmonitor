@@ -649,3 +649,22 @@ observation, license right or realtime entitlement.
 
 **Consequence:** Retry safety is unchanged; the UI has one canonical V2 status
 mapping and cannot promote an unreviewed license to observed/live data.
+
+## D-0049 - Use hosted Ubuntu and native macOS as cross-platform gates
+
+**Decision:** Use GitHub-hosted Ubuntu 24.04 with Node 24 and `npm ci` as the
+authoritative Phase 14/15 data gate. Add a read-only `macos-14` Apple Silicon
+PR job that builds the unsigned Tauri application without packaging and runs
+the same full data contract. Keep Intel packaging on the explicit
+`macos-15-intel` release runner.
+
+**Reason:** WSL would reproduce Linux only, mutate the developer host and still
+provide no native macOS coverage. The hosted runners are disposable and have
+the npm, shell and path semantics missing from the current Windows runtime;
+the native macOS leg also tests the application architecture users will run.
+
+**Consequence:** Validation jobs have `contents: read`, use full-SHA action
+pins, receive no Apple secrets, publish no artifact and create no Release.
+Signing, notarization and DMG packaging remain isolated in the existing release
+workflow. Phase 14 remains blocked until the remote Ubuntu job returns a real
+zero-exit receipt; a locally valid workflow is not represented as a CI pass.

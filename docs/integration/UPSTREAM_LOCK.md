@@ -385,3 +385,10 @@ Phase 14 candidate implementation commit
 detached LF verifier at `D:\wm-gi-v2-lf` points to that exact commit and has not
 been published. No upstream fetch/intake, main write, original integration
 branch change or Draft PR #1 mutation occurred.
+
+The cross-platform gate preparation remains local. GitHub connector metadata
+confirms the owner fork is accessible, but the installed GitHub CLI has no
+authenticated host. No connector Git-database workaround was used: the local
+commit graph will be published only by a normal non-force Git push after CLI
+authentication. The original integration branch, Draft PR #1, `main`, upstream,
+release workflow and release assets remain unchanged.

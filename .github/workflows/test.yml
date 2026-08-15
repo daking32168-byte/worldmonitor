@@ -222,6 +222,46 @@ jobs:
         # classify it for desktop builds before it can silently miss them.
         run: node scripts/check-desktop-build-env.mjs
 
+  macos-compat:
+    # Native Apple Silicon validation for the Tauri desktop path. This is a
+    # read-only PR gate: it does not import signing credentials, bundle a DMG,
+    # upload an artifact, create a release, or publish anything. The release
+    # workflow remains the only place allowed to sign and package installers.
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: macos-14
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+      - run: npm ci
+      - name: Install Rust stable for native Tauri validation
+        uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+        with:
+          toolchain: stable
+          targets: aarch64-apple-darwin
+      - name: Rust cache
+        uses: swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
+        with:
+          workspaces: './src-tauri -> target'
+          cache-on-failure: true
+      - name: Bundle checksum-verified macOS Node runtime
+        env:
+          NODE_VERSION: '22.14.0'
+          NODE_TARGET: aarch64-apple-darwin
+        run: bash scripts/download-node.sh --target "$NODE_TARGET"
+      - name: Build unsigned native macOS application without packaging
+        run: npm run desktop:tauri:build -- --no-bundle --target aarch64-apple-darwin
+      - name: Run the full data contract on macOS
+        run: WM_EXPECT_BUILT_OUTPUT=1 npm run test:data
+      - name: Generated desktop inputs remain clean
+        run: git diff --exit-code
+
   consumer-prices:
     needs: changes
     if: needs.changes.outputs.consumer_prices == 'true'

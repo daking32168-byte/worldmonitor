@@ -584,6 +584,7 @@ complete; publication, PR mutation, merge and deployment were not performed.
 | Type and API gates | PASS | Production/API TypeScript, Convex string audit and sebuf API contract pass. |
 | DOM, source and build | PASS | DOM 293/293, 533-host source check, 150 doc claims, product facts, strict secret scan and Vite production build pass. |
 | Repository-wide data suite | BLOCKED | Best native verifier: 22,580 total, 22,485 pass, 82 unrelated Windows/npm/toolchain failures, 13 skip. Linux/CI rerun required. |
+| Cross-platform environment | LOCAL PASS / REMOTE PENDING | Ubuntu 24.04 is the authoritative data gate; `macos-14` adds unsigned Apple Silicon Tauri plus full-data validation. Contract tests 19/19, deploy aggregation 3/3 and YAML parsing pass locally; GitHub CLI authentication is still required before remote execution. |
 | Phase progression | STOPPED | Phase 14 is not complete and Phase 15 has not started. |
 
 Full commands, failure classification and verifier state are retained in

@@ -389,6 +389,19 @@ owner/legal action.
   Linux/CI Node+npm environment and retain a zero-exit receipt.
 - [ ] Only after that receipt, mark Phase 14 complete and begin Phase 15.
 
+Selected closure path:
+
+- [x] Use GitHub-hosted Ubuntu 24.04/Node 24 as the authoritative data gate.
+- [x] Add a no-secret, read-only native Apple Silicon Tauri compatibility job.
+- [x] Pin the Intel macOS release leg to `macos-15-intel`.
+- [x] Validate the workflow contract, YAML, immutable action pins and deploy
+  aggregation locally.
+- [ ] Authenticate the installed GitHub CLI with `gh auth login` without
+  sharing a token in chat.
+- [ ] Normally push `integration/global-intelligence-v2`, create a stacked
+  Draft PR targeting `integration/pokieticker-maritime-china-factory`, and
+  retain the Ubuntu plus macOS job receipts.
+
 No credential, Provider purchase or license activation is needed for this
 closure. The available Windows host has no installed WSL distribution, Docker,
 Bash or npm; installing a system runtime requires separate authorization and

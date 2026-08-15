@@ -724,3 +724,18 @@ tests, 22,485 passes, 82 unrelated infrastructure/platform failures and 13
 skips. Representative failures require Linux path semantics or npm. Phase 15
 has not started. Exact receipts and the required closure condition are in
 `evidence/phase14-shared-truth-contract.md`.
+
+### Cross-platform closure environment
+
+The closure environment is now **SELECTED AND LOCALLY VALIDATED, REMOTE RUN
+PENDING**. Existing Ubuntu PR CI remains the authoritative `test:data` gate. A
+new read-only `macos-compat` job adds native Apple Silicon Tauri no-bundle
+compilation plus the full data contract; the release x64 leg is pinned to the
+native `macos-15-intel` runner instead of a moving `macos-latest` label.
+
+The workflow contract, one-binary model, deploy aggregation, immutable action
+pins and YAML parsing pass locally. The host GitHub CLI is installed but not
+authenticated, so no branch or Draft PR was published and no remote job has
+run. Phase 14 remains blocked and Phase 15 remains unstarted until that normal
+non-force publication and remote zero-exit receipt occur. See
+`evidence/phase14-cross-platform-environment.md`.
