@@ -699,3 +699,43 @@ silently become product facts and would complicate offline Tauri packaging.
 **Consequence:** The validator rejects unsafe statistics, boundary and HS
 claims. Vite emits the industry workspace as a lazy chunk and bundles neither
 the template nor test fixtures on web, Windows or macOS.
+
+## D-0052 - Start the production company/facility registry empty
+
+**Decision:** Implement the complete Phase 16 registry and UI contract without
+promoting the existing stock-symbol list, tech-company office configuration or
+industry labels into company/facility facts.
+
+**Reason:** Those inputs do not prove a legal registration identity, production
+site, MIC-qualified security or the required relationship edges.
+
+**Consequence:** The production registry contains zero entities until Phase 18
+source review. Search, details, coverage and stock integration remain usable
+and explicitly show `SOURCE_REQUIRED` or unavailable coverage instead of
+fabricating examples.
+
+## D-0053 - Key securities by MIC plus ticker and source every edge
+
+**Decision:** Derive company IDs from registration country/number and Security
+IDs from MIC/local ticker. Require each entity and every represented relation
+to reference fact-capable SourceEvidence.
+
+**Reason:** Names and tickers collide globally, and an identity source does not
+automatically prove headquarters, factory, ownership, brand, listing or
+industry membership.
+
+**Consequence:** Equal company names remain separate; equal tickers on separate
+markets return `MIC_REQUIRED`; unsourced entities and relationship edges fail
+validation and never enter default results.
+
+## D-0054 - Treat coverage rate as unknown without a denominator
+
+**Decision:** Show verified company/facility counts, tier, source count and
+verification date, but keep coverage rate null and completeness false until a
+reviewed total-population denominator exists.
+
+**Reason:** A partial set of sourced facilities cannot justify a percentage or
+complete-list claim.
+
+**Consequence:** Location and cluster UI communicates the exact gap. Operator
+templates cannot bypass this boundary and remain outside production bundles.

@@ -310,3 +310,15 @@ The maintenance CSV cannot activate a Provider or promote a fixture. Reviewed
 statistics require an approved source and HS mapping in code; actual numeric
 display still requires a separately compatible observation at the target
 aggregation level.
+
+## Phase 16 company/facility Provider effect
+
+Phase 16 adds no Provider, credential, account, entitlement, background fetch,
+database write or redistribution right. The company/facility registry begins
+empty, so its visible state is `SOURCE_REQUIRED` and its coverage denominator
+is unavailable. Existing market search responses are not accepted as legal
+entity, facility or MIC evidence.
+
+The CSV validator is an offline operator gate and cannot activate a Provider or
+write a production fact. Future Phase 18 rows require separately reviewed
+source rights and explicit entity plus relationship evidence before display.

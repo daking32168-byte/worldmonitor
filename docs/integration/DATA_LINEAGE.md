@@ -511,3 +511,28 @@ The maintenance CSV is an operator template and validation surface, not a
 runtime source. A row cannot enter this lineage until its source, mapping and
 boundary claims are separately reviewed and committed to the authoritative
 registry.
+
+## Phase 16 company/facility/security lineage
+
+Phase 16 ingests no company or facility Provider payload. Its production path
+is a gated registry contract:
+
+```text
+reviewed legal/facility/listing source
+  -> SourceEvidence eligible for fact tables
+  -> stable Company / Facility / Brand / Security identity
+  -> separately sourced relationship edge
+  -> verified search/detail/coverage result
+  -> optional MIC-qualified stock relationship panel
+```
+
+The current production arrays stop before the first step and contain zero
+records. Existing stock symbols, office-location config and industry labels are
+not read into the registry. Test-only positive examples exercise the full path
+inside `tests/global-company-facility-registry.test.mts` and are excluded from
+the Vite import graph.
+
+Operator CSV files are templates, not facts or runtime sources. Their validator
+requires reviewed rows to carry stable source IDs, HTTPS source URLs and
+verification timestamps. Passing the validator still requires explicit code
+review before any record joins the authoritative registry.

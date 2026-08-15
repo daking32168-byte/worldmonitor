@@ -400,3 +400,10 @@ on that same branch. Run 13 accepted the latter head on Ubuntu and native
 macOS. They adapt the locked 22-seed registry and do not merge, rebase,
 cherry-pick or fetch a newer upstream. Draft PR #1, `main`, the original
 integration branch, upstream, releases and deployments remain protected.
+
+Phase 16 candidate `fea9e555b40d8bd312454c4d47b986a9b6e48b1c` is the next
+local descendant on the stacked V2 branch. It introduces no upstream merge,
+rebase, cherry-pick or newer object intake and promotes no external company or
+facility fact. Its evidence receipt remains a separate descendant for immutable
+review. Draft PR #1, `main`, the original integration branch, upstream,
+releases and deployments remain protected.

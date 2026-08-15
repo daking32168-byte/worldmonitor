@@ -427,3 +427,26 @@ labels, attach an HTTPS source, review its product/HS scope, and separately
 review any coordinate or boundary. Never change `statistics_enabled` to true
 merely because a source mentions a cluster. A compatible numeric observation
 at the claimed aggregation level remains independently required.
+
+## Phase 16 company/facility source onboarding (2026-08-15)
+
+- [x] Keep the production company, facility, brand, security and relationship
+  registries empty until individual sources are reviewed.
+- [x] Enforce registration identity for companies and MIC+ticker identity for
+  securities; never merge by display name or ticker alone.
+- [x] Require source evidence on each entity and on every displayed
+  headquarters, ownership, operation, production, brand, listing or cluster
+  relationship.
+- [x] Keep coverage rate unavailable when there is no reviewed denominator.
+- [x] Validate four operator templates and prove they are absent from the
+  production bundle.
+- [ ] Before adding a real entity, verify legal identity, source licence,
+  publication/retrieval time and all relationship claims in code review.
+- [ ] Keep actual company/facility seed population for Phase 18 source review;
+  do not import stock search or office configuration as a shortcut.
+- [ ] Publish the Phase 16 candidate to stacked Draft PR #2 and retain the next
+  Ubuntu plus native macOS zero-exit receipts.
+
+No credential or Provider purchase is required for the empty fail-closed
+registry. Any paid registry, bulk corporate dataset or redistribution right
+requires owner/legal approval before acquisition or ingestion.

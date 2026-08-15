@@ -773,3 +773,24 @@ Ubuntu reported 23,048 total / 23,042 pass / 0 fail / 6 skip; native
 built the optimized unsigned Tauri release profile and left generated inputs
 clean. Phase 16 may proceed. Exact receipts are in
 `evidence/phase15-global-industry-map.md`.
+
+## Phase 16 - company, facility, brand and security registry
+
+Phase 16 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING** at
+`fea9e555b40d8bd312454c4d47b986a9b6e48b1c`. It implements the four required
+entities, registration-based company IDs, MIC+ticker security IDs, explicit
+evidence-bearing relationship edges, enterprise/facility search and details,
+location/cluster coverage panels, and a stock-workspace relationship panel.
+
+No existing stock symbol, office record or cluster label was promoted to a
+company/facility fact. The production registry is empty and fail-closed until
+Phase 18 source review supplies evidence for both entities and each displayed
+relationship. Coverage rates stay unavailable without a reviewed denominator.
+Four operator CSV templates remain outside the production import graph.
+
+Local receipts: Phase 16 8/8, combined Phase 14–16/China Factory regression
+28/28, production TypeScript, Biome, strict secret scan, four-template CLI and
+a 2,514-module Vite build pass. Browser checks at 1440 x 900 and 390 x 844 show
+no horizontal overflow; the AAPL page returns `SOURCE_REQUIRED` for the absent
+MIC-qualified relationship. Hosted closure remains pending; see
+`evidence/phase16-company-facility-security.md`.

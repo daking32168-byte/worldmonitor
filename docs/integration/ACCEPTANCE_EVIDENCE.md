@@ -607,3 +607,21 @@ Full commands, failure classification and verifier state are retained in
 | Phase progression | PASS | Phase 15 is complete; Phase 16 may begin without merge, deployment, release, signing or Provider activation. |
 
 Full receipts are retained in `evidence/phase15-global-industry-map.md`.
+
+## Phase 16 - company, facility, brand and security registry
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Four required entities | PASS | Runtime-neutral Company, Facility, Brand and Security types implement the required fields without conflating headquarters, production, brand or listing identities. |
+| Company identity | PASS | IDs derive from registration country + registration number; equal names with different registrations remain distinct. |
+| Security identity | PASS | IDs derive from MIC + local ticker; same ticker on XNAS/XNYS remains distinct and unresolved lookup returns `MIC_REQUIRED`. |
+| Source and relationship boundary | PASS | Unsourced entities and edges are rejected; every represented headquarters/ownership/operation/production/brand/listing/cluster relation requires SourceEvidence. |
+| Search and details | PASS | Company/facility mode, search and detail routes are enabled inside the lazy industry-map workspace; unknown IDs fail closed. |
+| Coverage | PASS | Location/cluster panels expose verified counts, tier, source count, date and explicit denominator gap; coverage rate is null and completeness false. |
+| Stock integration | PASS | Stock workspace shows only evidence-backed relations; AAPL currently renders `SOURCE_REQUIRED`, not an inferred company/factory link. |
+| Maintenance import boundary | PASS | Four templates and a strict CLI validate identity/source rules and stay outside production imports/bundles. |
+| Local quality and browser | PASS | Focused 8/8; combined 28/28; TypeScript, Biome, secret scan and 2,514-module build pass; 1440/390 widths have no horizontal overflow. |
+| Hosted closure | PENDING | Implementation `fea9e555...` plus this receipt must pass the stacked PR Ubuntu and native macOS gates before Phase 16 is complete. |
+
+Full receipts are retained in
+`evidence/phase16-company-facility-security.md`.
