@@ -638,7 +638,7 @@ Full receipts are retained in
 | Provider-disabled state | PASS | Empty production registry returns `NOT_CONFIGURED`; shipment operation has `NOT_CONFIGURED` licence and no executor. |
 | Customs import boundary | PASS | Import requires checksum, publisher, publication date, supported aggregation, source reference and lawful local-analysis use. |
 | Local quality and browser | PASS | Focused 7/7; combined 47/47; TypeScript, Biome, secret scan and 2,518-module build pass; 1440 and 390 widths have no horizontal overflow. |
-| Hosted closure | PENDING | Run 15 passed native macOS and four other workflows, but an unrelated Ubuntu market-quote deadline timing test failed. A zero-exit Phase 20 descendant is required. |
+| Hosted closure | PASS | Run 19 at `8ddd9cc1...` passed all workflows: Ubuntu 23,088/23,082/0/6 and native macOS 22,930/22,924/0/6 plus optimized unsigned Tauri build and clean inputs. |
 
 Full receipts are retained in `evidence/phase17-trade-flows.md`.
 
@@ -654,7 +654,7 @@ Full receipts are retained in `evidence/phase17-trade-flows.md`.
 | Bidirectional query | PASS | Product-to-location and Geo-ID-to-product contract tests pass. |
 | HS/trade admission | PASS | Every case remains `SOURCE_REQUIRED`; no export number or trade observation exists. |
 | Local quality/browser | PASS | Focused 7/7, combined 54/54, TypeScript, Biome, secret scan, 2,519-module build, and 1440/390 no-overflow browser checks pass. |
-| Hosted closure | PENDING | Run 16 passed Ubuntu and four other workflows, but an unrelated native-macOS news-digest timeout timing test failed. A zero-exit Phase 20 descendant is required. |
+| Hosted closure | PASS | Run 19 at `8ddd9cc1...` passed authoritative Ubuntu and native macOS with zero failures and contains the Phase 18 descendant. |
 
 Full receipts are retained in
 `evidence/phase18-global-industrial-seeds.md`.
@@ -672,7 +672,7 @@ Full receipts are retained in
 | Event candidates | PASS | Unique source timeline, independent-author/platform counts, entities and locations are retained. |
 | Rate/retry/secret boundary | PASS | Minute budget and bounded retry pass; browser/shared request receives no credential value. |
 | Local quality | PASS | Focused 9/9, combined 72/72, TypeScript, Biome, strict secret scan and 2,525-module build. |
-| Hosted closure | PENDING | The final Phase 20 descendant must pass Ubuntu and native macOS with zero failures. |
+| Hosted closure | PASS | Run 19 at `8ddd9cc1...` passed all five top-level workflows and both full-data platform gates. |
 
 Full receipts are retained in
 `evidence/phase19-content-event-normalization.md`.
@@ -690,6 +690,6 @@ Full receipts are retained in
 | Realtime SSE | PASS | Named serialization, HTTPS/loopback gate, snapshot validation and idempotent close covered. |
 | Production fixture isolation | PASS | Null endpoint creates no EventSource; fixture flag false; no production fixture/test import. |
 | Local quality/browser | PASS | Focused 9/9, combined 72/72, TypeScript, Biome, secret scan, build, and 1440/390 no-overflow checks pass. |
-| Hosted closure | PENDING | The next exact Draft PR #2 head must pass all workflows, Ubuntu and native macOS. |
+| Hosted closure | PASS | Run 19: Ubuntu 23,088/23,082/0/6; macOS ARM64 22,930/22,924/0/6; optimized unsigned Tauri build and clean generated inputs. |
 
 Full receipts are retained in `evidence/phase20-trend-engine.md`.

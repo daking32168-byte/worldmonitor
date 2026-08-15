@@ -800,7 +800,7 @@ unsigned ARM64 Tauri application and left generated inputs clean. See
 
 ## Phase 17 - trade flows and multimodal logistics
 
-Phase 17 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING**. The shared
+Phase 17 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS**. The shared
 contract defines trade observations, contracted shipment observations,
 logistics nodes and observed/modelled routes across sea, air, rail, road and
 multimodal transport. The owned `/trade-flows` route shows distinct actual,
@@ -822,7 +822,7 @@ checks show 1440/1440 and 390/390 page widths, three distinct legend layers,
 
 ## Phase 18 - China factory deepening and global industrial seeds
 
-Phase 18 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING**. A validated
+Phase 18 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS**. A validated
 source-review queue now covers six requested case families: Wenzhou footwear,
 Jingdezhen ceramics, a Dongguan/Dalang town case, Shenzhen/BYD manufacturing,
 Netherlands/ASML lithography and Germany/BMW automotive manufacturing. China,
@@ -847,12 +847,13 @@ Run 15 at the Phase 17 head completed native macOS and four other top-level
 workflows, but one unrelated Ubuntu market-quote deadline test failed. Run 16
 at the Phase 18 head completed Ubuntu and four other top-level workflows, but
 one different native-macOS news-digest timeout test failed. These are useful
-platform receipts but not zero-exit closure. The final Phase 20 descendant must
-pass both gates before Phase 17 or 18 is promoted to complete.
+platform receipts but were not zero-exit closure. Run 19 at `8ddd9cc1...`
+subsequently passed both authoritative platforms and all five top-level
+workflows, closing Phase 17 and 18 without waiving either earlier failure.
 
 ## Phase 19 - content and event normalization
 
-Phase 19 is **CANDIDATE — LOCAL GATES PASS, HOSTED DESCENDANT RUN PENDING**.
+Phase 19 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS**.
 Runtime-neutral Content/Social Provider interfaces, disabled News/X/Bilibili
 adapters, licensed transports, SourceItem normalization, language/entity/geo
 extraction, de-duplication and event-candidate timelines are implemented.
@@ -870,7 +871,7 @@ pass. Full receipt:
 
 ## Phase 20 - cross-platform trend and breakout engine
 
-Phase 20 is **CANDIDATE — LOCAL GATES PASS, HOSTED RUN PENDING**. The versioned
+Phase 20 is **COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS**. The versioned
 trend engine calculates deterministic 15-minute, 1-hour, 6-hour and 24-hour
 points using de-duplicated unique content, independent authors, platform
 diversity, velocity, acceleration, official confirmation and audience
@@ -886,3 +887,10 @@ Local receipts: focused 9/9, Phase 19 9/9, combined 72/72, TypeScript, Biome,
 strict secret scan and 2,525-module build pass. Browser checks show 1440/1440
 and 390/390 widths, the disabled SSE state and fixture-free unknown detail.
 Full receipt: `evidence/phase20-trend-engine.md`.
+
+Draft PR #2 Run 19 at `8ddd9cc1eba76fe2632f23b01a158a111936a52b`
+completed all five top-level workflows successfully. Ubuntu reported 23,088
+total / 23,082 pass / 0 fail / 6 skip. Native `macos-14-arm64` reported 22,930
+total / 22,924 pass / 0 fail / 6 skip, then built the optimized unsigned Tauri
+release profile in 1 minute 17 seconds and left generated desktop inputs clean.
+This exact descendant contains Phase 17–20 and closes all four phases.

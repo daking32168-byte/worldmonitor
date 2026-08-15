@@ -467,8 +467,8 @@ requires owner/legal approval before acquisition or ingestion.
   document field-level display/export rights, configure only the server/sidecar
   executor, and run negative AIS/downscoping tests again.
 - [x] Publish the Phase 17 candidate to stacked Draft PR #2.
-- [ ] Retain an Ubuntu plus native macOS zero-exit receipt on the final Phase
-  20 descendant; Run 15 had one unrelated Ubuntu timing failure.
+- [x] Retain an Ubuntu plus native macOS zero-exit receipt on the final Phase
+  20 descendant; Run 19 passed both after the unwaived Run 15 timing failure.
 
 Signing, notarization, provider purchase, production import, deployment and
 release remain outside this task's authority.
@@ -489,12 +489,11 @@ release remain outside this task's authority.
 - [ ] Before enabling HS/trade, review the exact product mapping and ingest a
   compatible observation at the same geographic aggregation.
 - [x] Publish the Phase 18 candidate to Draft PR #2.
-- [ ] Retain an Ubuntu plus native macOS zero-exit receipt on the final Phase
-  20 descendant; Run 16 had one unrelated native-macOS timing failure.
+- [x] Retain an Ubuntu plus native macOS zero-exit receipt on the final Phase
+  20 descendant; Run 19 passed both after the unwaived Run 16 timing failure.
 
-The candidate is published. Run 16 passed Ubuntu but had one unrelated
-native-macOS timing failure, so the zero-exit receipt remains pending and will
-be re-evaluated at the final Phase 20 descendant.
+The candidate is published. Run 19 supplied the final zero-exit Ubuntu and
+native-macOS receipt.
 
 ## Phase 19 content-provider onboarding (2026-08-15)
 
@@ -508,6 +507,7 @@ be re-evaluated at the final Phase 20 descendant.
   service/sidecar executor.
 - [ ] Verify retention/deletion, attribution and user-export terms per source;
   one Provider's licence never authorizes another platform.
+- [x] Retain the Phase 19 hosted receipt through final descendant Run 19.
 
 ## Phase 20 trend/SSE onboarding (2026-08-15)
 
@@ -519,4 +519,5 @@ be re-evaluated at the final Phase 20 descendant.
   authentication/CORS/retention and confirm every input Provider licence.
 - [ ] Treat every algorithm change as a new version and retain component-level
   comparability; never relabel old points silently.
-- [ ] Obtain a zero-exit Ubuntu/native-macOS receipt at the exact final head.
+- [x] Obtain a zero-exit Ubuntu/native-macOS receipt at the accepted
+  implementation head (`8ddd9cc1...`, Run 19).

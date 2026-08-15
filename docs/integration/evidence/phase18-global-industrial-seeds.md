@@ -1,7 +1,7 @@
 # Phase 18 China Factory Deepening and Global Seed Evidence
 
 **Date:** 2026-08-15 (Asia/Shanghai)
-**Status:** CANDIDATE — LOCAL GATES PASS, HOSTED ZERO-EXIT DESCENDANT PENDING
+**Status:** COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS
 
 ## Delivered Scope
 
@@ -70,11 +70,13 @@ later controlled change.
 
 The local tab, Vite server and viewport override were cleaned after inspection.
 
-## Remote Closure Condition
+## Hosted Closure Receipt
 
 The implementation and receipt were committed and normally pushed. Run 16
 passed Ubuntu and four other top-level workflows, but an unrelated native
-macOS news-digest timeout timing test failed. Phase 18 becomes complete only
-when the final Phase 20 descendant returns zero on authoritative Ubuntu and
-native macOS. No production import, Provider activation, merge, deployment,
-release, signing or notarization is authorized.
+macOS news-digest timeout timing test failed. No waiver was applied. Run 19 at
+`8ddd9cc1...` passed all five workflows, Ubuntu 23,088/23,082/0/6 and native
+macOS 22,930/22,924/0/6, plus the optimized unsigned Tauri build and clean-input
+gate. This descendant contains Phase 18 and closes it. No production import,
+Provider activation, merge, deployment, release, signing or notarization
+occurred.

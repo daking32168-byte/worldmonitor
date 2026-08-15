@@ -1,7 +1,7 @@
 # Phase 17 Trade Flows and Multimodal Logistics Evidence
 
 **Date:** 2026-08-15 (Asia/Shanghai)
-**Status:** CANDIDATE — LOCAL GATES PASS, HOSTED ZERO-EXIT DESCENDANT PENDING
+**Status:** COMPLETE — LOCAL AND HOSTED CROSS-PLATFORM GATES PASS
 
 ## Delivered Scope
 
@@ -63,12 +63,14 @@ The local Vite route was inspected through the in-app browser:
 The local server was stopped, the tab closed and the viewport override reset
 after inspection. Dev-only feed failures did not populate the empty registry.
 
-## Remote Closure Condition
+## Hosted Closure Receipt
 
 The implementation and receipt were committed and normally pushed. Run 15
 passed native macOS and four other top-level workflows, but an unrelated
-Ubuntu market-quote deadline timing test failed. Phase 17 becomes complete
-only when the final Phase 20 descendant returns zero on authoritative Ubuntu
-and native macOS.
+Ubuntu market-quote deadline timing test failed. No waiver was applied. Run 19
+at `8ddd9cc1...` passed all five workflows, Ubuntu 23,088/23,082/0/6 and native
+macOS 22,930/22,924/0/6, then completed the optimized unsigned Tauri build and
+clean-input gate. This descendant contains Phase 17 and closes it.
+
 No merge, deployment, release, signing, notarization, Provider activation or
-production import is authorized by this candidate.
+production import occurred.
