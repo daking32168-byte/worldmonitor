@@ -1,0 +1,2 @@
+flow_id,reporter_geo_id,origin_geo_id,origin_aggregation_level,destination_geo_id,product_id,hs_version,hs_code,period_start,period_end,trade_direction,value,value_currency,quantity,quantity_unit,net_weight_kg,transport_mode,customs_or_port_ref,provider_id,evidence_id,quality_status
+flow_example-only,geo_example-country,geo_example-country,COUNTRY,geo_example-partner,product_example,HS2022,00,2025-01-01T00:00:00Z,2025-01-31T23:59:59Z,EXPORT,,,,,,MULTIMODAL,,example-provider,source_example-only,UNVERIFIED

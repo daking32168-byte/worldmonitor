@@ -1,0 +1,8 @@
+{
+  "provider_id": "example-provider-not-configured",
+  "enabled": false,
+  "license_status": "NOT_CONFIGURED",
+  "permitted_fields": [],
+  "permits_display": false,
+  "permits_export": false
+}

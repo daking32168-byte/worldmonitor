@@ -17,6 +17,7 @@ import { isMaritimeLogisticsPath } from './features/maritime-logistics/maritime-
 import { isChinaFactoryPath } from './features/china-factory/china-factory-route';
 import { isIndustryMapPath } from './features/industry-map/industry-map-path';
 import { isProviderOperationsPath } from './features/provider-operations/provider-operations-route';
+import { isTradeFlowsPath } from './features/trade-flows/trade-flows-route';
 
 if (SITE_VARIANT === 'happy') {
   // Keeps happy-theme.css off other variants' eager CSS graph. On happy, the
@@ -643,6 +644,12 @@ if (urlParams.get('settings') === '1') {
   // fixtures into the production import graph.
   void import('./features/industry-map/industry-map').then(({ initIndustryMapWorkspace }) => {
     initIndustryMapWorkspace('app');
+  }).catch(console.error);
+} else if (isTradeFlowsPath(window.location.pathname)) {
+  // Trade/cargo observations are isolated from the AIS workspace. This route
+  // never promotes vessel positions or national aggregates into shipments.
+  void import('./features/trade-flows/trade-flows').then(({ initTradeFlowsWorkspace }) => {
+    initTradeFlowsWorkspace('app');
   }).catch(console.error);
 } else if (isProviderOperationsPath(window.location.pathname)) {
   // The operational control center is an owned surface. It observes only

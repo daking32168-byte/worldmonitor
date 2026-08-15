@@ -34,6 +34,7 @@ export type ProviderOperationId =
   | 'portwatch-batch'
   | 'comtrade-batch'
   | 'china-customs-import'
+  | 'shipment-provider-import'
   | 'model-evaluation';
 
 export type ProviderOperationReadiness =
@@ -192,6 +193,20 @@ export const PROVIDER_OPERATIONS: readonly ProviderOperationDefinition[] = [
     safetyBoundary: '禁止抓取或推断为官方数据；导入聚合也不授予舱单级结论。',
   },
   {
+    id: 'shipment-provider-import',
+    title: '提单 / 装运 Provider 导入',
+    provider: '待签约的装运数据 Provider',
+    purpose: '仅摄取合同明确返回且许可范围允许显示的单票字段。',
+    cadence: '按 Provider 许可、配额和发布节奏；未签约时永久禁用。',
+    idempotencyScope: 'provider + provider shipment id + observed time',
+    lockScope: 'shipment-provider:{provider}:{batch}',
+    minimumRetryIntervalMs: 60_000,
+    requiredFeatures: [],
+    requiredSecrets: [],
+    queueKind: 'IMPORT',
+    safetyBoundary: '不得由 AIS、企业地址、国家贸易或模型路线推断货物、买卖方、工厂或提单字段。',
+  },
+  {
     id: 'model-evaluation',
     title: '模型版本与回测记录',
     provider: '受配置模型 Provider',
@@ -263,6 +278,13 @@ export const PROVIDER_OPERATION_TRUTH: Readonly<Record<ProviderOperationId, Prov
     evidenceClasses: ['OBSERVED_TRADE'],
     aggregationLevels: ['COUNTRY'],
     licenseNote: 'Only an owner-supplied lawful file with recorded reuse rights may be imported.',
+  },
+  'shipment-provider-import': {
+    coverageStatus: 'OUT_OF_SCOPE',
+    licenseStatus: 'NOT_CONFIGURED',
+    evidenceClasses: ['CONTRACTED_SHIPMENT'],
+    aggregationLevels: ['SHIPMENT'],
+    licenseNote: 'A signed Provider contract and field-level display/export rights are required before activation.',
   },
   'model-evaluation': {
     coverageStatus: 'OUT_OF_SCOPE',
