@@ -111,7 +111,8 @@ RUN pnpm install --frozen-lockfile
 FROM node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 AS builder
 
 WORKDIR /app
-RUN npm install --global pnpm@10.15.1
+RUN apk add --no-cache curl \
+  && npm install --global pnpm@10.15.1
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=source /upstream/ ./
 COPY --from=source /upstream/docker/proxy.ts ./src/
@@ -122,7 +123,52 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV DATABASE_URL="postgresql://user:pass@localhost:5432/dummy"
 
 RUN pnpm vitest run src/queries/sql/sessions/saveSessionData.test.ts
-RUN npm run build-docker
+
+# Umami 3.2.0's build-geo downloader neither follows compressed redirects nor
+# checks HTTP status before piping the body into gunzip. A transient HTML error
+# therefore becomes an unhandled Z_DATA_ERROR and has broken two consecutive
+# clean CI builds. Preserve the upstream, automatically refreshed redistribution
+# URL, but fetch it with bounded retries and fail-closed validation before asking
+# the upstream build to skip only its already-completed download step.
+ARG GEO_DATABASE_URL=https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/GeoLite2-City.tar.gz
+RUN set -eu; \
+  archive=/tmp/GeoLite2-City.tar.gz; \
+  mmdb_entry=''; \
+  for attempt in 1 2 3 4 5; do \
+    rm -f "$archive"; \
+    if curl \
+      --fail \
+      --location \
+      --silent \
+      --show-error \
+      --connect-timeout 15 \
+      --max-time 180 \
+      --retry 3 \
+      --retry-delay 2 \
+      --retry-all-errors \
+      "$GEO_DATABASE_URL" \
+      --output "$archive" \
+      && gzip -t "$archive"; then \
+      mmdb_entries="$(tar -tzf "$archive" | awk '/(^|\/)GeoLite2-City\.mmdb$/ && $0 !~ /(^|\/)\.\.(\/|$)/ { print }')"; \
+      mmdb_count="$(printf '%s\n' "$mmdb_entries" | sed '/^$/d' | wc -l | tr -d ' ')"; \
+      if [ "$mmdb_count" -eq 1 ]; then \
+        mmdb_entry="$mmdb_entries"; \
+        break; \
+      fi; \
+      echo "GeoLite2 archive attempt $attempt did not contain exactly one safe City database" >&2; \
+    fi; \
+    if [ "$attempt" -eq 5 ]; then \
+      echo 'GeoLite2 archive failed bounded download and validation retries' >&2; \
+      exit 1; \
+    fi; \
+    sleep "$((attempt * 3))"; \
+  done; \
+  mkdir -p geo; \
+  tar -xOzf "$archive" "$mmdb_entry" > geo/GeoLite2-City.mmdb; \
+  mmdb_bytes="$(wc -c < geo/GeoLite2-City.mmdb | tr -d ' ')"; \
+  test "$mmdb_bytes" -gt 1000000; \
+  sha256sum geo/GeoLite2-City.mmdb; \
+  SKIP_BUILD_GEO=1 npm run build-docker
 
 FROM node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32 AS runner
 
