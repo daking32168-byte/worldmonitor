@@ -9,15 +9,18 @@ import {
   searchIndustrialSeedReviews,
   validateIndustrialSeedReviews,
 } from '../shared/industrial-seed-review.ts';
+import { assertEvidenceCanEnterFactTable } from '../shared/global-intelligence-contract.ts';
+import { COMPANY_FACILITY_REGISTRY } from '../shared/company-facility-registry.ts';
 
 const read = (path: string): string => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
 describe('Phase 18 global industrial seed review', () => {
   it('covers all six requested case families with one shared cross-country model', () => {
-    assert.equal(GLOBAL_INDUSTRIAL_SEED_REVIEWS.length, 6);
+    assert.equal(GLOBAL_INDUSTRIAL_SEED_REVIEWS.length, 7);
     assert.deepEqual(new Set(GLOBAL_INDUSTRIAL_SEED_REVIEWS.map((item) => item.case_id)), new Set([
       'wenzhou-footwear',
       'jingdezhen-ceramics',
+      'dongguan-city-industry-profile',
       'dongguan-dalang-knitwear',
       'shenzhen-byd-manufacturing',
       'netherlands-asml-lithography',
@@ -27,14 +30,23 @@ describe('Phase 18 global industrial seed review', () => {
     assert.deepEqual(validateIndustrialSeedReviews(), []);
   });
 
-  it('backs every case and reviewed candidate with official or company-filed evidence', () => {
+  it('keeps located official/company pages in a review-only queue until license and claim verification', () => {
     assert.ok(INDUSTRIAL_SEED_SOURCE_EVIDENCE.length >= 10);
     assert.equal(INDUSTRIAL_SEED_SOURCE_EVIDENCE.every((item) => item.sourceUrl?.startsWith('https://')), true);
-    assert.equal(INDUSTRIAL_SEED_SOURCE_EVIDENCE.every((item) => item.evidenceClass !== 'UNVERIFIED'), true);
+    for (const evidence of INDUSTRIAL_SEED_SOURCE_EVIDENCE) {
+      assert.equal(evidence.sourceType, 'OFFICIAL_WEB_REFERENCE_REVIEW_QUEUE');
+      assert.equal(evidence.evidenceClass, 'UNVERIFIED');
+      assert.equal(evidence.licenseStatus, 'REVIEW_REQUIRED');
+      assert.equal(evidence.qualityStatus, 'UNVERIFIED');
+      assert.equal(evidence.observedAt, null);
+      assert.equal(evidence.retrievedAt, null);
+      assert.equal(evidence.confidence, null);
+      assert.throws(() => assertEvidenceCanEnterFactTable(evidence), /VERIFIED license is required/);
+    }
     for (const review of GLOBAL_INDUSTRIAL_SEED_REVIEWS) {
       assert.ok(review.evidence_ids.length > 0);
       for (const candidate of [...review.company_candidates, ...review.facility_candidates, ...review.security_candidates]) {
-        if (candidate.status === 'REVIEWED_CLAIM') assert.ok(candidate.evidence_ids.length > 0);
+        if (candidate.status === 'REVIEWED_REFERENCE') assert.ok(candidate.evidence_ids.length > 0);
         if (candidate.status === 'SOURCE_REQUIRED') assert.ok(candidate.gap);
       }
     }
@@ -50,7 +62,8 @@ describe('Phase 18 global industrial seed review', () => {
       assert.equal(review.coverage_scope, 'FIVE_DIMENSION_SOURCE_REVIEW');
       assert.equal(review.review_coverage_rate, review.reviewed_dimensions.length / 5);
       assert.ok(review.review_coverage_rate > 0 && review.review_coverage_rate <= 1);
-      assert.match(review.last_verified_at, /^2026-08-15T/);
+      assert.match(review.last_reviewed_at, /^2026-08-15T/);
+      assert.equal(review.last_verified_at, null);
     }
   });
 
@@ -60,11 +73,14 @@ describe('Phase 18 global industrial seed review', () => {
     const asml = searchIndustrialSeedReviews('ASML')[0];
     assert.equal(asml?.location_name, '荷兰 · Veldhoven');
     assert.deepEqual(industrialSeedReviewByGeoId(asml!.geo_id)?.product_labels, ['EUV 光刻系统', 'DUV 光刻系统']);
+    assert.equal(searchIndustrialSeedReviews('荷兰光刻设备')[0]?.case_id, 'netherlands-asml-lithography');
+    assert.equal(searchIndustrialSeedReviews('德国汽车')[0]?.case_id, 'germany-bmw-munich-auto');
+    assert.deepEqual(searchIndustrialSeedReviews('东莞').map((item) => item.case_id), ['dongguan-city-industry-profile', 'dongguan-dalang-knitwear']);
   });
 
   it('does not conflate Shenzhen operator, listed issuer and security', () => {
     const shenzhen = GLOBAL_INDUSTRIAL_SEED_REVIEWS.find((item) => item.case_id === 'shenzhen-byd-manufacturing')!;
-    assert.equal(shenzhen.facility_candidates[0]?.status, 'REVIEWED_CLAIM');
+    assert.equal(shenzhen.facility_candidates[0]?.status, 'REVIEWED_REFERENCE');
     assert.equal(shenzhen.company_candidates[0]?.status, 'SOURCE_REQUIRED');
     assert.equal(shenzhen.security_candidates[0]?.status, 'SOURCE_REQUIRED');
     assert.match(shenzhen.security_candidates[0]?.gap ?? '', /MIC/);
@@ -77,7 +93,10 @@ describe('Phase 18 global industrial seed review', () => {
     assert.match(ui, /searchIndustrialSeedReviews/);
     assert.match(ui, /Phase 18 来源审查/);
     assert.match(ui, /HS\/贸易待审/);
-    assert.match(companyRegistry, /companies: Object\.freeze\(\[\]\)/);
     assert.doesNotMatch(companyRegistry, /ASML Holding|BMW AG|比亚迪汽车工业/);
+    const promotedNames = COMPANY_FACILITY_REGISTRY.companies.flatMap((company) => [company.legal_name, company.canonical_name]);
+    assert.ok(promotedNames.every((name) => !/ASML|BMW|比亚迪/u.test(name)));
+    const reviewEvidenceIds = new Set(INDUSTRIAL_SEED_SOURCE_EVIDENCE.map((item) => item.sourceId));
+    assert.ok(COMPANY_FACILITY_REGISTRY.evidence.every((item) => !reviewEvidenceIds.has(item.sourceId)));
   });
 });

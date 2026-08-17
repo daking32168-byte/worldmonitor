@@ -1,0 +1,24 @@
+:root { color-scheme: dark; }
+body { margin: 0; background: #0a0d17; color: #f2f3f8; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+.predictions { min-height: 100vh; box-sizing: border-box; padding: clamp(16px, 3vw, 36px); background: radial-gradient(circle at 10% 0%, rgba(121, 78, 180, .22), transparent 38rem), #0a0d17; }
+.predictions__header, .predictions__content { width: min(1120px, 100%); margin-inline: auto; }
+.predictions__header { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; margin-bottom: 20px; }
+.predictions__eyebrow { color: #c3a2ff; letter-spacing: .14em; font-size: .78rem; font-weight: 750; }
+.predictions h1 { margin: 6px 0 10px; font-size: clamp(1.6rem, 4vw, 2.55rem); }
+.predictions p { line-height: 1.6; }
+.predictions__nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.predictions__nav a { color: #decaff; border: 1px solid #4f4268; border-radius: 9px; padding: 8px 10px; text-decoration: none; white-space: nowrap; }
+.predictions__panel, .predictions__card { border: 1px solid #302a43; border-radius: 15px; background: rgba(20, 18, 32, .94); padding: clamp(15px, 2.4vw, 24px); margin-bottom: 15px; }
+.predictions__warning { border-left: 4px solid #b28aff; color: #decaff; }
+.predictions__metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.predictions__metric { padding: 12px; background: #0e0d18; border: 1px solid #302a43; border-radius: 10px; display: grid; gap: 5px; }
+.predictions__metric span { color: #9d98ad; font-size: .8rem; }
+.predictions__list { display: grid; gap: 12px; }
+.predictions__card { margin: 0; }
+.predictions__card[data-status="INSUFFICIENT_DATA"] { border-color: #795d37; }
+.predictions__badge { display: inline-block; border: 1px solid #675185; border-radius: 999px; padding: 3px 8px; color: #d9c2ff; font-size: .75rem; }
+.predictions__facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; margin: 12px 0; color: #bbb6c8; }
+.predictions__factors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.predictions__factors section { background: #0e0d18; border-radius: 10px; padding: 12px; }
+.predictions__disclaimer { color: #cbb3ee; font-weight: 650; }
+@media (max-width: 720px) { .predictions__header, .predictions__factors { display: grid; grid-template-columns: minmax(0, 1fr); } }

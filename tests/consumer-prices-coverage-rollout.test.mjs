@@ -41,7 +41,6 @@ const {
   ROLLOUT_PENDING_UNTIL_MS,
   ROLLOUT_PENDING_FROM_MS,
   CONSUMER_PRICE_HEALTH_MARKETS,
-  consumerPriceCoverageActivationKey,
   consumerPriceCoverageHealthName,
 } = __testing__;
 
@@ -57,7 +56,14 @@ const SG = consumerPriceCoverageHealthName('sg');
 const AE = consumerPriceCoverageHealthName('ae');
 const GB = consumerPriceCoverageHealthName('gb');
 
-const US_UNTIL = ROLLOUT_PENDING_UNTIL_MS[US];
+// The production registry is now empty. Historical rollout behaviour remains
+// under test through classifyKey's injected clock/policy seam so pruning dead
+// configuration does not weaken the safety contract for a future reviewed
+// schema rollout.
+const US_UNTIL = Date.parse('2026-08-03T06:00:00Z');
+const TEST_ROLLOUT_PENDING_UNTIL_MS = Object.freeze(Object.fromEntries(
+  CONSUMER_PRICE_HEALTH_MARKETS.map((market) => [consumerPriceCoverageHealthName(market), US_UNTIL]),
+));
 const BEFORE_DEADLINE = US_UNTIL - 60_000;
 const AT_DEADLINE = US_UNTIL;
 const AFTER_DEADLINE = US_UNTIL + 60_000;
@@ -65,10 +71,22 @@ const AFTER_DEADLINE = US_UNTIL + 60_000;
 // Same ctx shape the handler builds (api/health.js), plus `activationStates`.
 // That map is three-valued (#6095): every registered marker gets an entry here
 // because a clean sweep reads them all, and only a marker whose EXISTS command
-// FAILED is absent from the map. Modelling it as "listed = true, everything
-// else = false" rather than "listed = true, everything else missing" keeps
-// these fixtures on the production path instead of the unread-marker one.
-function makeCtx({ strens = {}, errors = {}, metaValues = {}, metaErrors = {}, activated = [], now } = {}) {
+// FAILED is absent from the map. Historical policy entries are unioned in so
+// this fixture still exercises the real one-way activation gate after the live
+// v1 registry and its now-unused health probes have been pruned.
+function makeCtx({
+  strens = {},
+  errors = {},
+  metaValues = {},
+  metaErrors = {},
+  activated = [],
+  rolloutPendingUntil = TEST_ROLLOUT_PENDING_UNTIL_MS,
+  now,
+} = {}) {
+  const markerNames = new Set([
+    ...Object.keys(ACTIVATION_MARKERS),
+    ...Object.keys(rolloutPendingUntil),
+  ]);
   return {
     keyStrens: new Map(Object.entries(strens)),
     keyErrors: new Map(Object.entries(errors)),
@@ -77,18 +95,26 @@ function makeCtx({ strens = {}, errors = {}, metaValues = {}, metaErrors = {}, a
     ),
     keyMetaErrors: new Map(Object.entries(metaErrors)),
     activationStates: new Map(
-      Object.keys(ACTIVATION_MARKERS).map((name) => [name, activated.includes(name)]),
+      [...markerNames].map((name) => [name, activated.includes(name)]),
     ),
+    rolloutPendingUntilMs: new Map(Object.entries(rolloutPendingUntil)),
     now,
   };
 }
 
-function classifyCoverage(name, { now, activated = [], strens = {}, metaValues = {} } = {}) {
+function classifyCoverage(name, {
+  now,
+  activated = [],
+  strens = {},
+  metaValues = {},
+  rolloutPendingUntil = TEST_ROLLOUT_PENDING_UNTIL_MS,
+} = {}) {
   return classifyKey(name, BOOTSTRAP_KEYS[name], { allowOnDemand: false }, makeCtx({
     now,
     activated,
     strens,
     metaValues,
+    rolloutPendingUntil,
   }));
 }
 
@@ -104,27 +130,23 @@ const computeOverall = ({ crit, warn, onDemandWarn = 0, rolloutPending = 0, tota
 
 // ── Registry contract ───────────────────────────────────────────────────────
 
-test('every consumer-price market has a durable activation marker registered', () => {
+test('closed consumer-price windows do not leave unused health activation probes', () => {
   assert.equal(CONSUMER_PRICE_HEALTH_MARKETS.length, 8);
   for (const market of CONSUMER_PRICE_HEALTH_MARKETS) {
     const name = consumerPriceCoverageHealthName(market);
     assert.equal(
       ACTIVATION_MARKERS[name],
-      `seed-activated:consumer-prices:coverage:v1:${market}`,
-      `${name} must be EXISTS-probed by the handler pipeline, or the marker can never revoke softening`,
+      undefined,
+      `${name} must not issue an EXISTS probe when no live rollout policy can consume it`,
     );
   }
 });
 
-test('every consumer-price market carries a bounded rollout deadline within one daily window', () => {
-  // Measured against each market's OWN declared rollout start, not a single
-  // historical constant: a ninth market added months from now must still be able
-  // to declare a valid window, and pinning the bound to the 2026-08-02 deploy
-  // would have made every future window fail this check the day it was written.
+test('the historical consumer-price rollout fixture remains bounded to one daily window', () => {
   for (const market of CONSUMER_PRICE_HEALTH_MARKETS) {
     const name = consumerPriceCoverageHealthName(market);
-    const until = ROLLOUT_PENDING_UNTIL_MS[name];
-    const from = ROLLOUT_PENDING_FROM_MS[name];
+    const until = TEST_ROLLOUT_PENDING_UNTIL_MS[name];
+    const from = DEPLOYED_AT;
     assert.ok(Number.isFinite(until), `${name} must declare a rollout deadline`);
     assert.ok(Number.isFinite(from), `${name} must declare when its rollout window opened`);
     assert.ok(until > from, `${name} deadline must be after its rollout start`);
@@ -202,34 +224,30 @@ test('expired rollout deadlines must be pruned from the registry', () => {
     rotted,
     [],
     'These rollout windows closed more than 14 days ago and are now dead config. '
-    + 'Delete their entries from CONSUMER_PRICE_COVERAGE_ROLLOUT_UNTIL in api/health.js. '
-    + 'If that empties the map, also remove ROLLOUT_PENDING_UNTIL_MS, the ROLLOUT_PENDING '
-    + 'branch in classifyKey, its STATUS_COUNTS entry and summary.rolloutPending counter, '
-    + 'isRolloutPendingProblem in scripts/check-seed-freshness.mjs, the ROLLOUT_PENDING rows '
-    + 'in docs/health-endpoints.mdx + docs/zh/health-endpoints.mdx, and this test file. '
+    + 'Prune the expired entries without deleting this regression test or weakening the bounded-window contract. '
     + `Stale: ${rotted.join(', ')}`,
   );
 });
 
-test('the static rollout registry covers only consumer-price coverage', () => {
-  const expected = new Set(CONSUMER_PRICE_HEALTH_MARKETS.map(consumerPriceCoverageHealthName));
-  assert.deepEqual(
-    new Set(Object.keys(ROLLOUT_PENDING_UNTIL_MS)),
-    expected,
-    'rollout softening is a scoped, reviewed exemption — a key silently joining it would be an unbounded soften',
+test('the live static rollout registry is empty after the v1 observation grace', () => {
+  assert.deepEqual(ROLLOUT_PENDING_UNTIL_MS, {});
+  assert.deepEqual(ROLLOUT_PENDING_FROM_MS, {});
+  assert.equal(
+    classifyCoverage(US, { now: BEFORE_DEADLINE, rolloutPendingUntil: {} }).status,
+    'EMPTY',
+    'production remains strict even at a clock instant that was inside the historical rollout window',
   );
 });
 
-test('activation key shape is identical across the health reader and the publisher', () => {
+test('publisher retains versioned provenance markers after health rollout probes are pruned', () => {
   assert.equal(CORE_SCHEMA_VERSION, 1);
   for (const market of CONSUMER_PRICE_HEALTH_MARKETS) {
-    const fromHealth = consumerPriceCoverageActivationKey(market);
-    assert.equal(fromHealth, coreCoverageActivationKey(market));
-    assert.equal(fromHealth, ACTIVATION_MARKERS[consumerPriceCoverageHealthName(market)]);
+    const publisherKey = coreCoverageActivationKey(market);
+    assert.equal(ACTIVATION_MARKERS[consumerPriceCoverageHealthName(market)], undefined);
     assert.match(
-      fromHealth,
+      publisherKey,
       /^seed-activated:consumer-prices:coverage:v\d+:[a-z]{2}$/,
-      'the schema version must live IN the key so a v2 coverage shape cannot inherit v1 activation',
+      'publisher provenance stays schema-versioned so a future reviewed rollout cannot inherit v1 activation',
     );
   }
 });

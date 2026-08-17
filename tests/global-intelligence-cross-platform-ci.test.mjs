@@ -13,7 +13,7 @@ function jobBlock(workflow, jobName, nextJobName) {
   return workflow.slice(start, end);
 }
 
-test('macOS compatibility is a read-only native Apple Silicon PR gate', () => {
+test('macOS compatibility is a read-only native Apple Silicon bundle and launch PR gate', () => {
   const block = jobBlock(testWorkflow, 'macos-compat', 'consumer-prices');
 
   assert.match(block, /runs-on: macos-14/);
@@ -24,12 +24,23 @@ test('macOS compatibility is a read-only native Apple Silicon PR gate', () => {
   assert.match(block, /GITHUB_PATH/);
   assert.match(block, /NODE_TARGET: aarch64-apple-darwin/);
   assert.match(block, /bash scripts\/download-node\.sh --target "\$NODE_TARGET"/);
-  assert.match(block, /desktop:tauri:build -- --no-bundle --target aarch64-apple-darwin/);
+  assert.match(block, /desktop:tauri:build -- --bundles app --target aarch64-apple-darwin/);
+  assert.doesNotMatch(block, /--no-bundle/);
+  assert.match(block, /bundle\/macos\/\*\.app/);
+  assert.match(block, /plutil -lint/);
+  assert.match(block, /CFBundleExecutable/);
+  assert.match(block, /sidecar\/node\/node/);
+  assert.match(block, /file "\$EXECUTABLE_PATH" \| grep -q 'arm64'/);
+  assert.match(block, /file "\$NODE_PATH" \| grep -q 'arm64'/);
+  assert.match(block, /ditto "\$APP_PATH" "\$INSTALL_APP"/);
+  assert.match(block, /kill -0 "\$APP_PID"/);
+  assert.match(block, /shasum -a 256/);
+  assert.match(block, /codesign -dv --verbose=2/);
   assert.match(block, /run: npm run test:data/);
   assert.doesNotMatch(block, /WM_EXPECT_BUILT_OUTPUT/);
   assert.match(block, /git diff --exit-code/);
   assert.doesNotMatch(block, /secrets\./);
-  assert.doesNotMatch(block, /upload-artifact|tauri-action|contents: write|gh release|softprops\/action-gh-release/);
+  assert.doesNotMatch(block, /upload-artifact|tauri-action|contents: write|gh release|softprops\/action-gh-release|secrets\./);
   assert.ok(
     block.indexOf('run: npm run test:data') < block.indexOf('run: npm run desktop:tauri:build'),
     'the source-truth suite must run before ignored sidecar bundles are generated',

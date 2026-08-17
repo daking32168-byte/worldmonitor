@@ -15,7 +15,11 @@ export type GlobalIntelligenceStatusDisplay = Readonly<{
 export const GLOBAL_INTELLIGENCE_STATUS_DISPLAY: Record<DataDisplayStatus, GlobalIntelligenceStatusDisplay> = {
   NOT_CONFIGURED: { label: '尚未配置', tone: 'muted', isObservedFact: false, isLive: false },
   UNAVAILABLE: { label: '当前不可用', tone: 'danger', isObservedFact: false, isLive: false },
+  DELAYED_VERIFIED: { label: '已验证延迟行情', tone: 'success', isObservedFact: true, isLive: false },
   DELAYED_UNVERIFIED: { label: '延迟/授权未验证', tone: 'warning', isObservedFact: false, isLive: false },
+  END_OF_DAY: { label: '日终行情', tone: 'success', isObservedFact: true, isLive: false },
+  HISTORICAL_SNAPSHOT: { label: '历史快照', tone: 'success', isObservedFact: true, isLive: false },
+  MARKET_CLOSED: { label: '市场休市 · 最近观测', tone: 'success', isObservedFact: true, isLive: false },
   STALE: { label: '数据已过期', tone: 'warning', isObservedFact: true, isLive: false },
   OBSERVED: { label: '来源支持的观测', tone: 'success', isObservedFact: true, isLive: false },
   REALTIME_VERIFIED: { label: '已验证实时', tone: 'success', isObservedFact: true, isLive: true },

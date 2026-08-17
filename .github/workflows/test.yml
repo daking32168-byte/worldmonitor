@@ -224,9 +224,10 @@ jobs:
 
   macos-compat:
     # Native Apple Silicon validation for the Tauri desktop path. This is a
-    # read-only PR gate: it does not import signing credentials, bundle a DMG,
-    # upload an artifact, create a release, or publish anything. The release
-    # workflow remains the only place allowed to sign and package installers.
+    # read-only PR gate: it creates and launch-smokes an unsigned .app, but does
+    # not import signing credentials, bundle a DMG, upload an artifact, create
+    # a release, or publish anything. The release workflow remains the only
+    # place allowed to sign and package installers.
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: macos-14
@@ -269,8 +270,53 @@ jobs:
           NODE_VERSION: '22.14.0'
           NODE_TARGET: aarch64-apple-darwin
         run: bash scripts/download-node.sh --target "$NODE_TARGET"
-      - name: Build unsigned native macOS application without packaging
-        run: npm run desktop:tauri:build -- --no-bundle --target aarch64-apple-darwin
+      - name: Build unsigned native macOS application bundle
+        run: npm run desktop:tauri:build -- --bundles app --target aarch64-apple-darwin
+      - name: Verify, install-copy, and launch-smoke the macOS application bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_COUNT=$(find src-tauri/target -type d -path '*/bundle/macos/*.app' | wc -l | tr -d ' ')
+          if [ "$APP_COUNT" -ne 1 ]; then
+            echo "::error::Expected exactly one macOS .app bundle, found $APP_COUNT."
+            find src-tauri/target -type d -path '*/bundle/macos/*.app' -print
+            exit 1
+          fi
+          APP_PATH=$(find src-tauri/target -type d -path '*/bundle/macos/*.app' -print -quit)
+          plutil -lint "$APP_PATH/Contents/Info.plist"
+          EXECUTABLE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP_PATH/Contents/Info.plist")
+          EXECUTABLE_PATH="$APP_PATH/Contents/MacOS/$EXECUTABLE_NAME"
+          test -x "$EXECUTABLE_PATH"
+          file "$EXECUTABLE_PATH" | grep -q 'arm64'
+
+          NODE_PATH=$(find "$APP_PATH/Contents/Resources" -type f -path '*/sidecar/node/node' -print -quit)
+          if [ -z "$NODE_PATH" ] || [ ! -x "$NODE_PATH" ]; then
+            echo "::error::Executable bundled macOS Node runtime is missing."
+            exit 1
+          fi
+          file "$NODE_PATH" | grep -q 'arm64'
+
+          INSTALL_ROOT="$RUNNER_TEMP/worldmonitor-macos-install"
+          INSTALL_APP="$INSTALL_ROOT/$(basename "$APP_PATH")"
+          mkdir -p "$INSTALL_ROOT"
+          ditto "$APP_PATH" "$INSTALL_APP"
+          INSTALLED_EXECUTABLE="$INSTALL_APP/Contents/MacOS/$EXECUTABLE_NAME"
+          "$INSTALLED_EXECUTABLE" >"$RUNNER_TEMP/worldmonitor-macos-smoke.log" 2>&1 &
+          APP_PID=$!
+          for _ in $(seq 1 20); do
+            if ! kill -0 "$APP_PID" 2>/dev/null; then
+              wait "$APP_PID" || true
+              cat "$RUNNER_TEMP/worldmonitor-macos-smoke.log"
+              echo "::error::Installed-copy macOS app exited during the 20-second launch smoke."
+              exit 1
+            fi
+            sleep 1
+          done
+          kill "$APP_PID"
+          wait "$APP_PID" || true
+
+          shasum -a 256 "$EXECUTABLE_PATH" "$NODE_PATH"
+          codesign -dv --verbose=2 "$APP_PATH" 2>&1 || echo 'Unsigned bundle confirmed; Developer ID signing remains a release-only gate.'
       - name: Generated desktop inputs remain clean
         run: git diff --exit-code
 

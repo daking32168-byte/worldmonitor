@@ -30,10 +30,10 @@ import {
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-test('Phase 15 adapts exactly 22 sourced seeds into the four required domain models', () => {
+test('Phase 15 retains 22 sourced seeds and adds only the reviewed open-data facility geography/product', () => {
   assert.equal(INDUSTRY_MAP_CLUSTERS.length, 22);
-  assert.equal(INDUSTRY_MAP_GEO_UNITS.length, 22);
-  assert.equal(INDUSTRY_MAP_PRODUCTS.length, 22);
+  assert.equal(INDUSTRY_MAP_GEO_UNITS.length, 23);
+  assert.equal(INDUSTRY_MAP_PRODUCTS.length, 23);
   assert.equal(INDUSTRY_MAP_HS_MAPPINGS.length, 2);
   assert.deepEqual(validateIndustryMapRegistry(), []);
   for (const source of INDUSTRY_MAP_SOURCE_EVIDENCE) {
@@ -91,13 +91,17 @@ test('no seed cluster carries a value-bearing trade observation', () => {
   }
 });
 
-test('every current GeoUnit fails closed without reviewed boundary or invented centroid', () => {
-  for (const geo of INDUSTRY_MAP_GEO_UNITS) {
+test('seed GeoUnits fail closed while the independently sourced facility point remains explicit', () => {
+  for (const geo of INDUSTRY_MAP_GEO_UNITS.filter((item) => item.country_iso2 === 'CN')) {
     assert.equal(geo.boundary_review_status, 'NOT_REVIEWED');
     assert.equal(geo.boundary_ref, null);
     assert.equal(geo.centroid_lat, null);
     assert.equal(geo.centroid_lon, null);
   }
+  const facilityCampus = INDUSTRY_MAP_GEO_UNITS.find((item) => item.geo_id === 'geo_de-brandenburg-giga-berlin-campus');
+  assert.equal(facilityCampus?.boundary_ref, null);
+  assert.equal(facilityCampus?.boundary_review_status, 'SOURCE_REQUIRED');
+  assert.deepEqual([facilityCampus?.centroid_lat, facilityCampus?.centroid_lon], [52.395, 13.79]);
 });
 
 test('industry-map overview, location, cluster and Phase 16 entity routes reject unknown entities', () => {
@@ -116,7 +120,7 @@ test('industry-map overview, location, cluster and Phase 16 entity routes reject
   assert.equal(parseIndustryMapRoute('/industry-map/facility/facility_unknown').kind, 'not-found');
 });
 
-test('the five map modes exist and Phase 16 enables only distribution and company/facility', () => {
+test('the five map modes are connected to implemented production routes', () => {
   assert.deepEqual(INDUSTRY_MAP_MODE_OPTIONS.map((mode) => mode.id), [
     'INDUSTRY_DISTRIBUTION',
     'COMPANY_FACILITY',
@@ -127,6 +131,9 @@ test('the five map modes exist and Phase 16 enables only distribution and compan
   assert.deepEqual(INDUSTRY_MAP_MODE_OPTIONS.filter((mode) => mode.implemented).map((mode) => mode.id), [
     'INDUSTRY_DISTRIBUTION',
     'COMPANY_FACILITY',
+    'PRODUCT_FLOW',
+    'LOGISTICS_NETWORK',
+    'EVENT_IMPACT',
   ]);
 });
 

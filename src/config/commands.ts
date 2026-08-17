@@ -31,6 +31,18 @@ export const LAYER_KEY_MAP: Record<string, keyof MapLayers> = {
   natural: 'natural',
 };
 
+export const WORKSPACE_PATHS: Readonly<Record<string, string>> = Object.freeze({
+  'industry-map': '/industry-map',
+  'trade-flows': '/trade-flows',
+  'trends': '/trends',
+  'provider-operations': '/provider-operations',
+  'manual-action-center': '/manual-action-center',
+  'global-markets': '/global-markets',
+  'predictions': '/predictions',
+  'impact-graph': '/impact-graph',
+  'intelligence-center': '/intelligence-center',
+});
+
 export const COMMANDS: Command[] = [
   // Navigation (region switching)
   { id: 'nav:global', keywords: ['global', 'world', 'reset', 'home'], label: 'Map: Global view', icon: '\u{1F30D}', category: 'navigate' },
@@ -41,6 +53,18 @@ export const COMMANDS: Command[] = [
   { id: 'nav:africa', keywords: ['africa'], label: 'Map: Africa', icon: '\u{1F30D}', category: 'navigate' },
   { id: 'nav:latam', keywords: ['latam', 'latin america', 'south america'], label: 'Map: Latin America', icon: '\u{1F30E}', category: 'navigate' },
   { id: 'nav:oceania', keywords: ['oceania', 'australia', 'pacific islands'], label: 'Map: Oceania', icon: '\u{1F30F}', category: 'navigate' },
+
+  // Owned Global Intelligence workspaces. These are real routes in the same
+  // web/Tauri application, not external pages or iframe placeholders.
+  { id: 'workspace:industry-map', keywords: ['产业地图', 'global industry map', 'industry cluster', '工厂'], label: '全球产业地图', icon: '\u{1F3ED}', category: 'navigate' },
+  { id: 'workspace:trade-flows', keywords: ['贸易流向', 'trade flows', '物流网络', 'multimodal'], label: '贸易流向与多式联运', icon: '\u{1F6A2}', category: 'navigate' },
+  { id: 'workspace:trends', keywords: ['全球趋势', 'trends', '事件热度', 'cross platform'], label: '全球趋势与事件', icon: '\u{1F4C8}', category: 'navigate' },
+  { id: 'workspace:provider-operations', keywords: ['provider operations', '数据源运维', 'provider 状态'], label: 'Provider 运维中心', icon: '\u{2699}\uFE0F', category: 'navigate' },
+  { id: 'workspace:manual-action-center', keywords: ['人工操作中心', '导入 csv', '本地导入', 'manual action'], label: '人工操作中心', icon: '\u{1F9ED}', category: 'navigate' },
+  { id: 'workspace:global-markets', keywords: ['全球市场', 'global markets', '交易所', 'MIC', '证券市场'], label: '全球交易所与证券市场', icon: '\u{1F4B9}', category: 'navigate' },
+  { id: 'workspace:predictions', keywords: ['AI 推演', 'prediction', '预测评估', '回测', 'baseline'], label: 'AI 推演与评估', icon: '\u{1F52E}', category: 'navigate' },
+  { id: 'workspace:impact-graph', keywords: ['事件影响', '影响图谱', 'impact graph', '产业物流证券'], label: '事件—产业—物流—市场影响', icon: '\u{1F517}', category: 'navigate' },
+  { id: 'workspace:intelligence-center', keywords: ['个人情报中心', '自选', '桌面预警', 'watchlist', 'notification'], label: '个人情报中心与桌面预警', icon: '\u{1F514}', category: 'navigate' },
 
   // Layer presets (toggle groups)
   { id: 'layers:military', keywords: ['military', 'military layers', 'show military'], label: 'Show military layers', icon: '\u{1F396}\uFE0F', category: 'layers' },

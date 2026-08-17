@@ -73,6 +73,7 @@ export type SourceItem = Readonly<{
   provider_id: string;
   platform: ContentPlatform;
   platform_item_id: string;
+  original_url: string;
   canonical_url: string;
   author_id: string | null;
   author_handle: string | null;
@@ -113,6 +114,7 @@ export type EventCandidate = Readonly<{
     item_id: StableEntityId;
     platform: ContentPlatform;
     platform_item_id: string;
+    original_url: string;
     canonical_url: string;
     published_at: string;
     confirmation_status: SourceItem['confirmation_status'];
@@ -128,7 +130,7 @@ function timestamp(value: string, field: string): void {
 
 function canonicalUrl(value: string): string {
   const url = new URL(value);
-  if (!['https:', 'http:'].includes(url.protocol)) throw new Error('canonical_url must use HTTP(S)');
+  if (url.protocol !== 'https:') throw new Error('canonical_url must use HTTPS');
   url.hash = '';
   for (const key of [...url.searchParams.keys()]) {
     if (/^(?:utm_.+|fbclid|gclid)$/i.test(key)) url.searchParams.delete(key);
@@ -202,6 +204,7 @@ export function normalizeSourceRecord(
     provider_id: provider.provider_id,
     platform: provider.platform,
     platform_item_id: record.platform_item_id,
+    original_url: record.canonical_url,
     canonical_url: url,
     author_id: record.author_id,
     author_handle: record.author_handle,
@@ -261,6 +264,7 @@ export function createEventCandidate(items: readonly SourceItem[]): EventCandida
       item_id: item.item_id,
       platform: item.platform,
       platform_item_id: item.platform_item_id,
+      original_url: item.original_url,
       canonical_url: item.canonical_url,
       published_at: item.published_at,
       confirmation_status: item.confirmation_status,

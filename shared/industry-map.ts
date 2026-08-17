@@ -25,6 +25,10 @@ import {
   type SourceEvidence,
   type StableEntityId,
 } from './global-intelligence-contract';
+import {
+  OPEN_INDUSTRIAL_SOURCE_EVIDENCE,
+  WIKIDATA_GIGA_BERLIN_SOURCE_ID,
+} from './open-industrial-evidence';
 
 export const GEO_UNIT_LEVELS = [
   'WORLD',
@@ -141,9 +145,9 @@ export const INDUSTRY_MAP_MODE_OPTIONS: readonly Readonly<{
 }>[] = Object.freeze([
   { id: 'INDUSTRY_DISTRIBUTION', label: '全球产业分布', implemented: true },
   { id: 'COMPANY_FACILITY', label: '企业与工厂', implemented: true },
-  { id: 'PRODUCT_FLOW', label: '产品贸易流向', implemented: false },
-  { id: 'LOGISTICS_NETWORK', label: '物流网络', implemented: false },
-  { id: 'EVENT_IMPACT', label: '事件影响', implemented: false },
+  { id: 'PRODUCT_FLOW', label: '产品贸易流向', implemented: true },
+  { id: 'LOGISTICS_NETWORK', label: '物流网络', implemented: true },
+  { id: 'EVENT_IMPACT', label: '事件影响', implemented: true },
 ]);
 
 type SeedDescriptor = Readonly<{
@@ -261,7 +265,7 @@ function createSourceEvidence(definition: (typeof sourceDefinitions)[number]): S
 }
 
 export const INDUSTRY_MAP_SOURCE_EVIDENCE: readonly SourceEvidence[] = Object.freeze(
-  sourceDefinitions.map(createSourceEvidence),
+  [...sourceDefinitions.map(createSourceEvidence), ...OPEN_INDUSTRIAL_SOURCE_EVIDENCE],
 );
 
 function requireDescriptor(cluster: ChinaFactoryCluster): SeedDescriptor {
@@ -285,7 +289,7 @@ function hsSourceId(cluster: ChinaFactoryCluster): StableEntityId | null {
 }
 
 export const INDUSTRY_MAP_GEO_UNITS: readonly GeoUnit[] = Object.freeze(
-  CHINA_FACTORY_CLUSTERS.map((cluster) => {
+  [...CHINA_FACTORY_CLUSTERS.map((cluster) => {
     const descriptor = requireDescriptor(cluster);
     return {
       geo_id: createStableEntityId('geo', descriptor.geo_opaque_id),
@@ -307,11 +311,30 @@ export const INDUSTRY_MAP_GEO_UNITS: readonly GeoUnit[] = Object.freeze(
       valid_to: null,
       source_evidence_ids: Object.freeze([clusterSourceId(cluster)]),
     } satisfies GeoUnit;
-  }),
+  }), {
+    geo_id: createStableEntityId('geo', 'de-brandenburg-giga-berlin-campus'),
+    parent_geo_id: null,
+    level: 'INDUSTRIAL_PARK',
+    country_iso2: 'DE',
+    country_iso3: 'DEU',
+    subdivision_code: 'DE-BB',
+    local_name: 'Gigafactory Berlin-Brandenburg campus',
+    zh_name: '柏林-勃兰登堡超级工厂园区',
+    en_name: 'Gigafactory Berlin-Brandenburg campus',
+    alternate_names: Object.freeze(['Grünheide', 'Gruenheide', 'Brandenburg', 'Germany']),
+    centroid_lat: 52.395,
+    centroid_lon: 13.79,
+    boundary_ref: null,
+    boundary_review_status: 'SOURCE_REQUIRED',
+    timezone_ids: Object.freeze(['Europe/Berlin']),
+    valid_from: null,
+    valid_to: null,
+    source_evidence_ids: Object.freeze([WIKIDATA_GIGA_BERLIN_SOURCE_ID]),
+  } satisfies GeoUnit],
 );
 
 export const INDUSTRY_MAP_PRODUCTS: readonly ProductTaxonomyNode[] = Object.freeze(
-  CHINA_FACTORY_CLUSTERS.map((cluster) => {
+  [...CHINA_FACTORY_CLUSTERS.map((cluster) => {
     const descriptor = requireDescriptor(cluster);
     return {
       product_id: createStableEntityId('product', descriptor.product_opaque_id),
@@ -327,7 +350,20 @@ export const INDUSTRY_MAP_PRODUCTS: readonly ProductTaxonomyNode[] = Object.free
       hs4_candidates: Object.freeze([]),
       hs6_candidates: Object.freeze([]),
     } satisfies ProductTaxonomyNode;
-  }),
+  }), {
+    product_id: createStableEntityId('product', 'tesla-model-y'),
+    parent_product_id: null,
+    industry_category: 'industry_electric-vehicles',
+    local_name: 'Tesla Model Y',
+    zh_name: 'Tesla Model Y 电动汽车',
+    en_name: 'Tesla Model Y',
+    synonyms: Object.freeze(['Model Y', 'electric vehicle', '电动汽车']),
+    process_tags: Object.freeze(['vehicle manufacturing']),
+    material_tags: Object.freeze([]),
+    hs2_candidates: Object.freeze([]),
+    hs4_candidates: Object.freeze([]),
+    hs6_candidates: Object.freeze([]),
+  } satisfies ProductTaxonomyNode],
 );
 
 export const INDUSTRY_MAP_HS_MAPPINGS: readonly ProductHsMapping[] = Object.freeze(
@@ -485,7 +521,8 @@ export function validateIndustryMapRegistry(): string[] {
   const errors: string[] = [];
   if (CHINA_FACTORY_CLUSTERS.length !== 22) errors.push('The source registry must contain exactly 22 seeds');
   if (INDUSTRY_MAP_CLUSTERS.length !== 22) errors.push('The Phase 15 cluster registry must contain exactly 22 seeds');
-  if (INDUSTRY_MAP_GEO_UNITS.length !== 22) errors.push('Every seed must resolve to one GeoUnit');
+  if (INDUSTRY_MAP_GEO_UNITS.length !== 23) errors.push('The registry must retain 22 seed GeoUnits plus one reviewed facility campus');
+  if (INDUSTRY_MAP_PRODUCTS.length !== 23) errors.push('The registry must retain 22 seed products plus one reviewed facility product');
   if (INDUSTRY_MAP_HS_MAPPINGS.length !== 2) errors.push('Only Huidong and Putian may have reviewed HS mappings');
 
   const referenceIds = new Set(CHINA_FACTORY_REFERENCE_CLUSTERS.map((cluster) => `cluster_cn-${cluster.id}`));

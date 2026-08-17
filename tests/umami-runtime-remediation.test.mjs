@@ -148,6 +148,31 @@ describe('Umami runtime remediation (#6024)', () => {
     assert.match(dockerfile, /connectionTimeoutMillis to 0 and queue callers forever/);
   });
 
+  it('downloads GeoLite2 with bounded retries and validates it before skipping only the upstream fetch', () => {
+    const dockerfile = read('Dockerfile.umami');
+    const prefetch = dockerfile.indexOf('archive=/tmp/GeoLite2-City.tar.gz');
+    const build = dockerfile.indexOf('SKIP_BUILD_GEO=1 npm run build-docker');
+
+    assert.ok(prefetch >= 0, 'managed image must prefetch the GeoLite2 archive');
+    assert.ok(build > prefetch, 'the validated prefetch must happen before the upstream download is skipped');
+    assert.match(dockerfile, /--fail/);
+    assert.match(dockerfile, /--location/);
+    assert.match(dockerfile, /--connect-timeout 15/);
+    assert.match(dockerfile, /--max-time 180/);
+    assert.match(dockerfile, /--retry 3/);
+    assert.match(dockerfile, /--retry-all-errors/);
+    assert.match(dockerfile, /for attempt in 1 2 3 4 5/);
+    assert.match(dockerfile, /gzip -t "\$archive"/);
+    assert.match(dockerfile, /if \[ "\$mmdb_count" -eq 1 \]/);
+    assert.match(dockerfile, /test "\$mmdb_bytes" -gt 1000000/);
+    assert.match(dockerfile, /sha256sum geo\/GeoLite2-City\.mmdb/);
+    assert.doesNotMatch(
+      dockerfile.slice(0, prefetch),
+      /SKIP_BUILD_GEO=1/,
+      'the image must never skip GeoLite2 without first installing a validated database',
+    );
+  });
+
   it('deduplicates deterministically before creating the composite unique index', () => {
     const migration = read('docker/umami/21_update_session_data/migration.sql');
 
@@ -269,7 +294,7 @@ describe('Umami runtime remediation (#6024)', () => {
     const workflow = read('.github/workflows/test.yml');
     const deployGate = read('.github/workflows/deploy-gate.yml');
     const integration = read('tests/umami-postgres-integration.mjs');
-    const umamiJob = workflow.match(/^ {2}umami-postgres:\n[\s\S]*?(?=^ {2}[a-z][a-z0-9-]+:\n)/m)?.[0];
+    const umamiJob = workflow.match(/^ {2}umami-postgres:\r?\n[\s\S]*?(?=^ {2}[a-z][a-z0-9-]+:\r?\n)/m)?.[0];
 
     assert.match(workflow, /^\s{6}umami: \$\{\{ steps\.diff\.outputs\.umami \}\}$/m);
     assert.ok(umamiJob, 'expected a dedicated umami-postgres CI job');

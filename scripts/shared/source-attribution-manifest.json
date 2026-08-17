@@ -778,8 +778,36 @@
       "status": "excluded",
       "references": [
         {
+          "path": "scripts/ais-relay.cjs",
+          "line": 3708
+        },
+        {
+          "path": "scripts/lib/llm-chain.cjs",
+          "line": 43
+        },
+        {
+          "path": "scripts/regional-snapshot/narrative.mjs",
+          "line": 74
+        },
+        {
+          "path": "scripts/regional-snapshot/weekly-brief.mjs",
+          "line": 45
+        },
+        {
+          "path": "scripts/seed-forecasts.mjs",
+          "line": 14678
+        },
+        {
+          "path": "scripts/seed-insights.mjs",
+          "line": 387
+        },
+        {
           "path": "server/_shared/llm-health.ts",
           "line": 286
+        },
+        {
+          "path": "server/_shared/llm.ts",
+          "line": 94
         }
       ]
     },
@@ -1647,11 +1675,11 @@
       "references": [
         {
           "path": "api/economic/v1/[rpc].js",
-          "line": 22664
+          "line": 22675
         },
         {
           "path": "api/intelligence/v1/[rpc].js",
-          "line": 32728
+          "line": 32739
         }
       ]
     },
@@ -2544,6 +2572,10 @@
         {
           "path": "scripts/seed-wb-external-debt.mjs",
           "line": 151
+        },
+        {
+          "path": "src/services/progress-data.ts",
+          "line": 214
         }
       ]
     },
@@ -2751,8 +2783,20 @@
       "status": "excluded",
       "references": [
         {
+          "path": "scripts/seed-digest-notifications.mjs",
+          "line": 1185
+        },
+        {
+          "path": "src/app/panel-layout.ts",
+          "line": 1144
+        },
+        {
           "path": "src/components/CommunityWidget.ts",
           "line": 7
+        },
+        {
+          "path": "src/services/preferences-content.ts",
+          "line": 418
         }
       ]
     },
@@ -3067,10 +3111,6 @@
       "attribution": "Excluded from the external-provider count: not an ingested upstream dataset.",
       "status": "excluded",
       "references": [
-        {
-          "path": "src/app/panel-layout.ts",
-          "line": 193
-        },
         {
           "path": "src/config/variant-meta.ts",
           "line": 137
@@ -3781,6 +3821,10 @@
         {
           "path": "server/_shared/brief-render.js",
           "line": 37
+        },
+        {
+          "path": "server/_shared/brief-render.js",
+          "line": 1653
         }
       ]
     },
@@ -3992,12 +4036,40 @@
           "line": 8
         },
         {
+          "path": "scripts/generate-oref-locations.mjs",
+          "line": 3
+        },
+        {
+          "path": "scripts/generate-oref-locations.mjs",
+          "line": 42
+        },
+        {
+          "path": "scripts/seed-digest-notifications.mjs",
+          "line": 1184
+        },
+        {
           "path": "scripts/seed-research.mjs",
           "line": 282
         },
         {
+          "path": "server/_shared/acled-auth.ts",
+          "line": 17
+        },
+        {
+          "path": "server/worldmonitor/leads/v1/register-interest.ts",
+          "line": 260
+        },
+        {
           "path": "src/app/desktop-updater.ts",
           "line": 103
+        },
+        {
+          "path": "src/app/panel-layout.ts",
+          "line": 962
+        },
+        {
+          "path": "src/app/panel-layout.ts",
+          "line": 1143
         },
         {
           "path": "src/config/brand.ts",
@@ -4008,8 +4080,16 @@
           "line": 34
         },
         {
+          "path": "src/services/oref-locations.ts",
+          "line": 2
+        },
+        {
           "path": "src/services/preferences-content.ts",
           "line": 42
+        },
+        {
+          "path": "src/services/user-identity.ts",
+          "line": 26
         }
       ]
     },
@@ -7372,8 +7452,44 @@
       "status": "excluded",
       "references": [
         {
+          "path": "scripts/ais-relay.cjs",
+          "line": 3699
+        },
+        {
           "path": "scripts/lib/brief-dedup-consts.mjs",
           "line": 29
+        },
+        {
+          "path": "scripts/lib/llm-chain.cjs",
+          "line": 51
+        },
+        {
+          "path": "scripts/regional-snapshot/narrative.mjs",
+          "line": 59
+        },
+        {
+          "path": "scripts/regional-snapshot/weekly-brief.mjs",
+          "line": 30
+        },
+        {
+          "path": "scripts/seed-forecasts.mjs",
+          "line": 14677
+        },
+        {
+          "path": "scripts/seed-insights.mjs",
+          "line": 378
+        },
+        {
+          "path": "server/_shared/llm-health.ts",
+          "line": 289
+        },
+        {
+          "path": "server/_shared/llm.ts",
+          "line": 107
+        },
+        {
+          "path": "src/services/settings-constants.ts",
+          "line": 5
         }
       ]
     },
@@ -7715,6 +7831,10 @@
       "attribution": "Excluded from the external-provider count: not an ingested upstream dataset.",
       "status": "excluded",
       "references": [
+        {
+          "path": "src/components/DeckGLMap.ts",
+          "line": 1028
+        },
         {
           "path": "src/config/basemap-styles.ts",
           "line": 53
@@ -9090,6 +9210,10 @@
           "line": 137
         },
         {
+          "path": "src/services/notifications-settings.ts",
+          "line": 1038
+        },
+        {
           "path": "src/services/story-share.ts",
           "line": 119
         }
@@ -9575,7 +9699,7 @@
       "references": [
         {
           "path": "src/main.ts",
-          "line": 116
+          "line": 124
         }
       ]
     },
@@ -9978,6 +10102,10 @@
       "references": [
         {
           "path": "scripts/seed-cbr-rates.mjs",
+          "line": 535
+        },
+        {
+          "path": "scripts/seed-cbr-rates.mjs",
           "line": 542
         }
       ]
@@ -10036,6 +10164,10 @@
         {
           "path": "src/components/MapPopup.ts",
           "line": 85
+        },
+        {
+          "path": "src/services/settings-constants.ts",
+          "line": 16
         }
       ]
     },
@@ -10245,7 +10377,7 @@
         },
         {
           "path": "server/gateway.ts",
-          "line": 1771
+          "line": 1782
         },
         {
           "path": "server/worldmonitor/infrastructure/v1/reverse-geocode.ts",
@@ -11620,7 +11752,7 @@
         },
         {
           "path": "src/main.ts",
-          "line": 144
+          "line": 152
         }
       ]
     },
@@ -14294,6 +14426,10 @@
         {
           "path": "api/fwdstart.js",
           "line": 116
+        },
+        {
+          "path": "src/features/industry-map/industry-map.ts",
+          "line": 261
         }
       ]
     },
@@ -14621,6 +14757,18 @@
           "line": 68
         },
         {
+          "path": "api/youtube/embed.js",
+          "line": 108
+        },
+        {
+          "path": "api/youtube/embed.js",
+          "line": 131
+        },
+        {
+          "path": "api/youtube/embed.js",
+          "line": 180
+        },
+        {
           "path": "api/youtube/live.js",
           "line": 80
         },
@@ -14643,6 +14791,10 @@
         {
           "path": "server/worldmonitor/aviation/v1/get-youtube-live-stream-info.ts",
           "line": 136
+        },
+        {
+          "path": "src/components/_live-webcams-origin.ts",
+          "line": 2
         },
         {
           "path": "src/components/LiveNewsPanel.ts",
@@ -14683,6 +14835,10 @@
         {
           "path": "src/components/LiveWebcamsPanel.ts",
           "line": 588
+        },
+        {
+          "path": "src/main.ts",
+          "line": 204
         }
       ]
     },
@@ -14764,8 +14920,20 @@
       "status": "excluded",
       "references": [
         {
+          "path": "scripts/seed-digest-notifications.mjs",
+          "line": 1183
+        },
+        {
           "path": "server/worldmonitor/leads/v1/register-interest.ts",
           "line": 134
+        },
+        {
+          "path": "server/worldmonitor/leads/v1/register-interest.ts",
+          "line": 259
+        },
+        {
+          "path": "src/app/panel-layout.ts",
+          "line": 1145
         }
       ]
     },
